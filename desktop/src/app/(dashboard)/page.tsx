@@ -21,10 +21,7 @@ export default async function DesktopDashboard() {
   const streak = dbData?.progress?.currentStreak || 0;
   const memberName = currentMember?.namaLengkap ? currentMember.namaLengkap.split(' ')[0] : "Anggota";
 
-  const simpananPokok = financials.dues.filter(d => d.type === 'initial').reduce((acc, curr) => acc + curr.amount, 0);
-  const simpananWajib = financials.dues.filter(d => d.type === 'monthly').reduce((acc, curr) => acc + curr.amount, 0);
-  const simpananSukarela = financials.savings.reduce((acc, curr) => acc + (curr.type === 'deposit' ? curr.amount : -curr.amount), 0);
-  const totalSimpananTerkonsolidasi = simpananPokok + simpananWajib + simpananSukarela;
+
 
   return (
     <main className="flex-1 flex flex-col min-h-screen bg-background pb-24 md:pb-0">
@@ -54,27 +51,12 @@ export default async function DesktopDashboard() {
             <div className="p-6 flex-1 flex flex-col justify-between gap-6">
               <div>
                 <span className="text-on-surface-variant text-xs font-semibold">Saldo Terkonsolidasi</span>
-<<<<<<< HEAD:desktop/src/app/page.tsx
-                <h2 className="text-3xl font-black text-on-surface mt-1">Rp {totalSimpananTerkonsolidasi.toLocaleString('id-ID')}</h2>
-=======
                 <h2 className="text-3xl font-black text-on-surface mt-1">Rp {financials.totalSavings.toLocaleString('id-ID')}</h2>
->>>>>>> origin/main:desktop/src/app/(dashboard)/page.tsx
               </div>
               
               <div className="grid grid-cols-3 gap-4 border-t border-outline-variant/30 pt-6">
                 <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
                   <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Pokok</p>
-<<<<<<< HEAD:desktop/src/app/page.tsx
-                  <p className="text-xs font-bold text-on-surface mt-1">Rp {simpananPokok.toLocaleString('id-ID')}</p>
-                </div>
-                <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
-                  <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Wajib</p>
-                  <p className="text-xs font-bold text-on-surface mt-1">Rp {simpananWajib.toLocaleString('id-ID')}</p>
-                </div>
-                <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
-                  <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Sukarela</p>
-                  <p className="text-xs font-bold text-on-surface mt-1">Rp {simpananSukarela.toLocaleString('id-ID')}</p>
-=======
                   <p className="text-xs font-bold text-on-surface mt-1">Rp {financials.simpananPokok.toLocaleString('id-ID')}</p>
                 </div>
                 <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
@@ -84,7 +66,6 @@ export default async function DesktopDashboard() {
                 <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
                   <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Sukarela</p>
                   <p className="text-xs font-bold text-on-surface mt-1">Rp {financials.simpananSukarela.toLocaleString('id-ID')}</p>
->>>>>>> origin/main:desktop/src/app/(dashboard)/page.tsx
                 </div>
               </div>
 

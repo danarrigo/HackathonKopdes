@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDashboardData } from "@/actions/dashboard";
 import { getFinancialsData } from "@/actions/financials";
 import { getActiveQuests } from "@/actions/quests";
-import { getGovernanceData } from "@/actions/governance";
+import { getGovernanceData, getKoperasiStats } from "@/actions/governance";
 import { getArenaData } from "@/actions/arena";
 
 export async function GET() {
@@ -10,12 +10,13 @@ export async function GET() {
     const memberId = 1; // Default to member 1 for local testing
     
     // Fetch all data concurrently
-    const [dashboardData, financialsData, questsData, governanceData, arenaData] = await Promise.all([
+    const [dashboardData, financialsData, questsData, governanceData, arenaData, koperasiStats] = await Promise.all([
       getDashboardData(memberId),
       getFinancialsData(memberId),
       getActiveQuests(memberId),
       getGovernanceData(),
       getArenaData(memberId),
+      getKoperasiStats(),
     ]);
 
     return NextResponse.json({
@@ -26,6 +27,7 @@ export async function GET() {
         quests: questsData,
         governance: governanceData,
         arena: arenaData,
+        koperasiStats: koperasiStats,
       }
     }, {
       headers: {

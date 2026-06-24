@@ -1,7 +1,12 @@
 import { getFinancialsData } from "@/actions/financials";
+import { getCurrentMember } from "@/actions/members";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const { savings, loans, dues, totalSavings } = await getFinancialsData(1);
+  const currentMember = await getCurrentMember();
+  if (!currentMember) redirect("/login");
+
+  const { savings, loans, dues, totalSavings } = await getFinancialsData(currentMember.id);
   const totalTransaksi = savings.length + loans.length + dues.length;
   const estimasiSHU = Math.floor(totalSavings * 0.12);
 

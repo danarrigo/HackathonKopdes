@@ -1,7 +1,12 @@
 import { getArenaData } from "@/actions/arena";
+import { getCurrentMember } from "@/actions/members";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const { activeBattles } = await getArenaData(1);
+  const currentMember = await getCurrentMember();
+  if (!currentMember) redirect("/login");
+
+  const { activeBattles } = await getArenaData(currentMember.id);
   const battle = activeBattles[0];
   const p1 = battle ? battle.challengerPoints : 8200;
   const p2 = battle ? battle.opponentPoints : 7500;

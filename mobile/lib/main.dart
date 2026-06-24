@@ -103,6 +103,12 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   int simpananWajib = 750000;
   int simpananSukarela = 7254000;
 
+  // Koperasi Stats
+  int kopTransaksi = 37;
+  int kopAnggotaBaru = 8;
+  int kopOmzet = 14;
+  int kopUmkm = 12;
+
   // Streak days
   final Map<String, bool> streakDays = {
     'Sen': true,
@@ -222,6 +228,14 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
             }).toList();
           }
 
+          final kopStats = data['koperasiStats'];
+          if (kopStats != null) {
+            kopTransaksi = kopStats['transaksi'] ?? kopTransaksi;
+            kopAnggotaBaru = kopStats['anggotaBaru'] ?? kopAnggotaBaru;
+            kopOmzet = kopStats['omzetHarian'] ?? kopOmzet;
+            kopUmkm = kopStats['umkmAktif'] ?? kopUmkm;
+          }
+
           setState(() { isLoading = false; });
         } else {
           setState(() { isLoading = false; });
@@ -312,6 +326,10 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
           simpananPokok: simpananPokok,
           simpananWajib: simpananWajib,
           simpananSukarela: simpananSukarela,
+          kopTransaksi: kopTransaksi,
+          kopAnggotaBaru: kopAnggotaBaru,
+          kopOmzet: kopOmzet,
+          kopUmkm: kopUmkm,
           missions: missions.where((m) => m.isDaily).toList(),
           onToggleMission: toggleMission,
           onNavigate: (index) {
@@ -468,6 +486,10 @@ class HomeView extends StatelessWidget {
   final int simpananPokok;
   final int simpananWajib;
   final int simpananSukarela;
+  final int kopTransaksi;
+  final int kopAnggotaBaru;
+  final int kopOmzet;
+  final int kopUmkm;
   final List<Mission> missions;
   final Function(String) onToggleMission;
   final Function(int) onNavigate;
@@ -479,6 +501,10 @@ class HomeView extends StatelessWidget {
     required this.simpananPokok,
     required this.simpananWajib,
     required this.simpananSukarela,
+    required this.kopTransaksi,
+    required this.kopAnggotaBaru,
+    required this.kopOmzet,
+    required this.kopUmkm,
     required this.missions,
     required this.onToggleMission,
     required this.onNavigate,
@@ -907,10 +933,10 @@ class HomeView extends StatelessWidget {
                               mainAxisSpacing: 12,
                               childAspectRatio: 1.5,
                               children: [
-                                _buildCoopStat(Icons.swap_horiz, '37', 'Transaksi'),
-                                _buildCoopStat(Icons.attach_money, 'Rp 14,53 Jt', 'Omzet Harian'),
-                                _buildCoopStat(Icons.groups, '8', 'Anggota Baru'),
-                                _buildCoopStat(Icons.storefront, '12', 'UMKM Aktif'),
+                                _buildCoopStat(Icons.swap_horiz, '\$kopTransaksi', 'Transaksi'),
+                                _buildCoopStat(Icons.attach_money, 'Rp \$kopOmzet Jt', 'Omzet Harian'),
+                                _buildCoopStat(Icons.groups, '\$kopAnggotaBaru', 'Anggota Baru'),
+                                _buildCoopStat(Icons.storefront, '\$kopUmkm', 'UMKM Aktif'),
                               ],
                             ),
                           ],
