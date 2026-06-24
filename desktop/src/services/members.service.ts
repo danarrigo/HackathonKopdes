@@ -16,7 +16,7 @@ export class MembersService {
     return member;
   }
 
-  static async getByUserId(userId: number) {
+  static async getByUserId(userId: string) {
     const [member] = await db.select().from(members).where(eq(members.userId, userId));
     return member;
   }

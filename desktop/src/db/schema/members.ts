@@ -1,9 +1,9 @@
-import { pgTable, serial, varchar, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
 export const members = pgTable("members", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().unique().references(() => users.id),
+  userId: uuid("user_id").notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
   nomorAnggota: varchar("nomor_anggota", { length: 50 }).unique(),
   statusAnggota: varchar("status_anggota", { length: 20 }).default('pending').notNull(),
   nik: varchar("nik", { length: 20 }).notNull().unique(),

@@ -11,7 +11,7 @@ export class UsersService {
     return user;
   }
 
-  static async getById(id: number) {
+  static async getById(id: string) {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
@@ -25,7 +25,7 @@ export class UsersService {
     return await db.select().from(users);
   }
 
-  static async update(id: number, data: UpdateUser) {
+  static async update(id: string, data: UpdateUser) {
     const [user] = await db
       .update(users)
       .set({ ...data, updatedAt: new Date() })
@@ -34,7 +34,7 @@ export class UsersService {
     return user;
   }
 
-  static async delete(id: number) {
+  static async delete(id: string) {
     const [user] = await db.delete(users).where(eq(users.id, id)).returning();
     return user;
   }
