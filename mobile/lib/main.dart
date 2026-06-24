@@ -325,7 +325,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
             )
           ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         child: SafeArea(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -346,43 +346,57 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     final bool isActive = _currentIndex == index;
     return Expanded(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           setState(() {
             _currentIndex = index;
           });
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOutCubic,
+          padding: EdgeInsets.symmetric(vertical: isActive ? 8 : 6, horizontal: 2),
           decoration: isActive
               ? BoxDecoration(
-                  color: const Color(0xFF1C2533),
-                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFF1E293B),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(color: const Color(0xFFFACC15).withOpacity(0.15), blurRadius: 10, offset: const Offset(0, 4)),
+                  ],
                 )
-              : null,
+              : const BoxDecoration(color: Colors.transparent),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                color: isActive ? const Color(0xFFFACC15) : const Color(0xFF94A3B8),
-                size: 24,
-                shadows: isActive
-                    ? [
-                        Shadow(
-                          color: const Color(0xFFFACC15).withOpacity(0.4),
-                          blurRadius: 8,
-                        )
-                      ]
-                    : null,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                child: Icon(
+                  icon,
+                  color: isActive ? const Color(0xFFFACC15) : const Color(0xFF64748B),
+                  size: isActive ? 28 : 24,
+                  shadows: isActive
+                      ? [
+                          Shadow(
+                            color: const Color(0xFFFACC15).withOpacity(0.5),
+                            blurRadius: 12,
+                          )
+                        ]
+                      : null,
+                ),
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 250),
                 style: TextStyle(
-                  color: isActive ? const Color(0xFFFACC15) : const Color(0xFF94A3B8),
-                  fontSize: 10,
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                  color: isActive ? const Color(0xFFFACC15) : const Color(0xFF64748B),
+                  fontSize: isActive ? 10.5 : 9,
+                  fontWeight: isActive ? FontWeight.w900 : FontWeight.w600,
+                  fontFamily: 'Inter',
+                ),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -1130,64 +1144,6 @@ class MisiView extends StatelessWidget {
                 _buildMissionSectionCard('Misi Mingguan', false),
                 const SizedBox(height: 16),
 
-                // 4. Ranking
-                const Text('Ranking', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                const SizedBox(height: 8),
-                Card(
-                  color: const Color(0xFF1C2533),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _buildRankItem(Icons.eco, 'Perunggu', Colors.greenAccent, false),
-                              _buildRankDivider(),
-                              _buildRankItem(Icons.military_tech, 'Perak', Colors.amberAccent, false),
-                              _buildRankDivider(),
-                              _buildRankItem(Icons.workspace_premium, 'Emas', const Color(0xFFF59E0B), true),
-                              _buildRankDivider(),
-                              _buildRankItem(Icons.diamond, 'Platinum', Colors.lightBlue, false, opacity: 0.5),
-                              _buildRankDivider(),
-                              _buildRankItem(Icons.grade, 'Legenda', Colors.redAccent, false, opacity: 0.5),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Divider(color: Colors.white10),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Tingkatkan Ranking untuk limit pinjaman lebih tinggi + hadiah eksklusif!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white70, fontSize: 10, height: 1.4),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // 5. Achievements
-                const Text('Penghargaan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 120,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      _buildAchievementIcon('Investor Desa', 'Tabung Rp 5Jt', Icons.savings),
-                      const SizedBox(width: 12),
-                      _buildAchievementIcon('Loyal Streak', '30 Hari Beruntun', Icons.local_fire_department, opacity: 0.8),
-                      const SizedBox(width: 12),
-                      _buildAchievementIcon('UMKM Hero', '100 Produk Terjual', Icons.storefront, opacity: 0.8),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
 
                 // 6. Shop
                 Row(
@@ -1296,82 +1252,7 @@ class MisiView extends StatelessWidget {
     );
   }
 
-  Widget _buildRankItem(IconData icon, String title, Color color, bool isActive, {double opacity = 1.0}) {
-    return Opacity(
-      opacity: opacity,
-      child: Column(
-        children: [
-          Container(
-            width: isActive ? 52 : 46,
-            height: isActive ? 52 : 46,
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
-              borderRadius: BorderRadius.circular(isActive ? 12 : 24),
-              border: isActive ? Border.all(color: const Color(0xFFFACC15), width: 2) : Border.all(color: Colors.white10),
-              boxShadow: isActive
-                  ? [
-                      BoxShadow(
-                        color: const Color(0xFFFACC15).withOpacity(0.3),
-                        blurRadius: 15,
-                      )
-                    ]
-                  : null,
-            ),
-            child: Icon(icon, color: isActive ? const Color(0xFFFBBF24) : color, size: isActive ? 28 : 22),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 8,
-              color: isActive ? const Color(0xFFFACC15) : Colors.white60,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            ),
-          )
-        ],
-      ),
-    );
-  }
 
-  Widget _buildRankDivider() {
-    return Container(
-      width: 24,
-      height: 1.5,
-      color: Colors.white10,
-      margin: const EdgeInsets.symmetric(horizontal: 6),
-    );
-  }
-
-  Widget _buildAchievementIcon(String title, String desc, IconData icon, {double opacity = 1.0}) {
-    return Opacity(
-      opacity: opacity,
-      child: Container(
-        width: 128,
-        decoration: BoxDecoration(
-          color: const Color(0xFF718096),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 36),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              desc,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white70, fontSize: 8),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildShopItemCard(ShopItem item) {
     return Card(
@@ -1921,31 +1802,74 @@ class KoperasiView extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // 3. Digital Voting Card
-                const Text('Voting Digital', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                const SizedBox(height: 8),
-                Card(
-                  color: Colors.white,
-                  surfaceTintColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                Row(
+                  children: const [
+                    Icon(Icons.how_to_vote, color: Color(0xFF3B82F6), size: 24),
+                    SizedBox(width: 8),
+                    Text('Voting Digital (E-RAT)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF1E293B))),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(color: const Color(0xFF3B82F6).withOpacity(0.4), blurRadius: 15, offset: const Offset(0, 8)),
+                    ],
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          'Setujui program pengadaan traktor desa 2026?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Text(
+                              'Sidang Paripurna - Agenda 3',
+                              style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 20),
+                        const Text(
+                          'Apakah Anda menyetujui program pengadaan traktor desa untuk tahun 2026 dengan anggaran Rp 120 Juta?',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, height: 1.4),
+                        ),
+                        const SizedBox(height: 28),
                         if (voteSelection != null)
                           Container(
-                            color: const Color(0xFFDCFCE7),
-                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
+                            ),
+                            padding: const EdgeInsets.all(16),
                             alignment: Alignment.center,
-                            child: Text(
-                              'Pilihan Anda berhasil disimpan: $voteSelection',
-                              style: const TextStyle(color: Color(0xFF16A34A), fontSize: 11, fontWeight: FontWeight.bold),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.check_circle, color: Color(0xFF16A34A), size: 28),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(
+                                    'Pilihan Anda tersimpan:\n$voteSelection',
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(color: Color(0xFF16A34A), fontSize: 13, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
                             ),
                           )
                         else
@@ -1953,26 +1877,30 @@ class KoperasiView extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: ElevatedButton.icon(
-                                  onPressed: () => onVote('Setuju'),
-                                  icon: const Icon(Icons.thumb_up, size: 14, color: Colors.white),
-                                  label: const Text('Setuju', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                                  onPressed: () => _showVoteConfirmation(context, 'Setuju'),
+                                  icon: const Icon(Icons.thumb_up, size: 16, color: Color(0xFF15803D)),
+                                  label: const Text('Setuju', style: TextStyle(color: Color(0xFF15803D), fontSize: 14, fontWeight: FontWeight.bold)),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF65A30D),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: const Color(0xFF15803D),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    elevation: 4,
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: ElevatedButton.icon(
-                                  onPressed: () => onVote('Tidak Setuju'),
-                                  icon: const Icon(Icons.thumb_down, size: 14, color: Colors.white),
-                                  label: const Text('Tidak Setuju', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                                  onPressed: () => _showVoteConfirmation(context, 'Tidak Setuju'),
+                                  icon: const Icon(Icons.thumb_down, size: 16, color: Color(0xFFB91C1C)),
+                                  label: const Text('Tolak', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 14, fontWeight: FontWeight.bold)),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFEF4444),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: const Color(0xFFB91C1C),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    elevation: 4,
                                   ),
                                 ),
                               )
@@ -2110,6 +2038,49 @@ class KoperasiView extends StatelessWidget {
       ),
     );
   }
+
+  void _showVoteConfirmation(BuildContext context, String choice) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          title: Row(
+            children: [
+              Icon(choice == 'Setuju' ? Icons.info_outline : Icons.warning_amber_rounded, 
+                  color: choice == 'Setuju' ? const Color(0xFF3B82F6) : const Color(0xFFF59E0B), size: 28),
+              const SizedBox(width: 8),
+              const Text('Konfirmasi Voting', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF1E293B))),
+            ],
+          ),
+          content: Text(
+            'Apakah Anda yakin ingin memberikan suara "$choice" pada agenda pengadaan traktor desa 2026? Pilihan tidak dapat diubah setelah disimpan.',
+            style: const TextStyle(color: Color(0xFF475569), fontSize: 14, height: 1.4),
+          ),
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                onVote(choice);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: choice == 'Setuju' ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              child: const Text('Ya, Konfirmasi', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 // ----------------- SCREEN 5: PROFILE VIEW -----------------
@@ -2135,20 +2106,74 @@ class ProfileView extends StatelessWidget {
             padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 24),
             child: Column(
               children: [
-                const CircleAvatar(
-                  radius: 48,
-                  backgroundColor: Colors.white24,
-                  child: CircleAvatar(
-                    radius: 44,
-                    backgroundColor: Colors.white70,
-                    child: Text('AS', style: TextStyle(color: Color(0xFF0F172A), fontSize: 24, fontWeight: FontWeight.bold)),
-                  ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 106,
+                      height: 106,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFF59E0B), Color(0xFFFCD34D)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFF59E0B).withOpacity(0.5),
+                            blurRadius: 20,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const CircleAvatar(
+                      radius: 48,
+                      backgroundColor: Color(0xFF0F172A),
+                      child: CircleAvatar(
+                        radius: 44,
+                        backgroundColor: Colors.white70,
+                        child: Text('AS', style: TextStyle(color: Color(0xFF0F172A), fontSize: 24, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFF59E0B), Color(0xFFB45309)],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.workspace_premium, color: Colors.white, size: 14),
+                            SizedBox(width: 4),
+                            Text(
+                              'RANK EMAS',
+                              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 const Text(
                   'Agung',
                   style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900),
                 ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Anggota Premium Koperasi',
+                  style: TextStyle(color: Color(0xFFFCD34D), fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 2),
                 const Text(
                   'No. Anggota: KMP-DSKMJ -2021-0041',
                   style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold),
@@ -2159,8 +2184,6 @@ class ProfileView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildTopBadge(Icons.workspace_premium, 'Emas', const Color(0xFFFACC15), const Color(0xFF78350F)),
-                    const SizedBox(width: 8),
                     _buildTopBadge(Icons.local_fire_department, '$streak Hari Streak', Colors.white, Colors.white12, iconColor: Colors.orange),
                     const SizedBox(width: 8),
                     _buildTopBadge(Icons.calendar_month, 'Aktif 2021', Colors.white, Colors.white12),
@@ -2210,6 +2233,65 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+
+                // Ranking
+                const Text('Ranking', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                const SizedBox(height: 8),
+                Card(
+                  color: const Color(0xFF1C2533),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              _buildRankItem(Icons.eco, 'Perunggu', Colors.greenAccent, false),
+                              _buildRankDivider(),
+                              _buildRankItem(Icons.military_tech, 'Perak', Colors.amberAccent, false),
+                              _buildRankDivider(),
+                              _buildRankItem(Icons.workspace_premium, 'Emas', const Color(0xFFF59E0B), true),
+                              _buildRankDivider(),
+                              _buildRankItem(Icons.diamond, 'Platinum', Colors.lightBlue, false, opacity: 0.5),
+                              _buildRankDivider(),
+                              _buildRankItem(Icons.grade, 'Legenda', Colors.redAccent, false, opacity: 0.5),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Divider(color: Colors.white10),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Tingkatkan Ranking untuk limit pinjaman lebih tinggi + hadiah eksklusif!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white70, fontSize: 10, height: 1.4),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Achievements
+                const Text('Penghargaan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 120,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _buildAchievementIcon('Investor Desa', 'Tabung Rp 5Jt', Icons.savings),
+                      const SizedBox(width: 12),
+                      _buildAchievementIcon('Loyal Streak', '30 Hari Beruntun', Icons.local_fire_department, opacity: 0.8),
+                      const SizedBox(width: 12),
+                      _buildAchievementIcon('UMKM Hero', '100 Produk Terjual', Icons.storefront, opacity: 0.8),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
 
                 // 2. Personal Impact Section
                 const Text('Dampak Personal', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
@@ -2318,6 +2400,83 @@ class ProfileView extends StatelessWidget {
       title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
       trailing: const Icon(Icons.chevron_right, color: Colors.white70),
       onTap: () {},
+    );
+  }
+
+  Widget _buildRankItem(IconData icon, String title, Color color, bool isActive, {double opacity = 1.0}) {
+    return Opacity(
+      opacity: opacity,
+      child: Column(
+        children: [
+          Container(
+            width: isActive ? 52 : 46,
+            height: isActive ? 52 : 46,
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E293B),
+              borderRadius: BorderRadius.circular(isActive ? 12 : 24),
+              border: isActive ? Border.all(color: const Color(0xFFFACC15), width: 2) : Border.all(color: Colors.white10),
+              boxShadow: isActive
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFFACC15).withOpacity(0.3),
+                        blurRadius: 15,
+                      )
+                    ]
+                  : null,
+            ),
+            child: Icon(icon, color: isActive ? const Color(0xFFFBBF24) : color, size: isActive ? 28 : 22),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 8,
+              color: isActive ? const Color(0xFFFACC15) : Colors.white60,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRankDivider() {
+    return Container(
+      width: 24,
+      height: 1.5,
+      color: Colors.white10,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+    );
+  }
+
+  Widget _buildAchievementIcon(String title, String desc, IconData icon, {double opacity = 1.0}) {
+    return Opacity(
+      opacity: opacity,
+      child: Container(
+        width: 128,
+        decoration: BoxDecoration(
+          color: const Color(0xFF718096),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 36),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              desc,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white70, fontSize: 8),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
