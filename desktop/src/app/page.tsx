@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { getDashboardData } from "@/actions/dashboard";
 import { getMemberData } from "@/actions/members";
-import MissionList from "./MissionList"; // We will extract the mission list to a Client Component
+import MissionList from "@/components/MissionList";
 
 export default async function DesktopDashboard() {
   const dbData = await getDashboardData(1);
