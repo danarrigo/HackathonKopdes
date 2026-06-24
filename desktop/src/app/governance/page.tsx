@@ -2,6 +2,10 @@ import { getGovernanceData } from "@/actions/governance";
 
 export default async function Page() {
   const { activeProposals, totalMembers } = await getGovernanceData();
+  const mainProposal = activeProposals[0];
+  const proposalTitle = mainProposal?.title || "Voting Digital #42";
+  const proposalDesc = mainProposal?.description || "Pengajuan Kredit Kolektif Pengadaan Solar Panel Desa.";
+  const proposalTarget = mainProposal?.targetQuorumPercentage || 65;
   
   return (
     <main className="flex-1 flex flex-col min-h-screen bg-background pb-24 md:pb-0">
@@ -147,9 +151,9 @@ export default async function Page() {
 <div>
 <div className="flex items-center gap-3">
 <span className="px-2 py-0.5 bg-error/20 text-error rounded font-label-caps text-[10px] uppercase tracking-wider">Sedang Berlangsung</span>
-<h2 className="font-headline-md text-headline-md">Voting Digital #42</h2>
+<h2 className="font-headline-md text-headline-md">{proposalTitle}</h2>
 </div>
-<p className="font-body-md text-body-md text-on-surface-variant mt-1">Pengajuan Kredit Kolektif Pengadaan Solar Panel Desa.</p>
+<p className="font-body-md text-body-md text-on-surface-variant mt-1">{proposalDesc}</p>
 </div>
 <div className="flex gap-2">
 <div className="text-right">
@@ -185,7 +189,7 @@ export default async function Page() {
 </ul>
 </div>
 <div className="flex items-center justify-between px-2">
-<span className="font-label-caps text-label-caps text-on-surface-variant">QUORUM TERCAPAI (65%)</span>
+<span className="font-label-caps text-label-caps text-on-surface-variant">TARGET QUORUM ({proposalTarget}%)</span>
 <span className="font-label-caps text-label-caps text-primary">BUTUH 10% LAGI</span>
 </div>
 <div className="h-2.5 w-full bg-surface-container-highest rounded-full overflow-hidden">

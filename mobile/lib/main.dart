@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -94,11 +96,12 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
   int streak = 14;
   int userWinRate = 62;
   String? voteSelection;
+  bool isLoading = true;
 
   // Savings breakdown
-  final int simpananPokok = 750000;
-  final int simpananWajib = 750000;
-  final int simpananSukarela = 7254000;
+  int simpananPokok = 750000;
+  int simpananWajib = 750000;
+  int simpananSukarela = 7254000;
 
   // Streak days
   final Map<String, bool> streakDays = {
@@ -176,9 +179,60 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
         ownedCount: 1,
         icon: Icons.rocket_launch,
         iconColor: Colors.purple,
-        bgGlow: Colors.purple.withOpacity(0.1),
+        bgGlow: Colors.amber.withOpacity(0.1),
       ),
     ];
+
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:3000/api/mobile-sync'));
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success']) {
+          final data = jsonResponse['data'];
+          
+          final progress = data['dashboard']?['progress'];
+          if (progress != null) {
+            points = progress['pointsBalance'] ?? points;
+            streak = progress['currentStreak'] ?? streak;
+          }
+
+          final financials = data['financials'];
+          if (financials != null) {
+            List dues = financials['dues'] ?? [];
+            List savings = financials['savings'] ?? [];
+            simpananPokok = dues.where((d) => d['type'] == 'initial').fold<int>(0, (s, i) => s + (i['amount'] as int));
+            simpananWajib = dues.where((d) => d['type'] == 'monthly').fold<int>(0, (s, i) => s + (i['amount'] as int));
+            simpananSukarela = savings.fold<int>(0, (s, i) => s + (i['type'] == 'deposit' ? (i['amount'] as int) : -(i['amount'] as int)));
+          }
+
+          final quests = data['quests'];
+          if (quests != null && quests is List) {
+            missions = quests.map<Mission>((q) {
+              return Mission(
+                id: q['id'].toString(),
+                title: q['title'] ?? '',
+                points: q['rewardPoints'] ?? 0,
+                completed: q['progress']?['isCompleted'] ?? false,
+                isDaily: q['category'] == 'daily',
+              );
+            }).toList();
+          }
+
+          setState(() { isLoading = false; });
+        } else {
+          setState(() { isLoading = false; });
+        }
+      } else {
+        setState(() { isLoading = false; });
+      }
+    } catch (e) {
+      print('Fetch err: $e');
+      setState(() { isLoading = false; });
+    }
   }
 
   void _showSnackBar(String message) {
@@ -310,7 +364,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
     // Scaffold matching the mobile structure
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9),
-      body: _buildBody(),
+      body: isLoading ? const Center(child: CircularProgressIndicator()) : _buildBody(),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Color(0xFF0B1120),

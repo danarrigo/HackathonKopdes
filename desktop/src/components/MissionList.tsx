@@ -1,14 +1,19 @@
 "use client";
 import React, { useState } from "react";
 
-export default function MissionList() {
-  const [missions, setMissions] = useState([
-    { id: "d1", title: "Belanja hari ini", points: 20, completed: true, category: "daily" },
-    { id: "d2", title: "Hadir RAT", points: 50, completed: false, category: "daily" },
-    { id: "d3", title: "Baca berita koperasi", points: 15, completed: false, category: "daily" },
-  ]);
+export default function MissionList({ initialQuests = [] }: { initialQuests?: any[] }) {
+  const [missions, setMissions] = useState(
+    initialQuests.map((q) => ({
+      id: q.id.toString(),
+      title: q.title,
+      points: q.rewardPoints || 0,
+      completed: q.progress?.isCompleted || false,
+      category: q.category || "daily",
+    }))
+  );
 
   const handleToggleMission = (id: string) => {
+    // Optimistic toggle (no DB update yet)
     setMissions((prev) =>
       prev.map((m) => {
         if (m.id === id) return { ...m, completed: !m.completed };

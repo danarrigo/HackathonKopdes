@@ -2,15 +2,24 @@ import React from "react";
 import Link from "next/link";
 import { getDashboardData } from "@/actions/dashboard";
 import { getMemberData } from "@/actions/members";
+import { getFinancialsData } from "@/actions/financials";
+import { getActiveQuests } from "@/actions/quests";
 import MissionList from "@/components/MissionList";
 
 export default async function DesktopDashboard() {
   const dbData = await getDashboardData(1);
   const member = await getMemberData(1);
+  const financials = await getFinancialsData(1);
+  const activeQuests = await getActiveQuests(1);
   
   const points = dbData?.progress?.pointsBalance || 0;
   const streak = dbData?.progress?.currentStreak || 0;
   const memberName = member?.namaLengkap ? member.namaLengkap.split(' ')[0] : "Anggota";
+
+  const simpananPokok = financials.dues.filter(d => d.type === 'initial').reduce((acc, curr) => acc + curr.amount, 0);
+  const simpananWajib = financials.dues.filter(d => d.type === 'monthly').reduce((acc, curr) => acc + curr.amount, 0);
+  const simpananSukarela = financials.savings.reduce((acc, curr) => acc + (curr.type === 'deposit' ? curr.amount : -curr.amount), 0);
+  const totalSimpananTerkonsolidasi = simpananPokok + simpananWajib + simpananSukarela;
 
   return (
     <main className="flex-1 flex flex-col min-h-screen bg-background pb-24 md:pb-0">
@@ -40,21 +49,21 @@ export default async function DesktopDashboard() {
             <div className="p-6 flex-1 flex flex-col justify-between gap-6">
               <div>
                 <span className="text-on-surface-variant text-xs font-semibold">Saldo Terkonsolidasi</span>
-                <h2 className="text-3xl font-black text-on-surface mt-1">Rp 8.754.000,00</h2>
+                <h2 className="text-3xl font-black text-on-surface mt-1">Rp {totalSimpananTerkonsolidasi.toLocaleString('id-ID')}</h2>
               </div>
               
               <div className="grid grid-cols-3 gap-4 border-t border-outline-variant/30 pt-6">
                 <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
                   <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Pokok</p>
-                  <p className="text-xs font-bold text-on-surface mt-1">Rp 750.000</p>
+                  <p className="text-xs font-bold text-on-surface mt-1">Rp {simpananPokok.toLocaleString('id-ID')}</p>
                 </div>
                 <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
                   <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Wajib</p>
-                  <p className="text-xs font-bold text-on-surface mt-1">Rp 750.000</p>
+                  <p className="text-xs font-bold text-on-surface mt-1">Rp {simpananWajib.toLocaleString('id-ID')}</p>
                 </div>
                 <div className="bg-surface-container-low p-3 rounded-lg border border-outline-variant/50">
                   <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Simpanan Sukarela</p>
-                  <p className="text-xs font-bold text-on-surface mt-1">Rp 7.254.000</p>
+                  <p className="text-xs font-bold text-on-surface mt-1">Rp {simpananSukarela.toLocaleString('id-ID')}</p>
                 </div>
               </div>
 
@@ -109,9 +118,9 @@ export default async function DesktopDashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-on-surface">Misi Hari Ini</h3>
-                <span className="text-[10px] text-tertiary font-bold">+100 Poin Tersedia</span>
+                <span className="text-[10px] text-tertiary font-bold">Poin Tersedia</span>
               </div>
-              <MissionList />
+              <MissionList initialQuests={activeQuests} />
             </div>
             <div className="pt-4 border-t border-outline-variant/30 mt-6">
               <Link href='/quests' className="text-primary text-xs font-bold flex items-center gap-1 hover:underline">

@@ -2,6 +2,13 @@ import { getArenaData } from "@/actions/arena";
 
 export default async function Page() {
   const { activeBattles } = await getArenaData(1);
+  const battle = activeBattles[0];
+  const p1 = battle ? battle.challengerPoints : 8200;
+  const p2 = battle ? battle.opponentPoints : 7500;
+  
+  // Normalize to percentage for UI (e.g. max 10000)
+  const p1Pct = Math.min(100, Math.floor((p1 / 10000) * 100));
+  const p2Pct = Math.min(100, Math.floor((p2 / 10000) * 100));
 
   return (
     <main className="flex-1 flex flex-col min-h-screen bg-background pb-24 md:pb-0">
@@ -33,10 +40,10 @@ export default async function Page() {
 <div>
 <div className="flex justify-between mb-2">
 <span className="font-body-md text-body-md text-on-surface-variant">Transaksi Mingguan</span>
-<span className="font-points-display text-points-display text-primary">82%</span>
+<span className="font-points-display text-points-display text-primary">{p1Pct}%</span>
 </div>
 <div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div className="h-full bg-primary rounded-full" ></div>
+<div className="h-full bg-primary rounded-full" style={{ width: `${p1Pct}%` }} ></div>
 </div>
 </div>
 <div>
@@ -79,10 +86,10 @@ export default async function Page() {
 <div>
 <div className="flex justify-between mb-2 flex-row-reverse">
 <span className="font-body-md text-body-md text-on-surface-variant">Transaksi Mingguan</span>
-<span className="font-points-display text-points-display text-tertiary">94%</span>
+<span className="font-points-display text-points-display text-tertiary">{p2Pct}%</span>
 </div>
 <div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden flex justify-end">
-<div className="h-full bg-tertiary rounded-full progress-glow" ></div>
+<div className="h-full bg-tertiary rounded-full progress-glow" style={{ width: `${p2Pct}%` }} ></div>
 </div>
 </div>
 <div>
