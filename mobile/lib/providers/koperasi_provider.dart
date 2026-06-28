@@ -130,7 +130,12 @@ class KoperasiProvider extends ChangeNotifier {
   }
 
   String _apiUrl(String path) {
-    return 'https://hackathon-kopdes.vercel.app$path';
+    // Vercel now serves the app under the new "SIDEPAK" name. The old
+    // `hackathon-kopdes.vercel.app` URL is configured as a 307 redirect to
+    // `sidepak.vercel.app`, which trips CORS preflight (browsers do not follow
+    // redirects on OPTIONS requests — see "Redirect is not allowed for a
+    // preflight request" error). Point directly at the new canonical host.
+    return 'https://sidepak.vercel.app$path';
   }
 
   Map<String, String> _headers({bool isJson = false}) {
