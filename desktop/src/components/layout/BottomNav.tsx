@@ -15,19 +15,21 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 w-full glass-nav z-50 flex justify-around items-center h-16 border-t border-outline-variant/10">
+    <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#0B1120] z-50 flex justify-around items-center pb-2 pt-1.5 px-1 border-t border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.45)]">
       {navLinks.map((link) => {
         const isActive = pathname === link.href;
         return (
           <Link 
             key={link.href} 
-            className={`flex flex-col items-center justify-center ${isActive ? "text-tertiary" : "text-on-surface-variant"}`} 
+            className="flex-1"
             href={link.href}
           >
-            <span className="material-symbols-outlined" style={isActive ? { fontVariationSettings: "\'FILL\' 1" } : undefined}>
-              {link.icon}
-            </span>
-            <span className="text-[10px] font-bold uppercase mt-1">{link.label}</span>
+            <div className={`flex flex-col items-center justify-center mx-1 py-1.5 rounded-xl transition-all duration-300 ${isActive ? "bg-[#1E293B] shadow-[0_3px_8px_rgba(250,204,21,0.18)]" : "bg-transparent"}`}>
+              <span className={`material-symbols-outlined transition-all duration-300 ${isActive ? "text-tertiary scale-110 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]" : "text-slate-500 scale-100"}`} style={isActive ? { fontVariationSettings: "\'FILL\' 1" } : undefined}>
+                {link.icon}
+              </span>
+              <span className={`mt-0.5 transition-all duration-300 font-inter ${isActive ? "text-[9px] font-black text-tertiary" : "text-[8px] font-semibold text-slate-500"}`}>{link.label}</span>
+            </div>
           </Link>
         );
       })}
