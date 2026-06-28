@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/koperasi_provider.dart';
-import 'dart:js' as js;
+import 'package:url_launcher/url_launcher.dart';
 
 const _rankColors = <String, List<Color>>{
   'Perunggu': [Color(0xFFB45309), Color(0xFF78350F)],
@@ -852,7 +852,7 @@ class ProfileView extends StatelessWidget {
                               invoiceUrl = res['invoiceUrl'];
                               invoiceId = res['invoiceId'];
                             });
-                            js.context.callMethod('open', [invoiceUrl, '_blank']);
+                            launchUrl(Uri.parse(invoiceUrl), mode: LaunchMode.externalApplication);
                           } else {
                             setState(() {
                               error = res['error'] ?? 'Gagal membuat invoice.';
@@ -923,7 +923,7 @@ class ProfileView extends StatelessWidget {
                       ] else ...[
                         ElevatedButton(
                           onPressed: () {
-                            js.context.callMethod('open', [invoiceUrl, '_blank']);
+                            launchUrl(Uri.parse(invoiceUrl), mode: LaunchMode.externalApplication);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0F172A),
