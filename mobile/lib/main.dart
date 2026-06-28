@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => KoperasiProvider(),
       child: MaterialApp(
-        title: 'Koperasi Sukamaju',
+        title: 'SIDEPAK',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.light,

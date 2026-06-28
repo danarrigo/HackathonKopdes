@@ -89,7 +89,7 @@ class _LoginViewState extends State<LoginView> {
                   size: 72, color: Color(0xFFFACC15)),
               const SizedBox(height: 16),
               const Text(
-                'Koperasi Sukamaju',
+                'SIDEPAK',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
