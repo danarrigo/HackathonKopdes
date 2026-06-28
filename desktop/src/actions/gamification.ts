@@ -1,8 +1,18 @@
 "use server";
 import { db } from "@/db";
-import { items } from "@/db/schema/gamification";
+import { memberProgress, items } from "@/db/schema/gamification";
 import { battles } from "@/db/schema/activities";
 import { or, eq, and } from "drizzle-orm";
+
+export async function getMemberProgress(memberId: number) {
+  try {
+    const [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
+    return progress;
+  } catch (error) {
+    console.error("Member Progress Error:", error);
+    return null;
+  }
+}
 
 export async function getStoreItems() {
   try {
