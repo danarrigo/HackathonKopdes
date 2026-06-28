@@ -43,8 +43,11 @@ class ProfileView extends StatelessWidget {
         : provider.simpananPokok + provider.simpananWajib + provider.simpananSukarela;
     final estimasiSHU = totalSimpananDisplay > 0 ? (totalSimpananDisplay * 0.12).floor() : 0;
 
-    return SingleChildScrollView(
-      child: Column(
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Rank gradient digital member card
@@ -641,7 +644,7 @@ class ProfileView extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildTopBadge(IconData icon, String text, Color textCol, Color bgCol, {Color? iconColor}) {

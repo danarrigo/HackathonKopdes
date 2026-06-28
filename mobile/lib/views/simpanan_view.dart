@@ -162,8 +162,11 @@ class _SimpananViewState extends State<SimpananView> {
       ),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            child: Column(
+          RefreshIndicator(
+            onRefresh: () => provider.fetchData(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Top wallet bar
@@ -360,7 +363,7 @@ class _SimpananViewState extends State<SimpananView> {
                 ),
               ],
             ),
-          ),
+          )),
           if (_isLoading)
             Container(
               color: Colors.black26,

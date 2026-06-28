@@ -26,8 +26,11 @@ class KoperasiView extends StatelessWidget {
     final pinjamanPct = totalAset > 0 ? (provider.asetPinjaman / totalAset * 100).round() : 0;
     final investasiPct = totalAset > 0 ? (provider.asetInvestasi / totalAset * 100).round() : 0;
 
-    return SingleChildScrollView(
-      child: Column(
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
@@ -368,7 +371,7 @@ class KoperasiView extends StatelessWidget {
           )
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildWhiteStatCard(String label, String val, String subText) {
