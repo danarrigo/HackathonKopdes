@@ -162,10 +162,11 @@ export async function payDuesFromWallet(memberId: number, type: 'initial' | 'mon
   try {
     const amount = type === 'initial' ? 100000 : 50000;
 
-    // Get current progress
-    const [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
+    // Get current progress or create if missing
+    let [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
     if (!progress) {
-      return { success: false, error: "Data progress member tidak ditemukan" };
+      const [newProgress] = await db.insert(memberProgress).values({ memberId }).returning();
+      progress = newProgress;
     }
 
     if (progress.walletBalance < amount) {
@@ -207,10 +208,11 @@ export async function depositSavingsFromWallet(memberId: number, amount: number,
       return { success: false, error: "Jumlah simpanan harus lebih besar dari Rp 0" };
     }
 
-    // Get current progress
-    const [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
+    // Get current progress or create if missing
+    let [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
     if (!progress) {
-      return { success: false, error: "Data progress member tidak ditemukan" };
+      const [newProgress] = await db.insert(memberProgress).values({ memberId }).returning();
+      progress = newProgress;
     }
 
     if (progress.walletBalance < amount) {
