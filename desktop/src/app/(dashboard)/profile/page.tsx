@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { getWinRate, getMemberInventory, getRecentPointTransactions, getMemberProgress } from "@/actions/gamification";
 import { logout } from "@/actions/auth";
 import TopUpModal from "@/components/TopUpModal";
+import Link from "next/link";
+import ProfileSettings from "./ProfileSettings";
 
 export default async function Page() {
   const currentMember = await getCurrentMember();
@@ -96,15 +98,16 @@ export default async function Page() {
 <p className="font-body-md text-body-md text-tertiary mt-2">Tahun Buku 2024</p>
 </div>
 
-<div className="glass-card rounded-3xl p-6 border border-outline-variant transition-all flex flex-col justify-between">
-<div>
+<div className="glass-card rounded-3xl p-6 border border-outline-variant transition-all flex flex-col justify-between relative group hover:border-primary/50">
+<Link href="/savings" className="absolute inset-0 z-0"></Link>
+<div className="relative z-0">
   <div className="w-12 h-12 bg-primary-container rounded-2xl flex items-center justify-center mb-4 text-primary">
     <span className="material-symbols-outlined">payments</span>
   </div>
   <p className="font-label-caps text-label-caps text-on-surface-variant mb-1 uppercase">Saldo Dompet</p>
   <h4 className="font-headline-lg text-headline-lg text-on-surface">Rp {progress?.walletBalance?.toLocaleString('id-ID') || 0}</h4>
 </div>
-<div className="mt-4">
+<div className="mt-4 relative z-10">
   <TopUpModal memberId={currentMember.id} />
 </div>
 </div>
@@ -223,64 +226,11 @@ export default async function Page() {
 </div>
 <div className="w-full space-y-6 mt-12 animate-slide-up delay-300">
 <h3 className="font-headline-md text-headline-md text-on-surface px-2">Pengaturan Akun</h3>
-<div className="glass-card rounded-3xl overflow-hidden border border-outline-variant divide-y divide-outline-variant/50">
-
-<div className="p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-<div className="flex items-center gap-5">
-<div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-<span className="material-symbols-outlined">security</span>
-</div>
-<div>
-<p className="font-body-lg text-body-lg text-on-surface">Keamanan &amp; Password</p>
-<p className="font-body-md text-body-md text-on-surface-variant">Update password, 2FA, dan biometrik</p>
-</div>
-</div>
-<span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-</div>
-
-<div className="p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-<div className="flex items-center gap-5">
-<div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-<span className="material-symbols-outlined">notifications_active</span>
-</div>
-<div>
-<p className="font-body-lg text-body-lg text-on-surface">Notifikasi</p>
-<p className="font-body-md text-body-md text-on-surface-variant">Atur pengingat iuran dan info SHU</p>
-</div>
-</div>
-<span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-</div>
-
-<div className="p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-<div className="flex items-center gap-5">
-<div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-<span className="material-symbols-outlined">payments</span>
-</div>
-<div>
-<p className="font-body-lg text-body-lg text-on-surface">Metode Pembayaran</p>
-<p className="font-body-md text-body-md text-on-surface-variant">Kelola bank, e-wallet, dan kartu debit</p>
-</div>
-</div>
-<span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-</div>
-
-<div className="p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-<div className="flex items-center gap-5">
-<div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-<span className="material-symbols-outlined">diversity_3</span>
-</div>
-<div>
-<p className="font-body-lg text-body-lg text-on-surface">Hubungan Keluarga</p>
-<p className="font-body-md text-body-md text-on-surface-variant">Tautkan akun keluarga untuk benefit grup</p>
-</div>
-</div>
-<span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-</div>
-</div>
+<ProfileSettings />
 
 <div className="mt-8 px-2 pb-8">
 <form action={logout}>
-<button type="submit" className="glass-card flex items-center gap-3 px-6 py-4 rounded-2xl border border-error/30 text-error hover:bg-error/10 hover:border-error/50 transition-colors w-full md:w-auto">
+<button type="submit" className="glass-card flex items-center gap-3 px-6 py-4 rounded-2xl border border-error/30 text-error hover:bg-error/10 hover:border-error/50 transition-colors w-full md:w-auto cursor-pointer">
 <span className="material-symbols-outlined">logout</span>
 <span className="font-body-lg text-body-lg font-bold">Keluar dari Aplikasi</span>
 </button>
