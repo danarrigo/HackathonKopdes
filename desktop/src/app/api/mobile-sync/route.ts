@@ -52,28 +52,26 @@ export async function GET() {
     if (member.cooperativeId) cooperativeId = member.cooperativeId;
     currentProvinsi = member.provinsi || null;
     
-    // Fetch all data concurrently
-    const [dashboardData, financialsData, questsData, governanceData, arenaData, koperasiStats, battleHistoryData, badgesData, winRateData, storeItemsData, leaderboardData, inventoryData, marketplaceData, eventsData, eventParticipationsData, leaderboardByProvinsi, leaderboardByNasional, activeMembersData, activeLoanData] = await Promise.all([
-      getDashboardData(memberId),
-      getFinancialsData(memberId),
-      getActiveQuests(memberId),
-      getGovernanceData(cooperativeId),
-      getArenaData(memberId),
-      getKoperasiStats(cooperativeId),
-      getBattleHistory(memberId),
-      getMemberBadges(memberId),
-      getWinRate(memberId),
-      getStoreItems(),
-      getLeaderboard(cooperativeId),
-      getMemberInventory(memberId),
-      getMarketplaceItems(),
-      getEventsByCooperative(cooperativeId),
-      getMemberEventParticipations(memberId),
-      currentProvinsi ? getLeaderboardProvincial(currentProvinsi).catch(() => []) : Promise.resolve([]),
-      getLeaderboardNational().catch(() => []),
-      cooperativeId ? getActiveMembers(cooperativeId).catch(() => []) : Promise.resolve([]),
-      getActiveLoan(memberId).catch(() => null),
-    ]);
+    // Fetch data sequentially to prevent connection pool exhaustion (max 15 connections)
+    const dashboardData = await getDashboardData(memberId);
+    const financialsData = await getFinancialsData(memberId);
+    const questsData = await getActiveQuests(memberId);
+    const governanceData = await getGovernanceData(cooperativeId);
+    const arenaData = await getArenaData(memberId);
+    const koperasiStats = await getKoperasiStats(cooperativeId);
+    const battleHistoryData = await getBattleHistory(memberId);
+    const badgesData = await getMemberBadges(memberId);
+    const winRateData = await getWinRate(memberId);
+    const storeItemsData = await getStoreItems();
+    const leaderboardData = await getLeaderboard(cooperativeId);
+    const inventoryData = await getMemberInventory(memberId);
+    const marketplaceData = await getMarketplaceItems();
+    const eventsData = await getEventsByCooperative(cooperativeId);
+    const eventParticipationsData = await getMemberEventParticipations(memberId);
+    const leaderboardByProvinsi = currentProvinsi ? await getLeaderboardProvincial(currentProvinsi).catch(() => []) : [];
+    const leaderboardByNasional = await getLeaderboardNational().catch(() => []);
+    const activeMembersData = cooperativeId ? await getActiveMembers(cooperativeId).catch(() => []) : [];
+    const activeLoanData = await getActiveLoan(memberId).catch(() => null);
 
     return NextResponse.json({
       success: true,
