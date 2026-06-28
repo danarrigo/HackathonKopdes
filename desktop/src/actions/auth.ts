@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
-import { users, members, cooperatives } from "@/db/schema";
+import { users, members, cooperatives, memberProgress } from "@/db/schema";
 import { and, ilike } from "drizzle-orm";
 
 export async function login(prevState: unknown, formData: FormData) {
@@ -84,16 +84,21 @@ export async function signup(prevState: unknown, formData: FormData) {
         isActive: true,
       });
 
-      await db.insert(members).values({
+      const [newMember] = await db.insert(members).values({
         userId: authData.user.id,
         nik: data.nik,
-        statusAnggota: 'active',
+        statusAnggota: 'inactive', // Changed to inactive initially since they haven't paid yet
         namaLengkap: data.namaLengkap,
         provinsi: data.provinsi,
         kabupaten: data.kabupaten,
         kecamatan: data.kecamatan,
         desa: data.desa,
         cooperativeId: coop.id,
+      }).returning();
+
+      // Initialize gamification & wallet progress
+      await db.insert(memberProgress).values({
+        memberId: newMember.id,
       });
     } catch (dbError) {
       console.error("Error inserting user/member into database:", dbError);
