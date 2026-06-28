@@ -1,5 +1,7 @@
-import { pgTable, serial, varchar, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, timestamp, uuid, integer } from "drizzle-orm/pg-core";
 import { users } from "./users";
+import { cooperatives } from "./cooperatives";
+import { relations } from "drizzle-orm";
 
 export const members = pgTable("members", {
   id: serial("id").primaryKey(),
@@ -14,7 +16,14 @@ export const members = pgTable("members", {
   kabupaten: varchar("kabupaten", { length: 100 }),
   kecamatan: varchar("kecamatan", { length: 100 }),
   desa: varchar("desa", { length: 100 }),
-  koperasi: varchar("koperasi", { length: 255 }),
+  cooperativeId: integer("cooperative_id").references(() => cooperatives.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const membersRelations = relations(members, ({ one }) => ({
+  cooperative: one(cooperatives, {
+    fields: [members.cooperativeId],
+    references: [cooperatives.id],
+  }),
+}));

@@ -58,7 +58,7 @@ export async function getBattleHistory(memberId: number = 1) {
 export async function matchmakeWeeklyBattle(memberId: number) {
   try {
     const [currentMember] = await db.select().from(members).where(eq(members.id, memberId));
-    if (!currentMember || !currentMember.koperasi) return { success: false, error: "Member tidak ditemukan atau belum terdaftar di koperasi." };
+    if (!currentMember || !currentMember.cooperativeId) return { success: false, error: "Member tidak ditemukan atau belum terdaftar di koperasi." };
 
     const ongoingBattle = await db.select().from(battles).where(
       and(
@@ -70,7 +70,7 @@ export async function matchmakeWeeklyBattle(memberId: number) {
 
     const coopMembers = await db.select().from(members).where(
       and(
-        eq(members.koperasi, currentMember.koperasi),
+        eq(members.cooperativeId, currentMember.cooperativeId as number),
         not(eq(members.id, memberId))
       )
     );

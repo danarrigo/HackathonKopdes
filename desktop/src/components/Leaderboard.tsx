@@ -4,9 +4,9 @@ import { getCurrentMember } from '@/actions/members';
 
 export default async function Leaderboard() {
   const currentMember = await getCurrentMember();
-  if (!currentMember || !currentMember.koperasi) return null;
+  if (!currentMember || !currentMember.cooperativeId) return null;
 
-  const topMembers = await getLeaderboard(currentMember.koperasi);
+  const topMembers = await getLeaderboard(currentMember.cooperativeId as number);
 
   return (
     <div className="glass-card border border-outline-variant rounded-2xl p-6">

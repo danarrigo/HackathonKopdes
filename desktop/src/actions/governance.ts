@@ -5,12 +5,13 @@ import { members } from "@/db/schema/members";
 import { eq, count, sum, ne, desc, and } from "drizzle-orm";
 import { savings, loans } from "@/db/schema/financials";
 
-export async function getGovernanceData() {
+export async function getGovernanceData(cooperativeId: number) {
   try {
     const activeProposals = await db.select().from(proposals).where(eq(proposals.status, 'active'));
     const pastProposals = await db.select().from(proposals).where(ne(proposals.status, 'active')).orderBy(desc(proposals.endDate)).limit(5);
     
-    const totalMembersRes = await db.select({ value: count() }).from(members);
+    const totalMembersRes = await db.select({ value: count() }).from(members)
+      .where(and(eq(members.cooperativeId, cooperativeId), eq(members.statusAnggota, 'active')));
     const totalMembers = totalMembersRes[0].value;
 
     const totalSavingsRes = await db.select({ value: sum(savings.amount) }).from(savings);

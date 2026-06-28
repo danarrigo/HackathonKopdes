@@ -14,6 +14,7 @@ import { headers } from 'next/headers';
 export async function GET() {
   try {
     let memberId = 1; // Fallback default
+    let cooperativeId = 1; // Fallback default
 
     const headerList = await headers();
     const authHeader = headerList.get('authorization');
@@ -25,6 +26,7 @@ export async function GET() {
         const [member] = await db.select().from(members).where(eq(members.userId, user.id));
         if (member) {
           memberId = member.id;
+          if (member.cooperativeId) cooperativeId = member.cooperativeId;
         }
       }
     }
@@ -34,7 +36,7 @@ export async function GET() {
       getDashboardData(memberId),
       getFinancialsData(memberId),
       getActiveQuests(memberId),
-      getGovernanceData(),
+      getGovernanceData(cooperativeId),
       getArenaData(memberId),
       getKoperasiStats(),
       getBattleHistory(memberId),

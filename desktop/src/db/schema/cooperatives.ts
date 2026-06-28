@@ -1,4 +1,6 @@
 import { pgTable, serial, varchar, timestamp } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { members } from "./members";
 
 export const cooperatives = pgTable("cooperatives", {
   id: serial("id").primaryKey(),
@@ -9,3 +11,7 @@ export const cooperatives = pgTable("cooperatives", {
   desa: varchar("desa", { length: 100 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const cooperativesRelations = relations(cooperatives, ({ many }) => ({
+  members: many(members),
+}));

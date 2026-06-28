@@ -93,7 +93,7 @@ export async function signup(prevState: unknown, formData: FormData) {
         kabupaten: data.kabupaten,
         kecamatan: data.kecamatan,
         desa: data.desa,
-        koperasi: coop.name,
+        cooperativeId: coop.id,
       });
     } catch (dbError) {
       console.error("Error inserting user/member into database:", dbError);

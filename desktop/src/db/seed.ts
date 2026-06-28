@@ -34,7 +34,7 @@ async function main() {
     statusAnggota: "active",
     nik: "3201234567890001",
     namaLengkap: "Bagus Pratama",
-    koperasi: coop.name
+    cooperativeId: coop.id
   }).returning();
   
   await db.insert(memberProgress).values({
@@ -84,8 +84,8 @@ async function main() {
   ]);
 
   const insertedDummies = await db.insert(members).values([
-    { userId: dummyIds[0], nomorAnggota: "8829 2024 1992 0013", statusAnggota: "active", nik: "3201234567890002", namaLengkap: "Siti Rahmawati", koperasi: coop.name },
-    { userId: dummyIds[1], nomorAnggota: "8829 2024 1992 0014", statusAnggota: "active", nik: "3201234567890003", namaLengkap: "Budi Santoso", koperasi: coop.name }
+    { userId: dummyIds[0], nomorAnggota: "8829 2024 1992 0013", statusAnggota: "active", nik: "3201234567890002", namaLengkap: "Siti Rahmawati", cooperativeId: coop.id },
+    { userId: dummyIds[1], nomorAnggota: "8829 2024 1992 0014", statusAnggota: "active", nik: "3201234567890003", namaLengkap: "Budi Santoso", cooperativeId: coop.id }
   ]).returning();
 
   await db.insert(memberProgress).values([

@@ -92,7 +92,7 @@ export async function awardPoints(memberId: number, amount: number, source: stri
   }
 }
 
-export async function getLeaderboard(koperasiName: string) {
+export async function getLeaderboard(cooperativeId: number) {
   try {
     const topMembers = await db
       .select({
@@ -104,7 +104,7 @@ export async function getLeaderboard(koperasiName: string) {
       })
       .from(members)
       .innerJoin(memberProgress, eq(members.id, memberProgress.memberId))
-      .where(eq(members.koperasi, koperasiName))
+      .where(eq(members.cooperativeId, cooperativeId))
       .orderBy(desc(memberProgress.xp))
       .limit(10);
       

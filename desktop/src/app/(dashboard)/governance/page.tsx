@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getGovernanceData, submitProposal, castVote } from "@/actions/governance";
 import { getCurrentMember } from "@/actions/members";
 import { getLeaderboard, getMemberProgress } from "@/actions/gamification";
@@ -16,7 +17,7 @@ export default async function Page() {
     asetPinjaman,
     asetKas,
     asetInvestasi,
-  } = await getGovernanceData();
+  } = await getGovernanceData(currentMember.cooperativeId as number);
   const mainProposal = activeProposals[0];
   const proposalTitle = mainProposal?.title || "Tidak Ada Voting Aktif";
   const proposalDesc =
@@ -29,7 +30,7 @@ export default async function Page() {
   const canSubmit = userLevel >= 20;
 
   const topContributors = await getLeaderboard(
-    currentMember.koperasi as string,
+    currentMember.cooperativeId as number,
   );
 
   const kasPercent = totalAsetDesa > 0 ? Math.round((asetKas / totalAsetDesa) * 100) : 0;
@@ -78,7 +79,7 @@ export default async function Page() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bento-card p-6 rounded-xl flex flex-col justify-between">
+          <Link href="/governance/members" className="bento-card p-6 rounded-xl flex flex-col justify-between hover:border-primary border border-transparent transition-colors cursor-pointer">
             <div className="flex justify-between items-start mb-4">
               <span className="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">
                 group
@@ -92,7 +93,7 @@ export default async function Page() {
                 Anggota Aktif
               </div>
             </div>
-          </div>
+          </Link>
 
           <div className="bento-card p-6 rounded-xl flex flex-col justify-between border-l-4 border-tertiary">
             <div className="flex justify-between items-start mb-4">

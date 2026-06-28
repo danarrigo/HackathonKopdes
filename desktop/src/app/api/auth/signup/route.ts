@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         kabupaten,
         kecamatan,
         desa,
-        koperasi: coop.name,
+        cooperativeId: coop.id,
       }).returning();
 
       await db.insert(memberProgress).values({

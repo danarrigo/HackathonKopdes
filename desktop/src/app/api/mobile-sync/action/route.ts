@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { castVote } from "@/actions/governance";
-import { toggleQuest } from "@/actions/quests";
+import { claimQuestReward } from "@/actions/quests";
 import { buyShopItem } from "@/actions/shop";
 import { createSupabaseClient } from '@/utils/supabase/client-api';
 import { db } from '@/db';
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       result = await castVote(memberId, proposalId || 1, mappedVoteType);
     } else if (action === 'toggle-quest') {
       const { questId } = body;
-      result = await toggleQuest(memberId, questId);
+      result = await claimQuestReward(memberId, questId);
     } else if (action === 'buy-item') {
       const { itemId, cost } = body;
       result = await buyShopItem(memberId, itemId, cost);

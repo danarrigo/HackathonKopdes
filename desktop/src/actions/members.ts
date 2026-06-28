@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db";
 import { members, users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export async function getMemberData(memberId: number) {
   try {
@@ -23,10 +23,33 @@ export async function getCurrentMember() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const [member] = await db.select().from(members).where(eq(members.userId, user.id));
-    return member || null;
+    const member = await db.query.members.findFirst({
+      where: eq(members.userId, user.id),
+      with: {
+        cooperative: true,
+      }
+    });
+    if (!member) return null;
+    
+    return {
+      ...member,
+      koperasi: member.cooperative?.name || null
+    };
   } catch (error) {
     console.error("GetCurrentMember Error:", error);
     return null;
+  }
+}
+export async function getActiveMembers(cooperativeId: number) {
+  try {
+    return await db.select().from(members).where(
+      and(
+        eq(members.cooperativeId, cooperativeId),
+        eq(members.statusAnggota, 'active')
+      )
+    );
+  } catch (error) {
+    console.error("GetActiveMembers Error:", error);
+    return [];
   }
 }
