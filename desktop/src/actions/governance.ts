@@ -7,9 +7,11 @@ import { savings, loans } from "@/db/schema/financials";
 
 export async function getGovernanceData(cooperativeId: number) {
   try {
-    // For now, proposals remain global until the schema adds cooperativeId to proposals
-    const activeProposals = await db.select().from(proposals).where(eq(proposals.status, 'active'));
-    const pastProposals = await db.select().from(proposals).where(ne(proposals.status, 'active')).orderBy(desc(proposals.endDate)).limit(5);
+    const activeProposals = await db.select().from(proposals)
+      .where(and(eq(proposals.status, 'active'), eq(proposals.cooperativeId, cooperativeId)));
+    const pastProposals = await db.select().from(proposals)
+      .where(and(ne(proposals.status, 'active'), eq(proposals.cooperativeId, cooperativeId)))
+      .orderBy(desc(proposals.endDate)).limit(5);
     
     const totalMembersRes = await db.select({ value: count() }).from(members)
       .where(and(eq(members.cooperativeId, cooperativeId), eq(members.statusAnggota, 'active')));

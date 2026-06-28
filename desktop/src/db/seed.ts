@@ -59,7 +59,7 @@ async function main() {
   ]);
   
   await db.insert(proposals).values([
-    { title: "Integrasi Solar Panel RT 01-05", description: "Pengajuan Kredit Kolektif Pengadaan Solar Panel Desa.", status: "active", targetQuorumPercentage: 65, startDate: new Date(), endDate: new Date(Date.now() + 86400000) }
+    { title: "Integrasi Solar Panel RT 01-05", description: "Pengajuan Kredit Kolektif Pengadaan Solar Panel Desa.", status: "active", targetQuorumPercentage: 65, startDate: new Date(), endDate: new Date(Date.now() + 86400000), cooperativeId: coop.id }
   ]);
 
   // Seed Items

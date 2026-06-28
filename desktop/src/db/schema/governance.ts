@@ -1,6 +1,8 @@
 import { pgTable, serial, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { members } from "./members";
 
+import { cooperatives } from "./cooperatives";
+
 export const proposals = pgTable("proposals", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
@@ -9,6 +11,7 @@ export const proposals = pgTable("proposals", {
   targetQuorumPercentage: integer("target_quorum_percentage").default(50).notNull(),
   startDate: timestamp("start_date").defaultNow().notNull(),
   endDate: timestamp("end_date").notNull(),
+  cooperativeId: integer("cooperative_id").references(() => cooperatives.id, { onDelete: 'cascade' }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
