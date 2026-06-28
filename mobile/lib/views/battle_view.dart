@@ -141,7 +141,8 @@ class BattleView extends StatelessWidget {
                                     if (battle == null) return;
                                     // Resolve opponent id (whichever side isn't the current member)
                                     final isChallenger =
-                                        battle['challengerId'] == provider.memberId;
+                                        battle['challengerId'] ==
+                                            provider.memberId;
                                     final opponentId = isChallenger
                                         ? battle['opponentId']
                                         : battle['challengerId'];
@@ -154,10 +155,8 @@ class BattleView extends StatelessWidget {
                                           content: Text(
                                               'Lawan belum tersedia. Selesaikan matchmaking terlebih dahulu.',
                                               style: TextStyle(
-                                                  fontWeight:
-                                                      FontWeight.bold)),
-                                          behavior:
-                                              SnackBarBehavior.floating,
+                                                  fontWeight: FontWeight.bold)),
+                                          behavior: SnackBarBehavior.floating,
                                         ),
                                       );
                                       return;
@@ -170,10 +169,8 @@ class BattleView extends StatelessWidget {
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(24)),
                                       ),
-                                      builder: (ctx) =>
-                                          UseItemSheet(
-                                              targetMemberId:
-                                                  opponentId as int),
+                                      builder: (ctx) => UseItemSheet(
+                                          targetMemberId: opponentId as int),
                                     );
                                   },
                                   child: Container(
@@ -183,8 +180,7 @@ class BattleView extends StatelessWidget {
                                       color: provider.inventory.isEmpty
                                           ? Colors.white24
                                           : const Color(0xFFFACC15),
-                                      borderRadius:
-                                          BorderRadius.circular(24),
+                                      borderRadius: BorderRadius.circular(24),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,

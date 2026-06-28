@@ -18,12 +18,13 @@ class UseItemSheet extends StatefulWidget {
 class _UseItemSheetState extends State<UseItemSheet> {
   bool _busy = false;
 
-  void _showSnackVia(
-      ScaffoldMessengerState messenger, String message, {bool isError = false}) {
+  void _showSnackVia(ScaffoldMessengerState messenger, String message,
+      {bool isError = false}) {
     messenger.clearSnackBars();
     messenger.showSnackBar(
       SnackBar(
-        content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content:
+            Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: isError ? Colors.red : Colors.green,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
@@ -183,8 +184,7 @@ class _InventoryRow extends StatelessWidget {
                 if (s.description.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(s.description,
-                      style: const TextStyle(
-                          fontSize: 10, color: Colors.grey),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis),
                 ],
@@ -207,9 +207,7 @@ class _InventoryRow extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: busy
-                      ? Colors.grey.shade300
-                      : const Color(0xFF0F172A),
+                  color: busy ? Colors.grey.shade300 : const Color(0xFF0F172A),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: busy

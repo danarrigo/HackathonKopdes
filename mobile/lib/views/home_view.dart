@@ -573,11 +573,10 @@ class HomeView extends StatelessWidget {
                                                         ? Colors.grey
                                                         : const Color(
                                                             0xFF64748B),
-                                                    decoration:
-                                                        m.isCompleted
-                                                            ? TextDecoration
-                                                                .lineThrough
-                                                            : null,
+                                                    decoration: m.isCompleted
+                                                        ? TextDecoration
+                                                            .lineThrough
+                                                        : null,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 2),

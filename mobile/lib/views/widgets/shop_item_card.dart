@@ -48,8 +48,7 @@ class ShopItemCard extends StatelessWidget {
               onPressed: () => Navigator.pop(dialogContext, true),
               child: const Text('Beli',
                   style: TextStyle(
-                      color: Color(0xFFFACC15),
-                      fontWeight: FontWeight.bold)),
+                      color: Color(0xFFFACC15), fontWeight: FontWeight.bold)),
             ),
           ],
         ),
@@ -88,11 +87,11 @@ class ShopItemCard extends StatelessWidget {
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
             Expanded(
-              child: Text(item.description,
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  style:
-                      const TextStyle(color: Colors.white70, fontSize: 8.5))),
+                child: Text(item.description,
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 8.5))),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -119,8 +118,7 @@ class ShopItemCard extends StatelessWidget {
                         ? Colors.white.withOpacity(0.2)
                         : Colors.black.withOpacity(0.25),
                     border: Border.all(
-                        color:
-                            canAfford ? Colors.white38 : Colors.white12),
+                        color: canAfford ? Colors.white38 : Colors.white12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -128,8 +126,7 @@ class ShopItemCard extends StatelessWidget {
                   child: Text(
                     canAfford ? 'Beli' : 'Poin Kurang',
                     style: TextStyle(
-                        color:
-                            canAfford ? Colors.white : Colors.white38,
+                        color: canAfford ? Colors.white : Colors.white38,
                         fontSize: 10,
                         fontWeight: FontWeight.bold),
                   ),

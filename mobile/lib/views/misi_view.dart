@@ -262,8 +262,8 @@ class MisiView extends StatelessWidget {
     final now = DateTime.now();
     String label;
     if (isDaily) {
-      final midnight = DateTime(now.year, now.month, now.day)
-          .add(const Duration(days: 1));
+      final midnight =
+          DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
       final diff = midnight.difference(now);
       final hours = diff.inHours;
       final minutes = diff.inMinutes % 60;
