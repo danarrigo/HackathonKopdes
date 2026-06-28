@@ -14,7 +14,7 @@ export default async function Page() {
   const battle = activeBattles[0];
   
   const myStats = await getMemberStats(currentMember.id);
-  const opStats = battle?.opponent?.id ? await getMemberStats(battle.opponent.id) : { missionsCompleted: 0, totalSavings: 0, activeStreak: 0 };
+  const opStats = battle?.opponent?.id ? await getMemberStats(battle.opponent.id) : { missionsCompleted: 0, totalSavings: 0, activeStreak: 0, eventsJoined: 0, shopPurchases: 0, marketplaceActivity: 0, loansCount: 0, battlesWon: 0 };
   const inventory = await getMemberInventory(currentMember.id);
   
   const p1 = battle ? (battle.challengerId === currentMember.id ? battle.challengerPoints : battle.opponentPoints) : 0;
@@ -111,7 +111,6 @@ export default async function Page() {
                   <th className="px-8 py-5 font-label-caps text-label-caps text-tertiary text-center w-1/3">Lawan</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-outline-variant/10">
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
                   <td className="px-8 py-4 font-body-lg text-on-surface">Misi Diselesaikan</td>
                   <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.missionsCompleted}</td>
@@ -123,9 +122,34 @@ export default async function Page() {
                   <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.totalSavings.toLocaleString('id-ID')}</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
-                  <td className="px-8 py-4 font-body-lg text-on-surface">Streak Aktif</td>
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Streak Login Aktif</td>
                   <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.activeStreak} Hari</td>
                   <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.activeStreak} Hari</td>
+                </tr>
+                <tr className="hover:bg-surface-container-high/40 transition-colors">
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Belanja di Koperasi</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.shopPurchases}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.shopPurchases}x</td>
+                </tr>
+                <tr className="hover:bg-surface-container-high/40 transition-colors">
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Aktivitas Marketplace</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.marketplaceActivity}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.marketplaceActivity}x</td>
+                </tr>
+                <tr className="hover:bg-surface-container-high/40 transition-colors">
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Partisipasi Acara</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.eventsJoined}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.eventsJoined}x</td>
+                </tr>
+                <tr className="hover:bg-surface-container-high/40 transition-colors">
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Peminjaman Dana</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.loansCount}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.loansCount}x</td>
+                </tr>
+                <tr className="hover:bg-surface-container-high/40 transition-colors">
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Kemenangan Battle</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.battlesWon}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.battlesWon}x</td>
                 </tr>
               </tbody>
             </table>
@@ -141,14 +165,14 @@ export default async function Page() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { title: "Menabung", desc: "Memasukkan duit untuk penabungan", icon: "savings" },
-              { title: "Beli Barang", desc: "Beli barang dr duit", icon: "shopping_cart" },
-              { title: "Ikut Acara", desc: "Ngikut acara2", icon: "event" },
-              { title: "Jual Barang", desc: "Naro barang", icon: "storefront" },
-              { title: "Selesaikan Quest", desc: "Dari quest", icon: "task_alt" },
-              { title: "Konsistensi", desc: "Dari streak", icon: "local_fire_department" },
-              { title: "Pinjaman", desc: "Meminjam duit", icon: "account_balance" },
-              { title: "Menang", desc: "Menang battles", icon: "emoji_events" },
+              { title: "Menabung", desc: "Melakukan penyetoran tabungan koperasi", icon: "savings" },
+              { title: "Belanja Koperasi", desc: "Melakukan pembelian barang di koperasi", icon: "shopping_cart" },
+              { title: "Partisipasi Acara", desc: "Mengikuti acara atau kegiatan koperasi", icon: "event" },
+              { title: "Marketplace", desc: "Berjualan atau membeli dari sesama anggota", icon: "storefront" },
+              { title: "Misi Harian", desc: "Menyelesaikan tugas dan misi harian", icon: "task_alt" },
+              { title: "Konsistensi", desc: "Mempertahankan rentetan kehadiran (streak)", icon: "local_fire_department" },
+              { title: "Pinjaman", desc: "Mengajukan peminjaman dana produktif", icon: "account_balance" },
+              { title: "Kemenangan", desc: "Memenangkan pertandingan mingguan di Arena", icon: "emoji_events" },
             ].map((item, i) => (
               <div key={i} className="glass-card p-6 rounded-xl flex items-start gap-4 hover:bg-surface-container-high/50 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
