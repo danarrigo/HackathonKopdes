@@ -19,3 +19,72 @@ export async function getDashboardData(memberId: number) {
     return { progress: null, transactions: [] };
   }
 }
+
+/**
+ * Records the member's "activity" for today and adjusts the streak counters.
+ *
+ * Called from the mobile-sync API route on every successful sync, so the
+ * streak reflects the user actually opening the app each day. Without this,
+ * a freshly-registered member who never completes a quest / deposit / event
+ * would see currentStreak=0 forever (the bug reported in commit cb7b9d1).
+ *
+ * Streak rules (UTC, normalized to midnight):
+ *   - lastActivityDate == today            -> no-op (already counted today)
+ *   - lastActivityDate == yesterday        -> streak += 1
+ *   - lastActivityDate older or null      -> streak = 1 (reset, fresh start)
+ * In all "update" branches, lastActivityDate := today and longestStreak is
+ * bumped if the new streak exceeds it.
+ */
+export async function updateStreakOnActivity(memberId: number) {
+  try {
+    const [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
+    if (!progress) return; // No progress row yet — nothing to update
+
+    const now = new Date();
+    const todayUtc = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    );
+    const yesterdayUtc = new Date(todayUtc);
+    yesterdayUtc.setUTCDate(yesterdayUtc.getUTCDate() - 1);
+
+    const lastActivity = progress.lastActivityDate
+      ? new Date(progress.lastActivityDate)
+      : null;
+    const lastActivityUtc = lastActivity
+      ? new Date(
+          Date.UTC(
+            lastActivity.getUTCFullYear(),
+            lastActivity.getUTCMonth(),
+            lastActivity.getUTCDate()
+          )
+        )
+      : null;
+
+    // Already counted today — no-op
+    if (lastActivityUtc && lastActivityUtc.getTime() === todayUtc.getTime()) {
+      return;
+    }
+
+    let newStreak: number;
+    if (lastActivityUtc && lastActivityUtc.getTime() === yesterdayUtc.getTime()) {
+      newStreak = (progress.currentStreak ?? 0) + 1;
+    } else {
+      newStreak = 1;
+    }
+
+    const newLongest = Math.max(progress.longestStreak ?? 0, newStreak);
+
+    await db
+      .update(memberProgress)
+      .set({
+        currentStreak: newStreak,
+        longestStreak: newLongest,
+        lastActivityDate: todayUtc,
+        updatedAt: now,
+      })
+      .where(eq(memberProgress.id, progress.id));
+  } catch (error) {
+    // Streak update is best-effort — never fail the sync because of this.
+    console.error("updateStreakOnActivity DB Error:", error);
+  }
+}

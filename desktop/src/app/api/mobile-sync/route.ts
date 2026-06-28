@@ -10,6 +10,7 @@ import { getMarketplaceItems } from "@/actions/shop";
 import { getEventsByCooperative, getMemberEventParticipations } from "@/actions/events";
 import { getActiveMembers } from "@/actions/members";
 import { getActiveLoan } from "@/actions/financials";
+import { updateStreakOnActivity } from "@/actions/dashboard";
 import { createSupabaseClient } from '@/utils/supabase/client-api';
 import { db } from '@/db';
 import { members } from '@/db/schema';
@@ -51,7 +52,14 @@ export async function GET() {
     memberId = member.id;
     if (member.cooperativeId) cooperativeId = member.cooperativeId;
     currentProvinsi = member.provinsi || null;
-    
+
+    // Record today's activity for the streak. Idempotent — safe to call on
+    // every mobile-sync request; only writes when lastActivityDate is older
+    // than today. The streak is derived from the previous date:
+    //   yesterday -> streak += 1
+    //   older/null -> streak = 1
+    await updateStreakOnActivity(memberId);
+
     // Fetch data sequentially to prevent connection pool exhaustion (max 15 connections)
     const dashboardData = await getDashboardData(memberId);
     const financialsData = await getFinancialsData(memberId);

@@ -61,6 +61,7 @@ jest.mock('@/actions/dashboard', () => ({
     progress: { level: 5, pointsBalance: 100, xp: 0, currentStreak: 0, lastActivityDate: null },
     transactions: [],
   }),
+  updateStreakOnActivity: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('@/actions/financials', () => ({
