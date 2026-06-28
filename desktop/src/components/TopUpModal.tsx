@@ -92,8 +92,8 @@ export default function TopUpModal({ memberId }: TopUpModalProps) {
 
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in">
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={handleClose}></div>
-          <div className="w-full max-w-md max-h-[95vh] flex flex-col bg-surface-container-high/90 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-2xl relative overflow-hidden transform transition-all animate-scale-up">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-md"></div>
+          <div className="w-full max-w-md max-h-[85vh] overflow-y-auto scrollbar-hide bg-surface-container-high/90 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-2xl relative transform transition-all animate-scale-up">
             
             {/* Decorative background gradients */}
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -106,7 +106,7 @@ export default function TopUpModal({ memberId }: TopUpModalProps) {
               <span className="material-symbols-outlined">close</span>
             </button>
 
-            <div className="p-6 md:p-8 overflow-y-auto relative z-10 pb-10">
+            <div className="p-6 md:p-8 relative z-10">
               {!invoiceUrl ? (
                 <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
                   <div className="text-center pt-2">

@@ -2,15 +2,17 @@
 import React, { useState } from 'react';
 
 export default function ProfileSettings() {
-  const [isSecurityExpanded, setIsSecurityExpanded] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  
+  // Password form states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{type: 'error' | 'success', text: string} | null>(null);
 
-  const handleSettingsClick = (fitur: string) => {
-    alert(`Pengaturan ${fitur} sedang dalam tahap pengembangan.`);
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -31,13 +33,25 @@ export default function ProfileSettings() {
     }, 1000);
   };
 
+  const renderUnderDevelopment = () => (
+    <div className="px-6 pb-6 pt-2 animate-fade-in">
+      <div className="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/30 flex flex-col items-center justify-center text-center">
+        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3">
+          <span className="material-symbols-outlined text-primary text-2xl">construction</span>
+        </div>
+        <h4 className="font-headline-sm text-on-surface">Sedang Dikembangkan</h4>
+        <p className="text-sm text-on-surface-variant mt-1">Fitur ini akan segera hadir pada pembaruan berikutnya.</p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="glass-card rounded-3xl overflow-hidden border border-outline-variant divide-y divide-outline-variant/50">
       
-      {/* Keamanan & Password (Expandable) */}
+      {/* Keamanan & Password */}
       <div className="group">
         <button 
-          onClick={() => setIsSecurityExpanded(!isSecurityExpanded)} 
+          onClick={() => toggleSection('security')} 
           className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between"
         >
           <div className="flex items-center gap-5">
@@ -49,13 +63,12 @@ export default function ProfileSettings() {
               <p className="font-body-md text-body-md text-on-surface-variant">Update password, 2FA, dan biometrik</p>
             </div>
           </div>
-          <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${isSecurityExpanded ? 'rotate-90' : 'group-hover:translate-x-1'}`}>
+          <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${expandedSection === 'security' ? 'rotate-90' : 'group-hover:translate-x-1'}`}>
             chevron_right
           </span>
         </button>
         
-        {/* Expanded Form */}
-        {isSecurityExpanded && (
+        {expandedSection === 'security' && (
           <div className="px-6 pb-6 pt-2 animate-fade-in">
             <div className="bg-surface-container-low rounded-2xl p-5 border border-outline-variant/30">
               <h4 className="font-headline-sm text-on-surface mb-4">Ganti Password</h4>
@@ -116,44 +129,56 @@ export default function ProfileSettings() {
         )}
       </div>
 
-      <button onClick={() => handleSettingsClick('Notifikasi')} className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-        <div className="flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined">notifications_active</span>
+      {/* Notifikasi */}
+      <div className="group">
+        <button onClick={() => toggleSection('notifications')} className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined">notifications_active</span>
+            </div>
+            <div>
+              <p className="font-body-lg text-body-lg text-on-surface">Notifikasi</p>
+              <p className="font-body-md text-body-md text-on-surface-variant">Atur pengingat iuran dan info SHU</p>
+            </div>
           </div>
-          <div>
-            <p className="font-body-lg text-body-lg text-on-surface">Notifikasi</p>
-            <p className="font-body-md text-body-md text-on-surface-variant">Atur pengingat iuran dan info SHU</p>
-          </div>
-        </div>
-        <span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-      </button>
+          <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${expandedSection === 'notifications' ? 'rotate-90' : 'group-hover:translate-x-1'}`}>chevron_right</span>
+        </button>
+        {expandedSection === 'notifications' && renderUnderDevelopment()}
+      </div>
 
-      <button onClick={() => handleSettingsClick('Metode Pembayaran')} className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-        <div className="flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined">payments</span>
+      {/* Metode Pembayaran */}
+      <div className="group">
+        <button onClick={() => toggleSection('payments')} className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined">payments</span>
+            </div>
+            <div>
+              <p className="font-body-lg text-body-lg text-on-surface">Metode Pembayaran</p>
+              <p className="font-body-md text-body-md text-on-surface-variant">Kelola bank, e-wallet, dan kartu debit</p>
+            </div>
           </div>
-          <div>
-            <p className="font-body-lg text-body-lg text-on-surface">Metode Pembayaran</p>
-            <p className="font-body-md text-body-md text-on-surface-variant">Kelola bank, e-wallet, dan kartu debit</p>
-          </div>
-        </div>
-        <span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-      </button>
+          <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${expandedSection === 'payments' ? 'rotate-90' : 'group-hover:translate-x-1'}`}>chevron_right</span>
+        </button>
+        {expandedSection === 'payments' && renderUnderDevelopment()}
+      </div>
 
-      <button onClick={() => handleSettingsClick('Hubungan Keluarga')} className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between group">
-        <div className="flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined">diversity_3</span>
+      {/* Hubungan Keluarga */}
+      <div className="group">
+        <button onClick={() => toggleSection('family')} className="w-full text-left p-6 hover:bg-primary/5 transition-colors cursor-pointer flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <div className="w-12 h-12 rounded-2xl bg-surface-container-highest flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined">diversity_3</span>
+            </div>
+            <div>
+              <p className="font-body-lg text-body-lg text-on-surface">Hubungan Keluarga</p>
+              <p className="font-body-md text-body-md text-on-surface-variant">Tautkan akun keluarga untuk benefit grup</p>
+            </div>
           </div>
-          <div>
-            <p className="font-body-lg text-body-lg text-on-surface">Hubungan Keluarga</p>
-            <p className="font-body-md text-body-md text-on-surface-variant">Tautkan akun keluarga untuk benefit grup</p>
-          </div>
-        </div>
-        <span className="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-      </button>
+          <span className={`material-symbols-outlined text-on-surface-variant transition-transform ${expandedSection === 'family' ? 'rotate-90' : 'group-hover:translate-x-1'}`}>chevron_right</span>
+        </button>
+        {expandedSection === 'family' && renderUnderDevelopment()}
+      </div>
     </div>
   );
 }
