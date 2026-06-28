@@ -28,8 +28,13 @@ export async function updateSession(request: NextRequest) {
   )
 
   // This will refresh the auth token if needed
-  const { data: { user } } = await supabase.auth.getUser()
-
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (error) {
+    console.error("Supabase network or auth error:", error);
+  }
   const isAuthRoute = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup';
   
   // Protect all routes except login and signup
