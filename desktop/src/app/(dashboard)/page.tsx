@@ -20,7 +20,7 @@ export default async function DesktopDashboard() {
       <div className="flex h-screen w-full items-center justify-center bg-slate-50">
         <div className="p-8 bg-white rounded-xl shadow-sm border border-slate-200 text-center max-w-md">
           <h2 className="text-xl font-semibold mb-2">Sesi Tidak Valid</h2>
-          <p className="text-slate-500 mb-6">Database telah direset. Akun Anda tidak ditemukan di database kami, namun sesi Anda masih tersimpan di browser.</p>
+          <p className="text-slate-500 mb-6">Data akun Anda tidak ditemukan, namun sesi login masih tersimpan di browser Anda. Silakan hapus sesi dan login ulang.</p>
           <form action={async () => {
             "use server";
             const supabase = await createClient();
