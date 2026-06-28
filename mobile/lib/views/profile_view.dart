@@ -852,7 +852,7 @@ class ProfileView extends StatelessWidget {
                               invoiceUrl = res['invoiceUrl'];
                               invoiceId = res['invoiceId'];
                             });
-                            launchUrl(Uri.parse(invoiceUrl), mode: LaunchMode.externalApplication);
+                            launchUrl(Uri.parse(invoiceUrl!), mode: LaunchMode.externalApplication);
                           } else {
                             setState(() {
                               error = res['error'] ?? 'Gagal membuat invoice.';
@@ -923,7 +923,7 @@ class ProfileView extends StatelessWidget {
                       ] else ...[
                         ElevatedButton(
                           onPressed: () {
-                            launchUrl(Uri.parse(invoiceUrl), mode: LaunchMode.externalApplication);
+                            launchUrl(Uri.parse(invoiceUrl!), mode: LaunchMode.externalApplication);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0F172A),
