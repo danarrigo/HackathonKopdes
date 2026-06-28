@@ -3,7 +3,7 @@ import { getDashboardData } from "@/actions/dashboard";
 import { getFinancialsData } from "@/actions/financials";
 import { getActiveQuests } from "@/actions/quests";
 import { getGovernanceData, getKoperasiStats } from "@/actions/governance";
-import { getArenaData } from "@/actions/arena";
+import { getArenaData, getBattleHistory } from "@/actions/arena";
 import { createSupabaseClient } from '@/utils/supabase/client-api';
 import { db } from '@/db';
 import { members } from '@/db/schema';
@@ -29,13 +29,14 @@ export async function GET() {
     }
     
     // Fetch all data concurrently
-    const [dashboardData, financialsData, questsData, governanceData, arenaData, koperasiStats] = await Promise.all([
+    const [dashboardData, financialsData, questsData, governanceData, arenaData, koperasiStats, battleHistoryData] = await Promise.all([
       getDashboardData(memberId),
       getFinancialsData(memberId),
       getActiveQuests(memberId),
       getGovernanceData(),
       getArenaData(memberId),
       getKoperasiStats(),
+      getBattleHistory(memberId),
     ]);
 
     return NextResponse.json({
@@ -45,7 +46,10 @@ export async function GET() {
         financials: financialsData,
         quests: questsData,
         governance: governanceData,
-        arena: arenaData,
+        arena: {
+          ...arenaData,
+          pastBattles: battleHistoryData?.pastBattles || []
+        },
         koperasiStats: koperasiStats,
       }
     }, {

@@ -54,12 +54,7 @@ class KoperasiProvider extends ChangeNotifier {
   List<ShopItem> shopItems = [];
 
   // Match History
-  final List<HistoryItem> historyList = [
-    HistoryItem(opponent: 'Siti Maenah', result: 'Menang', points: 150),
-    HistoryItem(opponent: 'Roland Sihombing', result: 'Menang', points: 150),
-    HistoryItem(opponent: 'Ahmad Fauzi', result: 'Kalah', points: 50),
-    HistoryItem(opponent: 'Andreas Kurniawan', result: 'Menang', points: 150),
-  ];
+  List<HistoryItem> historyList = [];
 
   KoperasiProvider() {
     _initMissions();
@@ -294,8 +289,23 @@ class KoperasiProvider extends ChangeNotifier {
           }
 
           final arena = data['arena'];
-          if (arena != null && arena['activeBattles'] != null && (arena['activeBattles'] as List).isNotEmpty) {
-            activeBattle = arena['activeBattles'][0];
+          if (arena != null) {
+            if (arena['activeBattles'] != null && (arena['activeBattles'] as List).isNotEmpty) {
+              activeBattle = arena['activeBattles'][0];
+            }
+            final past = arena['pastBattles'];
+            if (past != null && past is List) {
+              historyList = past.map<HistoryItem>((b) {
+                final isWinner = b['winnerId'] == memberId;
+                final opName = b['opponent']?['namaLengkap'] ?? 'Lawan';
+                final myScore = b['challengerId'] == memberId ? b['challengerPoints'] : b['opponentPoints'];
+                return HistoryItem(
+                  opponent: opName,
+                  result: isWinner ? 'Menang' : 'Kalah',
+                  points: myScore ?? 0,
+                );
+              }).toList();
+            }
           }
         }
       }
