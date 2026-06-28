@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/models/marketplace_item.dart';
+import 'package:mobile/models/shop_item.dart';
 import 'package:mobile/providers/koperasi_provider.dart';
 import 'package:mobile/views/marketplace_view.dart';
 import 'package:mobile/views/widgets/marketplace_list_form.dart';
@@ -10,16 +11,22 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   int _points;
   final List<MarketplaceItem> _items;
   final int? _memberId;
+  final List<ShopItem> _shopItems;
   _StubProvider(
       {int points = 1000,
       int? memberId = 99,
-      List<MarketplaceItem> items = const []})
+      List<MarketplaceItem> items = const [],
+      List<ShopItem> shopItems = const []})
       : _points = points,
         _items = items,
-        _memberId = memberId;
+        _memberId = memberId,
+        _shopItems = shopItems;
 
   @override
   List<MarketplaceItem> get marketplaceItems => _items;
+
+  @override
+  List<ShopItem> get shopItems => _shopItems;
 
   @override
   int get points => _points;

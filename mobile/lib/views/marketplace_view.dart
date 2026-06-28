@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/koperasi_provider.dart';
 import '../models/marketplace_item.dart';
 import 'widgets/marketplace_list_form.dart';
+import 'widgets/shop_item_card.dart';
 
 class MarketplaceView extends StatelessWidget {
   const MarketplaceView({super.key});
@@ -79,6 +80,74 @@ class MarketplaceView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      // Power-Ups / Toko Item (moved from MisiView)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(Icons.bolt,
+                                  color: Color(0xFFFACC15), size: 18),
+                              SizedBox(width: 4),
+                              Text(
+                                'Toko Item (Power-Ups)',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1E293B)),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            '${provider.shopItems.length} item',
+                            style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      if (provider.shopItems.isEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 24, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: const Color(0xFFCBD5E1), width: 2),
+                          ),
+                          child: const Column(
+                            children: [
+                              Icon(Icons.bolt_outlined,
+                                  color: Colors.grey, size: 36),
+                              SizedBox(height: 8),
+                              Text(
+                                'Belum ada power-up di toko.',
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        GridView.count(
+                          crossAxisCount: 2,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.72,
+                          children: provider.shopItems
+                              .map((s) => ShopItemCard(item: s))
+                              .toList(),
+                        ),
+                      const SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
