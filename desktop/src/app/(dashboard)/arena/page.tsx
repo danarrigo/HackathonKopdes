@@ -14,7 +14,7 @@ export default async function Page() {
   const battle = activeBattles[0];
   
   const myStats = await getMemberStats(currentMember.id);
-  const opStats = battle?.opponent?.id ? await getMemberStats(battle.opponent.id) : { missionsCompleted: 0, totalSavings: 0, activeStreak: 0, eventsJoined: 0, shopPurchases: 0, marketplaceActivity: 0, loansCount: 0, battlesWon: 0 };
+  const opStats = battle?.opponent?.id ? await getMemberStats(battle.opponent.id) : { missionsCompleted: 0, totalSavings: 0, savingsPts: 0, activeStreak: 0, eventsJoined: 0, shopPurchases: 0, marketplaceActivity: 0, loansCount: 0, battlesWon: 0 };
   const inventory = await getMemberInventory(currentMember.id);
   
   const p1 = battle ? (battle.challengerId === currentMember.id ? battle.challengerPoints : battle.opponentPoints) : 0;
@@ -111,45 +111,46 @@ export default async function Page() {
                   <th className="px-8 py-5 font-label-caps text-label-caps text-tertiary text-center w-1/3">Lawan</th>
                 </tr>
               </thead>
+              <tbody className="divide-y divide-outline-variant/10">
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
-                  <td className="px-8 py-4 font-body-lg text-on-surface">Misi Diselesaikan</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.missionsCompleted}</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.missionsCompleted}</td>
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Misi Harian</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.missionsCompleted} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.missionsCompleted} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
-                  <td className="px-8 py-4 font-body-lg text-on-surface">Total Tabungan (Rp)</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.totalSavings.toLocaleString('id-ID')}</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.totalSavings.toLocaleString('id-ID')}</td>
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Penyetoran Tabungan</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.savingsPts} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.savingsPts} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
-                  <td className="px-8 py-4 font-body-lg text-on-surface">Streak Login Aktif</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.activeStreak} Hari</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.activeStreak} Hari</td>
+                  <td className="px-8 py-4 font-body-lg text-on-surface">Konsistensi Login (Streak)</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.activeStreak} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.activeStreak} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
                   <td className="px-8 py-4 font-body-lg text-on-surface">Belanja di Koperasi</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.shopPurchases}x</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.shopPurchases}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.shopPurchases} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.shopPurchases} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
                   <td className="px-8 py-4 font-body-lg text-on-surface">Aktivitas Marketplace</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.marketplaceActivity}x</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.marketplaceActivity}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.marketplaceActivity} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.marketplaceActivity} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
                   <td className="px-8 py-4 font-body-lg text-on-surface">Partisipasi Acara</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.eventsJoined}x</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.eventsJoined}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.eventsJoined} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.eventsJoined} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
                   <td className="px-8 py-4 font-body-lg text-on-surface">Peminjaman Dana</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.loansCount}x</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.loansCount}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.loansCount} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.loansCount} pts</td>
                 </tr>
                 <tr className="hover:bg-surface-container-high/40 transition-colors">
                   <td className="px-8 py-4 font-body-lg text-on-surface">Kemenangan Battle</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.battlesWon}x</td>
-                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.battlesWon}x</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-primary">{myStats.battlesWon} pts</td>
+                  <td className="px-8 py-4 text-center font-headline-sm text-tertiary">{opStats.battlesWon} pts</td>
                 </tr>
               </tbody>
             </table>
