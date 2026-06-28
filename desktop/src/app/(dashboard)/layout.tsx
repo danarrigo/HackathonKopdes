@@ -23,10 +23,12 @@ export default async function DashboardLayout({
   return (
     <>
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen relative">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <Header />
         {currentMember && <PrankEffect memberId={currentMember.id} effect={activeEffect} />}
-        {children}
+        <main className="flex-1 overflow-y-auto w-full relative z-0">
+          {children}
+        </main>
         <BottomNav />
       </div>
     </>
