@@ -32,481 +32,485 @@ class HomeView extends StatelessWidget {
       );
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF0F172A),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
-            ),
-            padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Halo, ${provider.fullName != null && provider.fullName!.isNotEmpty ? provider.fullName!.split(' ')[0] : 'Anggota'}!',
-                          style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          provider.isMemberActive ? 'Anggota Aktif' : 'Anggota Nonaktif',
-                          style: TextStyle(
-                            color: provider.isMemberActive ? Colors.white : const Color(0xFFEF4444),
-                            fontSize: 28,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Koperasi Merah Putih Desa Sukamaju',
-                          style: TextStyle(color: Colors.white60, fontSize: 11),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: const BoxDecoration(color: Color(0x1AFFFFFF), shape: BoxShape.circle),
-                      padding: const EdgeInsets.all(12),
-                      child: const Stack(
-                        clipBehavior: Clip.none,
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFF0F172A),
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
+              ),
+              padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.notifications, color: Colors.white, size: 24),
-                          Positioned(top: 0, right: 0, child: CircleAvatar(radius: 4, backgroundColor: Colors.red))
+                          Text(
+                            'Halo, ${provider.fullName != null && provider.fullName!.isNotEmpty ? provider.fullName!.split(' ')[0] : 'Anggota'}!',
+                            style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            provider.isMemberActive ? 'Anggota Aktif' : 'Anggota Nonaktif',
+                            style: TextStyle(
+                              color: provider.isMemberActive ? Colors.white : const Color(0xFFEF4444),
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Koperasi Merah Putih Desa Sukamaju',
+                            style: TextStyle(color: Colors.white60, fontSize: 11),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        decoration: const BoxDecoration(color: Color(0x1AFFFFFF), shape: BoxShape.circle),
+                        padding: const EdgeInsets.all(12),
+                        child: const Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(Icons.notifications, color: Colors.white, size: 24),
+                            Positioned(top: 0, right: 0, child: CircleAvatar(radius: 4, backgroundColor: Colors.red))
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('🔥 ', style: TextStyle(fontSize: 12)),
+                          Text(
+                            '${provider.streak} hari Streak',
+                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                children: [
+                  if (!provider.isMemberActive) ...[
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEE2E2),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFFCA5A5)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626), size: 28),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Keanggotaan Nonaktif',
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF991B1B)),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  !provider.isPokokPaid
+                                      ? 'Harap bayar Simpanan Pokok (Rp 100.000) agar status aktif.'
+                                      : 'Harap bayar Simpanan Wajib Bulan Ini (Rp 50.000) agar status aktif.',
+                                  style: const TextStyle(fontSize: 10, color: Color(0xFF7F1D1D)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const SimpananView()),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: const Color(0xFFDC2626),
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: const Text('BAYAR', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          ),
                         ],
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white12),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text('🔥 ', style: TextStyle(fontSize: 12)),
-                        Text(
-                          '${provider.streak} hari Streak',
-                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
-              children: [
-                if (!provider.isMemberActive) ...[
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFEE2E2),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFFCA5A5)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626), size: 28),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Keanggotaan Nonaktif',
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF991B1B)),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                !provider.isPokokPaid
-                                    ? 'Harap bayar Simpanan Pokok (Rp 100.000) agar status aktif.'
-                                    : 'Harap bayar Simpanan Wajib Bulan Ini (Rp 50.000) agar status aktif.',
-                                style: const TextStyle(fontSize: 10, color: Color(0xFF7F1D1D)),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const SimpananView()),
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: const Color(0xFFDC2626),
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: const Text('BAYAR', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                Transform.translate(
-                  offset: const Offset(0, -32),
-                  child: Card(
-                    color: Colors.white,
-                    surfaceTintColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                    elevation: 4,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF718096),
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                          child: const Text(
-                            'TOTAL SIMPANAN',
-                            style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Rp ${totalSimpanan.toString().replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (Match m) => "${m[1]}.")},00',
-                                style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildSavingsDetail('Pokok', provider.simpananPokok),
-                                  _buildSavingsDetail('Wajib', provider.simpananWajib),
-                                  _buildSavingsDetail('Sukarela', provider.simpananSukarela),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              OutlinedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const SimpananView()),
-                                  );
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.black26),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('Mutasi Saldo', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
-                                    SizedBox(width: 6),
-                                    Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Transform.translate(
-                  offset: const Offset(0, -16),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFEF9C3),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: const Color(0xFFFDE047)),
-                        ),
-                        padding: const EdgeInsets.all(20),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'SALDO POIN',
-                                  style: TextStyle(color: Color(0xFF854D0E), fontSize: 14, fontWeight: FontWeight.w900),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(color: const Color(0xFFFCD34D), borderRadius: BorderRadius.circular(20)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                  child: Text(
-                                    provider.rankName,
-                                    style: const TextStyle(color: Color(0xFF854D0E), fontSize: 10, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
+                  Transform.translate(
+                    offset: const Offset(0, -32),
+                    child: Card(
+                      color: Colors.white,
+                      surfaceTintColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      elevation: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF718096),
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                const Icon(Icons.stars, color: Color(0xFFFACC15), size: 48),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                                      textBaseline: TextBaseline.alphabetic,
-                                      children: [
-                                        Text(
-                                          provider.points.toString(),
-                                          style: const TextStyle(color: Color(0xFFFACC15), fontSize: 32, fontWeight: FontWeight.w900),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        const Text(
-                                          'Poin',
-                                          style: TextStyle(color: Color(0xFFFACC15), fontSize: 18, fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      'Anggota ${provider.rankName}',
-                                      style: const TextStyle(color: Color(0xFF854D0E), fontSize: 10, fontWeight: FontWeight.w800),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                            child: const Text(
+                              'TOTAL SIMPANAN',
+                              style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
                             ),
-                            const SizedBox(height: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(
+                                  'Rp ${totalSimpanan.toString().replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (Match m) => "${m[1]}.")},00',
+                                  style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                ),
+                                const SizedBox(height: 16),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '${provider.nextLevelPoints - provider.points > 0 ? "${provider.nextLevelPoints - provider.points} poin lagi menuju ${provider.nextRankName}" : "${provider.nextRankName} Tercapai!"}',
-                                      style: const TextStyle(fontSize: 8, color: Colors.grey, fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      '${provider.points} / ${provider.nextLevelPoints}',
-                                      style: const TextStyle(fontSize: 8, color: Colors.black87, fontWeight: FontWeight.bold),
-                                    ),
+                                    _buildSavingsDetail('Pokok', provider.simpananPokok),
+                                    _buildSavingsDetail('Wajib', provider.simpananWajib),
+                                    _buildSavingsDetail('Sukarela', provider.simpananSukarela),
                                   ],
                                 ),
-                                const SizedBox(height: 6),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: LinearProgressIndicator(
-                                    value: progress,
-                                    minHeight: 6,
-                                    backgroundColor: Colors.white.withOpacity(0.5),
-                                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFACC15)),
+                                const SizedBox(height: 20),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const SimpananView()),
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Colors.black26),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('Mutasi Saldo', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+                                      SizedBox(width: 6),
+                                      Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Card(
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                        elevation: 1,
-                        child: Padding(
+                    ),
+                  ),
+                  Transform.translate(
+                    offset: const Offset(0, -16),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEF9C3),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: const Color(0xFFFDE047)),
+                          ),
+                          padding: const EdgeInsets.all(20),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'SALDO POIN',
+                                    style: TextStyle(color: Color(0xFF854D0E), fontSize: 14, fontWeight: FontWeight.w900),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(color: const Color(0xFFFCD34D), borderRadius: BorderRadius.circular(20)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                    child: Text(
+                                      provider.rankName,
+                                      style: const TextStyle(color: Color(0xFF854D0E), fontSize: 10, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  const Icon(Icons.stars, color: Color(0xFFFACC15), size: 48),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: [
+                                          Text(
+                                            provider.points.toString(),
+                                            style: const TextStyle(color: Color(0xFFFACC15), fontSize: 32, fontWeight: FontWeight.w900),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const Text(
+                                            'Poin',
+                                            style: TextStyle(color: Color(0xFFFACC15), fontSize: 18, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        'Anggota ${provider.rankName}',
+                                        style: const TextStyle(color: Color(0xFF854D0E), fontSize: 10, fontWeight: FontWeight.w800),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${provider.nextLevelPoints - provider.points > 0 ? "${provider.nextLevelPoints - provider.points} poin lagi menuju ${provider.nextRankName}" : "${provider.nextRankName} Tercapai!"}',
+                                        style: const TextStyle(fontSize: 8, color: Colors.grey, fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        '${provider.points} / ${provider.nextLevelPoints}',
+                                        style: const TextStyle(fontSize: 8, color: Colors.black87, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: LinearProgressIndicator(
+                                      value: progress,
+                                      minHeight: 6,
+                                      backgroundColor: Colors.white.withOpacity(0.5),
+                                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFACC15)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Card(
+                          color: Colors.white,
+                          surfaceTintColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                          elevation: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Misi Hari Ini',
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                    ),
+                                    Text(
+                                      'Klaim hadiah',
+                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFFBBF24)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: missions.length > 4 ? 4 : missions.length,
+                                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                                  itemBuilder: (context, index) {
+                                    final m = missions[index];
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                m.title,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: m.isCompleted ? Colors.grey : const Color(0xFF64748B),
+                                                  decoration: m.isCompleted ? TextDecoration.lineThrough : null,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                'Progres: ${m.progress} / ${m.targetCount}  •  +${m.points} XP',
+                                                style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        _buildMissionAction(
+                                          context,
+                                          provider,
+                                          m,
+                                          showSnackBar,
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 12),
+                                GestureDetector(
+                                  onTap: () => onNavigate(1),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text('Kelola Misi Selengkapnya', style: TextStyle(color: Color(0xFFFBBF24), fontSize: 11, fontWeight: FontWeight.bold)),
+                                      SizedBox(width: 4),
+                                      Icon(Icons.arrow_forward, size: 12, color: Color(0xFFFBBF24)),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF718096),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Misi Hari Ini',
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
-                                  ),
-                                  Text(
-                                    'Klaim hadiah',
-                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFFBBF24)),
-                                  ),
-                                ],
+                              const Text(
+                                'Koperasi Hari ini',
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               const SizedBox(height: 16),
-                              ListView.separated(
+                              GridView.count(
+                                crossAxisCount: 2,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: missions.length > 4 ? 4 : missions.length,
-                                separatorBuilder: (context, index) => const SizedBox(height: 12),
-                                itemBuilder: (context, index) {
-                                  final m = missions[index];
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              m.title,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: m.isCompleted ? Colors.grey : const Color(0xFF64748B),
-                                                decoration: m.isCompleted ? TextDecoration.lineThrough : null,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              'Progres: ${m.progress} / ${m.targetCount}  •  +${m.points} XP',
-                                              style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      _buildMissionAction(
-                                        context,
-                                        provider,
-                                        m,
-                                        showSnackBar,
-                                      ),
-                                    ],
-                                  );
-                                },
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 1.5,
+                                children: [
+                                  _buildCoopStat(Icons.swap_horiz, '${provider.kopTransaksi}', 'Transaksi'),
+                                  _buildCoopStat(Icons.attach_money, provider.kopOmzet > 0 ? 'Rp ${provider.kopOmzet}Jt' : '-', 'Omzet Harian'),
+                                  _buildCoopStat(Icons.groups, '${provider.kopAnggotaBaru}', 'Anggota Baru'),
+                                  _buildCoopStat(Icons.storefront, '${provider.kopUmkm}', 'UMKM Aktif'),
+                                ],
                               ),
-                              const SizedBox(height: 12),
-                              GestureDetector(
-                                onTap: () => onNavigate(1),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text('Kelola Misi Selengkapnya', style: TextStyle(color: Color(0xFFFBBF24), fontSize: 11, fontWeight: FontWeight.bold)),
-                                    SizedBox(width: 4),
-                                    Icon(Icons.arrow_forward, size: 12, color: Color(0xFFFBBF24)),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF718096),
-                          borderRadius: BorderRadius.circular(24),
+                        const SizedBox(height: 16),
+                        // Leaderboard — DB-backed
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Papan Peringkat',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                          ),
                         ),
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const Text(
-                              'Koperasi Hari ini',
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            const SizedBox(height: 16),
-                            GridView.count(
-                              crossAxisCount: 2,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 1.5,
-                              children: [
-                                _buildCoopStat(Icons.swap_horiz, '${provider.kopTransaksi}', 'Transaksi'),
-                                _buildCoopStat(Icons.attach_money, provider.kopOmzet > 0 ? 'Rp ${provider.kopOmzet}Jt' : '-', 'Omzet Harian'),
-                                _buildCoopStat(Icons.groups, '${provider.kopAnggotaBaru}', 'Anggota Baru'),
-                                _buildCoopStat(Icons.storefront, '${provider.kopUmkm}', 'UMKM Aktif'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Leaderboard — DB-backed
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Papan Peringkat',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      provider.leaderboard.isEmpty
-                          ? const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Text('Belum ada data peringkat.', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                            )
-                          : ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: provider.leaderboard.length > 3 ? 3 : provider.leaderboard.length,
-                              separatorBuilder: (_, __) => const SizedBox(height: 8),
-                              itemBuilder: (context, i) {
-                                final m = provider.leaderboard[i];
-                                final medal = i == 0 ? '🥇' : i == 1 ? '🥈' : '🥉';
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.grey.shade200),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                  child: Row(
-                                    children: [
-                                      Text(medal, style: const TextStyle(fontSize: 18)),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              m['namaLengkap'] ?? 'Anggota',
-                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
-                                            ),
-                                            Text(
-                                              'Level ${m['level'] ?? 1}',
-                                              style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
+                        const SizedBox(height: 12),
+                        provider.leaderboard.isEmpty
+                            ? const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Text('Belum ada data peringkat.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                              )
+                            : ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: provider.leaderboard.length > 3 ? 3 : provider.leaderboard.length,
+                                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                                itemBuilder: (context, i) {
+                                  final m = provider.leaderboard[i];
+                                  final medal = i == 0 ? '🥇' : i == 1 ? '🥈' : '🥉';
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: Colors.grey.shade200),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        Text(medal, style: const TextStyle(fontSize: 18)),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                m['namaLengkap'] ?? 'Anggota',
+                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                                              ),
+                                              Text(
+                                                'Level ${m['level'] ?? 1}',
+                                                style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        '${m['xp'] ?? 0} XP',
-                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B)),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                      const SizedBox(height: 20),
-                    ],
+                                        Text(
+                                          '${m['xp'] ?? 0} XP',
+                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B)),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
