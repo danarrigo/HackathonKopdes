@@ -33,7 +33,7 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<void> loadSavedSession() async {}
   @override
-  Future<bool> login(String a, String b) async => true;
+  Future<String?> login(String a, String b) async => null;
   @override
   Future<bool> signup({required String email, required String password, required String nik, required String fullName, String provinsi = '', String kabupaten = '', String kecamatan = '', String desa = '', required String koperasi}) async => true;
   @override
