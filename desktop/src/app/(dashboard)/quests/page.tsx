@@ -117,9 +117,15 @@ export default async function Page() {
           <div className="space-y-4">
             <MissionList initialQuests={activeQuests} memberId={currentMember.id} />
           </div>
-          <button className="w-full mt-6 py-3 rounded-lg border border-primary text-primary font-label-caps text-label-caps hover:bg-primary/10 transition-colors uppercase tracking-widest">
-            Lihat Misi Mingguan
-          </button>
+        </section>
+
+        <section className="glass-card rounded-xl p-6 animate-slide-up delay-150">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-headline-md text-headline-md">Misi Mingguan</h3>
+          </div>
+          <div className="space-y-4">
+            <MissionList initialQuests={activeQuests} memberId={currentMember.id} frequency="weekly" />
+          </div>
         </section>
       </aside>
 
