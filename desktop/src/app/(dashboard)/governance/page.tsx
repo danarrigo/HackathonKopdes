@@ -1,4 +1,6 @@
-import { getGovernanceData } from "@/actions/governance";
+import { getGovernanceData, castVote } from "@/actions/governance";
+import { getCurrentMember } from "@/actions/members";
+import { revalidatePath } from "next/cache";
 
 export default async function Page() {
   const { activeProposals, totalMembers, totalAsetDesa } = await getGovernanceData();
@@ -11,7 +13,17 @@ export default async function Page() {
   const now = new Date();
   const diffDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 3600 * 24));
   const sisaWaktu = diffDays > 0 ? `${diffDays} Hari` : 'Selesai';
+
+  const currentMember = await getCurrentMember();
+  const memberId = currentMember?.id || 1;
   
+  async function voteAction(formData: FormData) {
+    "use server";
+    const voteType = formData.get("voteType") as string;
+    await castVote(memberId, mainProposal?.id || 1, voteType);
+    revalidatePath("/governance");
+  }
+
   return (
     <main className="flex-1 flex flex-col min-h-screen bg-background pb-24 md:pb-0">
       <div className="flex-1 overflow-y-auto px-6 py-10 space-y-8 pb-32 w-full">
@@ -82,18 +94,27 @@ export default async function Page() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <button className="group flex flex-col items-center justify-center p-6 border-2 border-outline-variant/30 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all active:scale-95">
-                <span className="material-symbols-outlined text-4xl mb-2 text-primary group-hover:scale-110 transition-transform">thumb_up</span>
-                <span className="font-label-caps text-label-caps">SETUJU</span>
-              </button>
-              <button className="group flex flex-col items-center justify-center p-6 border-2 border-outline-variant/30 rounded-xl hover:border-error/50 hover:bg-error/5 transition-all active:scale-95">
-                <span className="material-symbols-outlined text-4xl mb-2 text-error group-hover:scale-110 transition-transform">thumb_down</span>
-                <span className="font-label-caps text-label-caps">TOLAK</span>
-              </button>
-              <button className="group flex flex-col items-center justify-center p-6 border-2 border-outline-variant/30 rounded-xl hover:border-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95">
-                <span className="material-symbols-outlined text-4xl mb-2 text-on-surface-variant group-hover:scale-110 transition-transform">remove_circle</span>
-                <span className="font-label-caps text-label-caps">ABSTAIN</span>
-              </button>
+              <form action={voteAction} className="w-full">
+                <input type="hidden" name="voteType" value="agree" />
+                <button type="submit" className="w-full group flex flex-col items-center justify-center p-6 border-2 border-outline-variant/30 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all active:scale-95 cursor-pointer">
+                  <span className="material-symbols-outlined text-4xl mb-2 text-primary group-hover:scale-110 transition-transform">thumb_up</span>
+                  <span className="font-label-caps text-label-caps">SETUJU</span>
+                </button>
+              </form>
+              <form action={voteAction} className="w-full">
+                <input type="hidden" name="voteType" value="reject" />
+                <button type="submit" className="w-full group flex flex-col items-center justify-center p-6 border-2 border-outline-variant/30 rounded-xl hover:border-error/50 hover:bg-error/5 transition-all active:scale-95 cursor-pointer">
+                  <span className="material-symbols-outlined text-4xl mb-2 text-error group-hover:scale-110 transition-transform">thumb_down</span>
+                  <span className="font-label-caps text-label-caps">TOLAK</span>
+                </button>
+              </form>
+              <form action={voteAction} className="w-full">
+                <input type="hidden" name="voteType" value="abstain" />
+                <button type="submit" className="w-full group flex flex-col items-center justify-center p-6 border-2 border-outline-variant/30 rounded-xl hover:border-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95 cursor-pointer">
+                  <span className="material-symbols-outlined text-4xl mb-2 text-on-surface-variant group-hover:scale-110 transition-transform">remove_circle</span>
+                  <span className="font-label-caps text-label-caps">ABSTAIN</span>
+                </button>
+              </form>
             </div>
           </section>
         )}

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { toggleQuest } from "@/actions/quests";
 
 export default function MissionList({ initialQuests = [] }: { initialQuests?: { id: string | number; title: string; rewardPoints?: number; progress?: { isCompleted?: boolean }; category?: string }[] }) {
   const [missions, setMissions] = useState(
@@ -12,7 +13,7 @@ export default function MissionList({ initialQuests = [] }: { initialQuests?: { 
     }))
   );
 
-  const handleToggleMission = (id: string) => {
+  const handleToggleMission = async (id: string) => {
     // Optimistic toggle (no DB update yet)
     setMissions((prev) =>
       prev.map((m) => {
@@ -20,6 +21,19 @@ export default function MissionList({ initialQuests = [] }: { initialQuests?: { 
         return m;
       })
     );
+
+    try {
+      await toggleQuest(1, parseInt(id));
+    } catch (e) {
+      console.error("Failed to save quest completion:", e);
+      // Rollback on failure
+      setMissions((prev) =>
+        prev.map((m) => {
+          if (m.id === id) return { ...m, completed: !m.completed };
+          return m;
+        })
+      );
+    }
   };
 
   return (
