@@ -70,7 +70,6 @@ export default async function Page() {
 <section className="animate-slide-up delay-100">
 <div className="flex items-center justify-between mb-6">
 <h3 className="font-headline-md text-headline-md text-on-surface">Dampak Personal</h3>
-<p className="font-body-md text-body-md text-tertiary cursor-pointer hover:underline">Lihat Laporan Tahunan</p>
 </div>
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 

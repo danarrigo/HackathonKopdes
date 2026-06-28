@@ -84,137 +84,157 @@ export default function TopUpModal({ memberId }: TopUpModalProps) {
     <>
       <button
         onClick={handleOpen}
-        className="w-full py-2 px-4 bg-primary text-on-primary hover:bg-primary/95 text-xs font-extrabold uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95"
+        className="w-full py-3 px-4 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-on-primary text-sm font-extrabold uppercase tracking-widest rounded-2xl transition-all shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(var(--primary-rgb),0.3)] hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
       >
+        <span className="material-symbols-outlined">add_circle</span>
         Top Up Saldo
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-surface-container-high rounded-3xl border border-outline-variant p-6 shadow-2xl relative overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={handleClose}></div>
+          <div className="w-full max-w-md bg-surface-container-high/90 backdrop-blur-xl rounded-[2rem] border border-white/10 p-8 shadow-2xl relative overflow-hidden transform transition-all animate-scale-up">
+            
+            {/* Decorative background gradients */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-tertiary/20 rounded-full blur-3xl"></div>
+
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-highest transition-colors"
+              className="absolute top-6 right-6 text-on-surface-variant hover:text-on-surface p-2 rounded-full hover:bg-white/10 transition-colors z-10"
             >
               <span className="material-symbols-outlined">close</span>
             </button>
 
             {!invoiceUrl ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
                 <div className="text-center">
-                  <span className="material-symbols-outlined text-4xl text-primary bg-primary/10 p-3 rounded-2xl mb-2 inline-block">
-                    account_balance_wallet
-                  </span>
-                  <h3 className="text-xl font-black text-on-surface">Top Up Saldo Dompet</h3>
-                  <p className="text-xs text-on-surface-variant mt-1">Masukkan jumlah saldo yang ingin Anda tambahkan.</p>
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20 shadow-inner">
+                    <span className="material-symbols-outlined text-3xl text-primary">
+                      account_balance_wallet
+                    </span>
+                  </div>
+                  <h3 className="font-headline-md text-2xl font-black text-on-surface bg-clip-text text-transparent bg-gradient-to-r from-on-surface to-on-surface/70">Top Up Saldo</h3>
+                  <p className="text-sm text-on-surface-variant mt-2 font-medium">Mau isi saldo berapa hari ini?</p>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-on-surface-variant">Jumlah (Rupiah)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-on-surface-variant">Rp</span>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-on-surface-variant tracking-wider uppercase">Nominal Top Up</label>
+                  <div className="relative group">
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg font-black text-primary transition-colors">Rp</span>
                     <input
                       type="number"
                       required
                       min={10000}
                       value={amount}
                       onChange={(e) => setAmount(Number(e.target.value))}
-                      className="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline rounded-xl text-on-surface font-bold focus:border-primary focus:outline-none transition-colors"
+                      className="w-full pl-14 pr-5 py-4 bg-surface-container-highest/50 backdrop-blur-sm border-2 border-outline-variant/50 rounded-2xl text-on-surface font-black text-xl focus:border-primary focus:bg-surface-container-highest focus:ring-4 focus:ring-primary/10 transition-all outline-none"
                       placeholder="50000"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
-                  {[20000, 50000, 100000].map((preset) => (
+                <div className="grid grid-cols-3 gap-3">
+                  {[50000, 100000, 500000].map((preset) => (
                     <button
                       key={preset}
                       type="button"
                       onClick={() => setAmount(preset)}
-                      className={`py-2 rounded-lg text-xs font-bold border transition-all ${
+                      className={`py-3 rounded-xl text-sm font-bold border-2 transition-all duration-300 ${
                         amount === preset
-                          ? "bg-primary/10 border-primary text-primary"
-                          : "border-outline hover:border-on-surface-variant text-on-surface"
+                          ? "bg-primary text-on-primary border-primary shadow-lg shadow-primary/30 scale-105"
+                          : "border-outline-variant/30 hover:border-primary/50 text-on-surface bg-surface-container-lowest/50 hover:bg-surface-container-highest"
                       }`}
                     >
-                      {preset.toLocaleString("id-ID")}
+                      {preset >= 1000000 ? `${preset/1000000}M` : preset >= 1000 ? `${preset/1000}k` : preset}
                     </button>
                   ))}
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-error/10 border border-error/20 text-error text-xs rounded-xl flex items-center gap-2">
-                    <span className="material-symbols-outlined text-sm">error</span>
-                    <span>{error}</span>
+                  <div className="p-4 bg-error/10 border border-error/20 text-error text-sm rounded-xl flex items-start gap-3 animate-shake">
+                    <span className="material-symbols-outlined text-lg shrink-0 mt-0.5">error</span>
+                    <span className="font-medium">{error}</span>
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-primary text-on-primary font-bold rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 bg-gradient-to-r from-primary to-primary/90 text-on-primary font-bold rounded-2xl transition-all shadow-xl hover:shadow-primary/25 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {loading ? (
-                    <span className="w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+                    <span className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></span>
                   ) : (
-                    "Lanjutkan Pembayaran"
+                    <>
+                      Lanjutkan Pembayaran
+                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </>
                   )}
                 </button>
               </form>
             ) : (
-              <div className="space-y-6 text-center">
-                <div>
-                  <span className="material-symbols-outlined text-4xl text-tertiary bg-tertiary/10 p-3 rounded-2xl mb-2 inline-block">
-                    credit_card
-                  </span>
-                  <h3 className="text-xl font-black text-on-surface">Invoice Pembayaran Dibuat</h3>
-                  <p className="text-xs text-on-surface-variant mt-1">Invoice Xendit telah dibuka di tab baru.</p>
+              <div className="space-y-8 text-center relative z-10">
+                <div className="animate-fade-in-up">
+                  <div className="w-20 h-20 bg-gradient-to-br from-tertiary to-tertiary/80 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-tertiary/30 animate-pulse-slow">
+                    <span className="material-symbols-outlined text-4xl text-on-tertiary">
+                      receipt_long
+                    </span>
+                  </div>
+                  <h3 className="font-headline-md text-2xl font-black text-on-surface mb-2">Invoice Dibuat!</h3>
+                  <p className="text-sm text-on-surface-variant leading-relaxed">Halaman pembayaran Xendit telah dibuka.<br/>Silakan selesaikan pembayaran Anda.</p>
                 </div>
 
-                <div className="bg-surface-container-low p-4 rounded-2xl border border-outline-variant space-y-2">
-                  <p className="text-xs text-on-surface-variant">Jumlah Top Up</p>
-                  <p className="text-2xl font-black text-on-surface">Rp {amount.toLocaleString("id-ID")}</p>
+                <div className="bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant/30 shadow-inner">
+                  <p className="text-xs text-on-surface-variant font-bold tracking-widest uppercase mb-1">Total Tagihan</p>
+                  <p className="text-4xl font-black text-primary">Rp {amount.toLocaleString("id-ID")}</p>
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-error/10 border border-error/20 text-error text-xs rounded-xl flex items-center gap-2 text-left">
-                    <span className="material-symbols-outlined text-sm shrink-0">error</span>
-                    <span>{error}</span>
+                  <div className="p-4 bg-error/10 border border-error/20 text-error text-sm rounded-xl flex items-start gap-3 text-left animate-shake">
+                    <span className="material-symbols-outlined text-lg shrink-0 mt-0.5">error</span>
+                    <span className="font-medium">{error}</span>
                   </div>
                 )}
 
                 {verificationStatus === "paid" ? (
-                  <div className="p-4 bg-primary/10 border border-primary/20 text-primary rounded-2xl flex flex-col items-center gap-2 justify-center">
-                    <span className="material-symbols-outlined text-4xl">check_circle</span>
-                    <p className="text-sm font-bold">Top Up Berhasil!</p>
-                    <p className="text-xs text-on-surface-variant">Saldo Anda telah diperbarui.</p>
+                  <div className="p-6 bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20 text-green-500 rounded-3xl flex flex-col items-center gap-4 justify-center animate-scale-up">
+                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30">
+                      <span className="material-symbols-outlined text-white text-3xl">check</span>
+                    </div>
+                    <div>
+                      <p className="text-lg font-black">Top Up Berhasil!</p>
+                      <p className="text-sm text-green-500/80 mt-1">Saldo dompet Anda sudah bertambah.</p>
+                    </div>
                     <button
                       onClick={handleClose}
-                      className="mt-2 w-full py-2 bg-primary text-on-primary font-bold rounded-xl"
+                      className="mt-4 w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-colors"
                     >
-                      Selesai
+                      Selesai & Kembali
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    <button
-                      onClick={() => window.open(invoiceUrl, "_blank")}
-                      className="w-full py-3 border border-outline hover:border-on-surface-variant text-on-surface font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                    >
-                      <span className="material-symbols-outlined text-sm">open_in_new</span>
-                      Buka Kembali Halaman Pembayaran
-                    </button>
-
+                  <div className="space-y-4">
                     <button
                       onClick={handleVerify}
                       disabled={loading}
-                      className="w-full py-3 bg-tertiary text-on-tertiary font-bold rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="w-full py-4 bg-tertiary text-on-tertiary font-bold rounded-2xl transition-all shadow-lg hover:shadow-tertiary/25 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70"
                     >
                       {loading ? (
-                        <span className="w-5 h-5 border-2 border-on-tertiary border-t-transparent rounded-full animate-spin"></span>
+                        <span className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></span>
                       ) : (
-                        "Cek Status Pembayaran"
+                        <>
+                          <span className="material-symbols-outlined text-sm">refresh</span>
+                          Cek Status Pembayaran
+                        </>
                       )}
+                    </button>
+                    
+                    <button
+                      onClick={() => window.open(invoiceUrl, "_blank")}
+                      className="w-full py-3 bg-surface-container-highest hover:bg-surface-container-highest/80 text-on-surface font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+                    >
+                      Buka Ulang Halaman Pembayaran
                     </button>
                   </div>
                 )}

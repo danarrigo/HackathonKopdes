@@ -3,6 +3,8 @@ import { db } from "@/db";
 import { battles } from "@/db/schema/activities";
 import { members } from "@/db/schema/members";
 import { or, eq, and, not } from "drizzle-orm";
+import { memberProgress } from "@/db/schema/gamification";
+import { memberQuests } from "@/db/schema/achievements";
 
 export async function getArenaData(memberId: number = 1) {
   try {
@@ -108,5 +110,21 @@ export async function matchmakeWeeklyBattle(memberId: number) {
   } catch (error) {
     console.error("Matchmake Error:", error);
     return { success: false, error: "Gagal menemukan lawan." };
+  }
+}
+
+export async function getMemberStats(memberId: number) {
+  try {
+    const [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
+    const quests = await db.select().from(memberQuests).where(and(eq(memberQuests.memberId, memberId), eq(memberQuests.isCompleted, true)));
+    
+    return {
+      missionsCompleted: quests.length,
+      totalSavings: progress ? progress.walletBalance : 0,
+      activeStreak: progress ? progress.currentStreak : 0,
+    };
+  } catch (error) {
+    console.error("Stats DB Error:", error);
+    return { missionsCompleted: 0, totalSavings: 0, activeStreak: 0 };
   }
 }
