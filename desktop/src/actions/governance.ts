@@ -2,7 +2,7 @@
 import { db } from "@/db";
 import { proposals, votes } from "@/db/schema/governance";
 import { members } from "@/db/schema/members";
-import { eq, count, sum, ne, desc, and } from "drizzle-orm";
+import { eq, and, desc, count, sum, ne } from "drizzle-orm";
 import { savings, loans } from "@/db/schema/financials";
 
 export async function getGovernanceData(cooperativeId: number) {
@@ -65,27 +65,35 @@ export async function getKoperasiStats(cooperativeId: number) {
     const anggotaBaru = totalMembersRes[0].value;
     
     // For transactions, we can join savings/loans with members, or just use a mock derived from members for now
-    const totalSavingsRes = await db.select({ value: count() })
+    const totalSavingsRes = await db.select({ value: sum(savings.amount) })
       .from(savings)
       .innerJoin(members, eq(savings.memberId, members.id))
       .where(eq(members.cooperativeId, cooperativeId));
       
-    const totalLoansRes = await db.select({ value: count() })
+    const totalLoansRes = await db.select({ value: sum(loans.amount) })
       .from(loans)
       .innerJoin(members, eq(loans.memberId, members.id))
       .where(eq(members.cooperativeId, cooperativeId));
       
-    const transaksi = totalSavingsRes[0].value + totalLoansRes[0].value;
+    const savingsCount = await db.select({ value: count() }).from(savings).innerJoin(members, eq(savings.memberId, members.id)).where(eq(members.cooperativeId, cooperativeId));
+    const loansCount = await db.select({ value: count() }).from(loans).innerJoin(members, eq(loans.memberId, members.id)).where(eq(members.cooperativeId, cooperativeId));
+
+    const transaksi = savingsCount[0].value + loansCount[0].value;
+    
+    const asetKas = Number(totalSavingsRes[0].value || 0) * 0.6;
+    const asetPinjaman = Number(totalLoansRes[0].value || 0);
 
     return {
       transaksi,
       anggotaBaru,
       omzetHarian: transaksi > 0 ? transaksi * 500000 : 0, // Mock dynamic value based on transactions
-      umkmAktif: Math.max(1, Math.floor(anggotaBaru / 3)) // Mock dynamic value based on members
+      umkmAktif: Math.max(1, Math.floor(anggotaBaru / 3)), // Mock dynamic value based on members
+      asetKas,
+      asetPinjaman
     };
   } catch (error) {
     console.error("Koperasi Stats Error:", error);
-    return { transaksi: 0, anggotaBaru: 0, omzetHarian: 0, umkmAktif: 0 };
+    return { transaksi: 0, anggotaBaru: 0, omzetHarian: 0, umkmAktif: 0, asetKas: 0, asetPinjaman: 0 };
   }
 }
 
