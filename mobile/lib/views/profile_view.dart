@@ -35,13 +35,18 @@ class ProfileView extends StatelessWidget {
                         boxShadow: [BoxShadow(color: const Color(0xFFF59E0B).withOpacity(0.5), blurRadius: 20, spreadRadius: 2)],
                       ),
                     ),
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 48,
-                      backgroundColor: Color(0xFF0F172A),
+                      backgroundColor: const Color(0xFF0F172A),
                       child: CircleAvatar(
                         radius: 44,
                         backgroundColor: Colors.white70,
-                        child: Text('AS', style: TextStyle(color: Color(0xFF0F172A), fontSize: 24, fontWeight: FontWeight.bold)),
+                        child: Text(
+                          provider.fullName != null && provider.fullName!.isNotEmpty
+                              ? provider.fullName!.trim().split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join('').toUpperCase()
+                              : 'AG',
+                          style: const TextStyle(color: Color(0xFF0F172A), fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -66,18 +71,22 @@ class ProfileView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                const Text('Agung', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
+                Text(provider.fullName ?? 'Anggota', style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 4),
                 const Text('Anggota Premium Koperasi', style: TextStyle(color: Color(0xFFFCD34D), fontSize: 12, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 2),
-                const Text('No. Anggota: KMP-DSKMJ-2021-0041', style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
+                Text('No. Anggota: KMP-DSKMJ-2026-${(provider.memberId ?? 1).toString().padLeft(4, '0')}', style: const TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
+                if (provider.email != null) ...[
+                  const SizedBox(height: 2),
+                  Text(provider.email!, style: const TextStyle(color: Colors.grey, fontSize: 10)),
+                ],
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildTopBadge(Icons.local_fire_department, '${provider.streak} Hari Streak', Colors.white, Colors.white12, iconColor: Colors.orange),
                     const SizedBox(width: 8),
-                    _buildTopBadge(Icons.calendar_month, 'Aktif 2021', Colors.white, Colors.white12),
+                    _buildTopBadge(Icons.calendar_month, 'Aktif 2026', Colors.white, Colors.white12),
                   ],
                 )
               ],

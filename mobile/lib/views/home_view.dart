@@ -43,12 +43,12 @@ class HomeView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Halo, Agung!',
-                          style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
+                          'Halo, ${provider.fullName != null && provider.fullName!.isNotEmpty ? provider.fullName!.split(' ')[0] : 'Anggota'}!',
+                          style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         SizedBox(height: 2),
                         Text(
