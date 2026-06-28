@@ -23,20 +23,15 @@ interface WeeklyCalendarProps {
 export default function WeeklyCalendar({ events, joinedEventIds, memberId }: WeeklyCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Generate current week's days (Monday to Sunday)
+  // Generate current week's days starting from today
   const getWeekDays = () => {
     const today = new Date();
-    const currentDay = today.getDay();
-    const distanceToMonday = currentDay === 0 ? 6 : currentDay - 1; // 0 is Sunday
-    
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - distanceToMonday);
-    monday.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
 
     const days = [];
     for (let i = 0; i < 7; i++) {
-      const day = new Date(monday);
-      day.setDate(monday.getDate() + i);
+      const day = new Date(today);
+      day.setDate(today.getDate() + i);
       days.push(day);
     }
     return days;
@@ -64,7 +59,7 @@ export default function WeeklyCalendar({ events, joinedEventIds, memberId }: Wee
     return selected.getTime() >= start.getTime() && selected.getTime() <= end.getTime();
   });
 
-  const dayNames = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+  const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
   return (
     <div className="glass-card border border-outline-variant rounded-2xl p-6">
@@ -113,7 +108,7 @@ export default function WeeklyCalendar({ events, joinedEventIds, memberId }: Wee
               }`}
             >
               <span className={`text-[10px] uppercase font-bold mb-1 ${isSelected ? "text-on-primary/80" : "text-on-surface-variant"}`}>
-                {dayNames[idx]}
+                {dayNames[day.getDay()]}
               </span>
               <span className="text-lg font-black leading-none mb-1">
                 {day.getDate()}

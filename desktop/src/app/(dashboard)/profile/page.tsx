@@ -179,7 +179,7 @@ export default async function Page() {
         <div className="text-center py-10 bg-surface-container-low rounded-xl border border-outline-variant/30">
           <span className="material-symbols-outlined text-4xl text-outline mb-2">category</span>
           <p className="text-sm text-on-surface-variant">Inventory kosong.</p>
-          <p className="text-[10px] text-primary mt-1">Beli item di Toko Koperasi!</p>
+          <p className="text-[10px] text-primary mt-1">Beli item di Marketplace!</p>
         </div>
       ) : (
         <div className="space-y-3">

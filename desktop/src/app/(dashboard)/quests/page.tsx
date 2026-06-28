@@ -1,7 +1,6 @@
 import { getDashboardData } from "@/actions/dashboard";
 import { getActiveQuests } from "@/actions/quests";
 import { getCurrentMember } from "@/actions/members";
-import { getStoreItems } from "@/actions/gamification";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { items } from "@/db/schema/gamification";
@@ -14,9 +13,10 @@ export default async function Page() {
 
   const dbData = await getDashboardData(currentMember.id);
   const activeQuests = await getActiveQuests(currentMember.id);
-  let storeItems = await getStoreItems();
   
-  if (storeItems.length === 0) {
+  // Seed initial items and quests if empty (check via DB)
+  const existingQuests = await db.select().from(quests).limit(1);
+  if (existingQuests.length === 0) {
     try {
       await db.insert(items).values([
         { name: "Sakit Jantung", description: "Beri efek jantungan (jumpscare) pada teman koperasimu!", priceInPoints: 50, effectType: "prank", effectValue: "sakit_jantung" },
@@ -28,7 +28,6 @@ export default async function Page() {
         { title: "Bayar Iuran", description: "Selesaikan iuran wajib bulan ini.", rewardPoints: 500, frequency: "monthly", targetCount: 1 },
         { title: "Duel Master", description: "Menangkan 3 battle di Arena Koperasi.", rewardPoints: 1000, frequency: "weekly", targetCount: 3 }
       ]);
-      storeItems = await getStoreItems();
     } catch(e) {
       console.log(e);
     }
@@ -167,52 +166,6 @@ export default async function Page() {
           </div>
         </section>
 
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="font-headline-lg text-headline-lg">Toko Item</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                Tukarkan poin prestasi Anda dengan item langka
-              </p>
-            </div>
-            <div className="flex items-center gap-2 bg-tertiary/10 px-4 py-2 rounded-lg border border-tertiary/30">
-              <span
-                className="material-symbols-outlined text-tertiary"
-                style={{ fontVariationSettings: "\'FILL\' 1" }}
-              >
-                monetization_on
-              </span>
-              <span className="font-points-display text-lg text-tertiary">
-                {points.toLocaleString()} Poin
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {storeItems.map(item => (
-              <div key={item.id} className="glass-card rounded-xl p-5 group hover:-translate-y-1 transition-transform duration-300 flex flex-col">
-                <div className="w-full aspect-square rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
-                  <span className="material-symbols-outlined text-5xl text-primary group-hover:scale-110 transition-transform">
-                    {item.effectType === 'freeze_streak' ? 'ac_unit' : item.effectType === 'point_bomb' ? 'bomb' : 'stars'}
-                  </span>
-                </div>
-                <h4 className="font-body-lg text-body-lg mb-1">{item.name}</h4>
-                <p className="font-body-md text-body-md text-on-surface-variant flex-grow mb-4 line-clamp-2">
-                  {item.description}
-                </p>
-                <button className="w-full py-2.5 bg-surface-container-high hover:bg-primary hover:text-on-primary transition-colors rounded-lg flex items-center justify-center gap-2">
-                  <span className="font-points-display">{item.priceInPoints.toLocaleString()}</span>
-                  <span
-                    className="material-symbols-outlined text-sm"
-                    style={{ fontVariationSettings: "\'FILL\' 1" }}
-                  >
-                    monetization_on
-                  </span>
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
       </div>
     </main>
   );
