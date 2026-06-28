@@ -1,0 +1,244 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../models/mission.dart';
+import '../models/shop_item.dart';
+import '../models/history_item.dart';
+
+class KoperasiProvider extends ChangeNotifier {
+  // Global State
+  int points = 1350;
+  int streak = 14;
+  int userWinRate = 62;
+  String? voteSelection;
+  bool isLoading = true;
+
+  // Savings breakdown
+  int simpananPokok = 750000;
+  int simpananWajib = 750000;
+  int simpananSukarela = 7254000;
+  List<dynamic> listSavings = [];
+  List<dynamic> listLoans = [];
+  Map<String, dynamic>? activeBattle;
+
+  // Koperasi Stats
+  int kopTransaksi = 37;
+  int kopAnggotaBaru = 8;
+  int kopOmzet = 14;
+  int kopUmkm = 12;
+
+  // Streak days
+  final Map<String, bool> streakDays = {
+    'Sen': true,
+    'Sel': true,
+    'Rab': true,
+    'Kam': true, // Today (Active/Fire)
+    'Jum': false,
+    'Sab': false,
+    'Min': false,
+  };
+
+  // Missions
+  List<Mission> missions = [];
+
+  // Shop Items
+  List<ShopItem> shopItems = [];
+
+  // Match History
+  final List<HistoryItem> historyList = [
+    HistoryItem(opponent: 'Siti Maenah', result: 'Menang', points: 150),
+    HistoryItem(opponent: 'Roland Sihombing', result: 'Menang', points: 150),
+    HistoryItem(opponent: 'Ahmad Fauzi', result: 'Kalah', points: 50),
+    HistoryItem(opponent: 'Andreas Kurniawan', result: 'Menang', points: 150),
+  ];
+
+  KoperasiProvider() {
+    _initMissions();
+    _initShopItems();
+    fetchData();
+  }
+
+  void _initMissions() {
+    missions = [
+      Mission(id: 'd1', title: 'Belanja hari ini', points: 20, completed: true, isDaily: true),
+      Mission(id: 'd2', title: 'Hadir RAT', points: 50, completed: false, isDaily: true),
+      Mission(id: 'd3', title: 'Baca berita koperasi', points: 15, completed: false, isDaily: true),
+      Mission(id: 'd4', title: 'Isi Survey Anggota', points: 15, completed: false, isDaily: true),
+      Mission(id: 'w1', title: 'Hadiri rapat tahunan', points: 120, completed: false, isDaily: false),
+      Mission(id: 'w2', title: 'Ajak Anggota baru', points: 200, completed: false, isDaily: false),
+    ];
+  }
+
+  void _initShopItems() {
+    shopItems = [
+      ShopItem(
+        id: 's1',
+        title: 'Freeze Streak',
+        description: 'Bekukan streak lawan selama 1 ronde',
+        cost: 200,
+        ownedCount: 2,
+        icon: Icons.ac_unit,
+        iconColor: Colors.teal,
+        bgGlow: Colors.teal.withOpacity(0.1),
+      ),
+      ShopItem(
+        id: 's2',
+        title: 'Point Bomb',
+        description: 'Kurangi 50 poin lawan minggu ini',
+        cost: 350,
+        ownedCount: 0,
+        icon: Icons.dangerous,
+        iconColor: Colors.pink,
+        bgGlow: Colors.pink.withOpacity(0.1),
+      ),
+      ShopItem(
+        id: 's3',
+        title: 'Streak Shield',
+        description: 'Proteksi Streak dari Freeze Streak lawan',
+        cost: 150,
+        ownedCount: 0,
+        icon: Icons.shield,
+        iconColor: Colors.orange,
+        bgGlow: Colors.orange.withOpacity(0.1),
+      ),
+      ShopItem(
+        id: 's4',
+        title: 'Poin Booster',
+        description: '2x poin dari semua quest hari ini',
+        cost: 500,
+        ownedCount: 1,
+        icon: Icons.rocket_launch,
+        iconColor: Colors.purple,
+        bgGlow: Colors.amber.withOpacity(0.1),
+      ),
+    ];
+  }
+
+  Future<void> fetchData() async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      String apiHost = 'localhost:3000';
+      if (Uri.base.host.isNotEmpty) {
+        apiHost = '${Uri.base.host}:3000';
+      }
+      final response = await http.get(Uri.parse('http://$apiHost/api/mobile-sync'));
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success']) {
+          final data = jsonResponse['data'];
+          
+          final progress = data['dashboard']?['progress'];
+          if (progress != null) {
+            points = progress['pointsBalance'] ?? points;
+            streak = progress['currentStreak'] ?? streak;
+          }
+
+          final financials = data['financials'];
+          if (financials != null) {
+            List dues = financials['dues'] ?? [];
+            List savings = financials['savings'] ?? [];
+            simpananPokok = dues.where((d) => d['type'] == 'initial').fold<int>(0, (s, i) => s + (i['amount'] as int));
+            simpananWajib = dues.where((d) => d['type'] == 'monthly').fold<int>(0, (s, i) => s + (i['amount'] as int));
+            simpananSukarela = savings.fold<int>(0, (s, i) => s + (i['type'] == 'deposit' ? (i['amount'] as int) : -(i['amount'] as int)));
+            listSavings = savings;
+            listLoans = financials['loans'] ?? [];
+          }
+
+          final quests = data['quests'];
+          if (quests != null && quests is List) {
+            missions = quests.map<Mission>((q) {
+              return Mission(
+                id: q['id'].toString(),
+                title: q['title'] ?? '',
+                points: q['rewardPoints'] ?? 0,
+                completed: q['progress']?['isCompleted'] ?? false,
+                isDaily: q['category'] == 'daily',
+              );
+            }).toList();
+          }
+
+          final kopStats = data['koperasiStats'];
+          if (kopStats != null) {
+            kopTransaksi = kopStats['transaksi'] ?? kopTransaksi;
+            kopAnggotaBaru = kopStats['anggotaBaru'] ?? kopAnggotaBaru;
+            kopOmzet = kopStats['omzetHarian'] ?? kopOmzet;
+            kopUmkm = kopStats['umkmAktif'] ?? kopUmkm;
+          }
+
+          final arena = data['arena'];
+          if (arena != null && arena['activeBattles'] != null && (arena['activeBattles'] as List).isNotEmpty) {
+            activeBattle = arena['activeBattles'][0];
+          }
+        }
+      }
+    } catch (e) {
+      print('Fetch err: $e');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void toggleMission(String id, Function(String) showSnackBar) {
+    for (var m in missions) {
+      if (m.id == id) {
+        m.completed = !m.completed;
+        if (m.completed) {
+          points += m.points;
+          showSnackBar('Misi "${m.title}" selesai! +${m.points} Poin');
+        } else {
+          points -= m.points;
+          showSnackBar('Batal menyelesaikan "${m.title}". Poin -${m.points}');
+        }
+        notifyListeners();
+        break;
+      }
+    }
+  }
+
+  void buyShopItem(ShopItem item, Function(String) showSnackBar) {
+    if (points >= item.cost) {
+      points -= item.cost;
+      item.ownedCount += 1;
+      showSnackBar('Berhasil membeli ${item.title}! -${item.cost} Poin');
+      notifyListeners();
+    } else {
+      showSnackBar('Poin tidak mencukupi untuk membeli ${item.title}');
+    }
+  }
+
+  void useItemInBattle(ShopItem item, Function(String) showSnackBar) {
+    if (item.ownedCount > 0) {
+      item.ownedCount -= 1;
+      int boost = 0;
+      String log = '';
+      if (item.id == 's1') {
+        boost = 8;
+        log = 'Menggunakan Freeze Streak! Win rate bertambah +8%';
+      } else if (item.id == 's2') {
+        boost = 12;
+        log = 'Meledakkan Point Bomb! Win rate bertambah +12%';
+      } else if (item.id == 's3') {
+        boost = 3;
+        log = 'Streak Shield diaktifkan! Win rate bertambah +3%';
+      } else if (item.id == 's4') {
+        boost = 15;
+        log = 'Poin Booster digunakan! Peluang menang naik +15%';
+      }
+      userWinRate = (userWinRate + boost).clamp(0, 100);
+      showSnackBar(log);
+      notifyListeners();
+    } else {
+      showSnackBar('Kamu tidak memiliki item ini. Beli di Toko Misi.');
+    }
+  }
+
+  void submitVote(String choice, Function(String) showSnackBar) {
+    voteSelection = choice;
+    showSnackBar('Terima kasih! Pilihan Anda ($choice) disimpan.');
+    notifyListeners();
+  }
+}
