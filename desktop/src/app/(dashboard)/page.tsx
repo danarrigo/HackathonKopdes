@@ -108,10 +108,10 @@ export default async function DesktopDashboard() {
               </div>
 
               <div>
-                <button className="flex items-center gap-2 border border-outline hover:border-primary px-4 py-2 rounded-xl text-primary text-xs font-bold transition-colors">
-                  <span>Lihat Riwayat Mutasi</span>
+                <Link href="/savings" className="inline-flex items-center gap-2 border border-outline hover:border-primary px-4 py-2 rounded-xl text-primary text-xs font-bold transition-colors">
+                  <span>Kelola Simpanan & Mutasi</span>
                   <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
+                </Link>
               </div>
             </div>
           </div>
