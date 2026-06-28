@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/models/history_item.dart';
+import 'package:mobile/models/shop_item.dart';
 import 'package:mobile/providers/koperasi_provider.dart';
 import 'package:mobile/views/battle_view.dart';
 import 'package:provider/provider.dart';
@@ -8,14 +9,17 @@ import 'package:provider/provider.dart';
 class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   final Map<String, dynamic>? _activeBattle;
   final List<HistoryItem> _history;
+  final List<InventoryItem> _inventory;
   bool matchmakeCalled = false;
   String matchmakeReturnMessage;
   _StubProvider(
       {Map<String, dynamic>? activeBattle,
       List<HistoryItem>? history,
+      List<InventoryItem>? inventory,
       this.matchmakeReturnMessage = 'Lawan ditemukan!'})
       : _activeBattle = activeBattle,
-        _history = history ?? const [];
+        _history = history ?? const [],
+        _inventory = inventory ?? const [];
 
   @override
   Map<String, dynamic>? get activeBattle => _activeBattle;
@@ -23,6 +27,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   String? get activeBattleEndDate => _activeBattle?['endDate']?.toString();
   @override
   List<HistoryItem> get historyList => _history;
+  @override
+  List<InventoryItem> get inventory => _inventory;
   @override
   int? get memberId => 1;
   @override

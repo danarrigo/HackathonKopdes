@@ -51,7 +51,6 @@ class HomeView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,59 +58,37 @@ class HomeView extends StatelessWidget {
                     const Text(
                       'Notifikasi',
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF0F172A)),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(sheetContext),
+                    GestureDetector(
+                      onTap: () {
+                        // Visual only — no notifications backend yet (mirrors webapp placeholder)
+                        Navigator.pop(sheetContext);
+                      },
+                      child: const Text(
+                        'Tandai sudah dibaca',
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: Color(0xFFFACC15),
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                if (missions.where((m) => !m.isCompleted).isEmpty &&
-                    provider.events.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: Column(
-                      children: [
-                        Icon(Icons.notifications_off,
-                            size: 48, color: Colors.grey.shade400),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Tidak ada notifikasi baru.',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  )
-                else ...[
-                  if (missions.where((m) => !m.isCompleted).isNotEmpty)
-                    _buildNotifTile(
-                      icon: Icons.assignment,
-                      iconColor: const Color(0xFFFBBF24),
-                      title: 'Misi menunggu',
-                      subtitle:
-                          '${missions.where((m) => !m.isCompleted).length} misi harian belum selesai',
-                    ),
-                  if (provider.activeProposals.isNotEmpty)
-                    _buildNotifTile(
-                      icon: Icons.how_to_vote,
-                      iconColor: const Color(0xFF22C55E),
-                      title: 'Voting terbuka',
-                      subtitle:
-                          '${provider.activeProposals.length} proposal menunggu suara Anda',
-                    ),
-                  if (provider.activeBattle != null)
-                    _buildNotifTile(
-                      icon: Icons.sports_kabaddi,
-                      iconColor: const Color(0xFFEF4444),
-                      title: 'Pertandingan aktif',
-                      subtitle:
-                          'Selesaikan sebelum ${provider.activeBattleEndDate ?? 'minggu ini'}',
-                    ),
-                ],
+                const SizedBox(height: 32),
+                const Icon(Icons.notifications_paused,
+                    size: 56, color: Color(0xFFCBD5E1)),
+                const SizedBox(height: 12),
+                const Text(
+                  'Belum ada notifikasi baru.',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -704,47 +681,6 @@ class HomeView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildNotifTile({
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    required String subtitle,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: iconColor, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A))),
-                const SizedBox(height: 2),
-                Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 11, color: Colors.grey)),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

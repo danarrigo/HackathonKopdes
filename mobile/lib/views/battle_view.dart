@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/koperasi_provider.dart';
+import 'widgets/use_item_sheet.dart';
 
 class BattleView extends StatelessWidget {
   const BattleView({super.key});
@@ -127,6 +128,91 @@ class BattleView extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 20),
+                            // "Gunakan Item" button — opens bottom sheet to
+                            // apply an inventory power-up against the opponent.
+                            Align(
+                              alignment: Alignment.center,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(24),
+                                  onTap: () {
+                                    final battle = provider.activeBattle;
+                                    if (battle == null) return;
+                                    // Resolve opponent id (whichever side isn't the current member)
+                                    final isChallenger =
+                                        battle['challengerId'] == provider.memberId;
+                                    final opponentId = isChallenger
+                                        ? battle['opponentId']
+                                        : battle['challengerId'];
+                                    if (opponentId == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .clearSnackBars();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Lawan belum tersedia. Selesaikan matchmaking terlebih dahulu.',
+                                              style: TextStyle(
+                                                  fontWeight:
+                                                      FontWeight.bold)),
+                                          behavior:
+                                              SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    showModalBottomSheet(
+                                      context: context,
+                                      backgroundColor: Colors.white,
+                                      isScrollControlled: true,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(24)),
+                                      ),
+                                      builder: (ctx) =>
+                                          UseItemSheet(
+                                              targetMemberId:
+                                                  opponentId as int),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: provider.inventory.isEmpty
+                                          ? Colors.white24
+                                          : const Color(0xFFFACC15),
+                                      borderRadius:
+                                          BorderRadius.circular(24),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.auto_fix_high,
+                                          color: provider.inventory.isEmpty
+                                              ? Colors.white60
+                                              : const Color(0xFF0F172A),
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Gunakan Item',
+                                          style: TextStyle(
+                                              color: provider.inventory.isEmpty
+                                                  ? Colors.white60
+                                                  : const Color(0xFF0F172A),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
                             Container(
                               decoration: BoxDecoration(
                                   color: Colors.white10,
