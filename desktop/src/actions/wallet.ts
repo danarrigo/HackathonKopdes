@@ -99,10 +99,11 @@ export async function verifyInvoicePayment(memberId: number, invoiceId: string) 
         .set({ status: "paid" })
         .where(eq(walletTransactions.invoiceId, invoiceId));
 
-      // Get current balance
-      const [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
+      // Get current balance or create if missing
+      let [progress] = await db.select().from(memberProgress).where(eq(memberProgress.memberId, memberId));
       if (!progress) {
-        return { success: false, error: "Data progress member tidak ditemukan" };
+        const [newProgress] = await db.insert(memberProgress).values({ memberId }).returning();
+        progress = newProgress;
       }
 
       const newBalance = progress.walletBalance + tx.amount;
