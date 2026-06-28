@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/mission.dart';
 import '../models/shop_item.dart';
 import '../models/history_item.dart';
+import '../models/marketplace_item.dart';
+import '../models/event_model.dart';
 
 class KoperasiProvider extends ChangeNotifier {
   // Auth State
@@ -27,6 +29,9 @@ class KoperasiProvider extends ChangeNotifier {
   String? voteSelection;
   bool isLoading = true;
   int walletBalance = 0;
+  String? activeEffect;
+  String? provinsi;
+  String? koperasiName;
 
   // Savings breakdown
   int simpananPokok = 0;
@@ -39,6 +44,7 @@ class KoperasiProvider extends ChangeNotifier {
   List<dynamic> listWalletTxs = [];
   Map<String, dynamic>? activeBattle;
   String? activeBattleEndDate;
+  Map<String, dynamic>? activeLoan;
 
   // Membership status states
   bool isMemberActive = true;
@@ -80,14 +86,29 @@ class KoperasiProvider extends ChangeNotifier {
   // Inventory (DB-backed)
   List<InventoryItem> inventory = [];
 
-  // Leaderboard (DB-backed)
+  // Leaderboard (DB-backed) - legacy single scope
   List<dynamic> leaderboard = [];
+
+  // Leaderboard by scope (Phase 3)
+  List<dynamic> leaderboardByKoperasi = [];
+  List<dynamic> leaderboardByProvinsi = [];
+  List<dynamic> leaderboardByNasional = [];
 
   // Point transactions (DB-backed)
   List<dynamic> pointTransactions = [];
 
   // Match History
   List<HistoryItem> historyList = [];
+
+  // Marketplace P2P items (Phase 1)
+  List<MarketplaceItem> marketplaceItems = [];
+
+  // Events (Phase 2)
+  List<EventModel> events = [];
+  Set<int> joinedEventIds = {};
+
+  // Active members directory (Phase 4a)
+  List<dynamic> activeMembers = [];
 
   KoperasiProvider() {
     loadSavedSession();
@@ -241,6 +262,12 @@ class KoperasiProvider extends ChangeNotifier {
           pointTransactions =
               data['dashboard']?['transactions'] as List<dynamic>? ?? [];
 
+          // Phase 4b: active prank effect
+          activeEffect = data['activeEffect'] as String?;
+
+          // Phase 4c: active loan
+          activeLoan = data['activeLoan'] as Map<String, dynamic>?;
+
           final financials = data['financials'];
           if (financials != null) {
             simpananPokok = (financials['simpananPokok'] as num?)?.toInt() ?? 0;
@@ -343,6 +370,17 @@ class KoperasiProvider extends ChangeNotifier {
           final leaderboardData = data['leaderboard'];
           if (leaderboardData != null && leaderboardData is List) {
             leaderboard = leaderboardData;
+            leaderboardByKoperasi = leaderboardData;
+          }
+
+          // Phase 3: multi-scope leaderboards
+          final lbProv = data['leaderboardByProvinsi'];
+          if (lbProv != null && lbProv is List) {
+            leaderboardByProvinsi = lbProv;
+          }
+          final lbNas = data['leaderboardByNasional'];
+          if (lbNas != null && lbNas is List) {
+            leaderboardByNasional = lbNas;
           }
 
           final inventoryData = data['inventory'];
@@ -350,6 +388,34 @@ class KoperasiProvider extends ChangeNotifier {
             inventory = inventoryData
                 .map<InventoryItem>((i) => InventoryItem.fromJson(i))
                 .toList();
+          }
+
+          // Phase 1: marketplace P2P items
+          final mpData = data['marketplaceItems'];
+          if (mpData != null && mpData is List) {
+            marketplaceItems = mpData
+                .map<MarketplaceItem>((m) => MarketplaceItem.fromJson(m))
+                .toList();
+          }
+
+          // Phase 2: events
+          final evData = data['events'];
+          if (evData != null && evData is List) {
+            events = evData
+                .map<EventModel>((e) => EventModel.fromJson(e))
+                .toList();
+          }
+          final joinedData = data['joinedEventIds'];
+          if (joinedData != null && joinedData is List) {
+            joinedEventIds = joinedData
+                .map<int>((id) => (id as num).toInt())
+                .toSet();
+          }
+
+          // Phase 4a: active members directory
+          final amData = data['activeMembers'];
+          if (amData != null && amData is List) {
+            activeMembers = amData;
           }
         }
       }
@@ -624,5 +690,173 @@ class KoperasiProvider extends ChangeNotifier {
       print('Deposit savings wallet error: $e');
       return 'Gagal menghubungi server.';
     }
+  }
+
+  // ============ PHASE 1: MARKETPLACE P2P ============
+
+  Future<String> listMarketplaceItem({
+    required String name,
+    String description = '',
+    required int priceInPoints,
+    required int stock,
+    String? imageUrl,
+  }) async {
+    try {
+      if (points < 0) {
+        return 'Poin tidak valid.';
+      }
+      final res = await http.post(
+        Uri.parse(_apiUrl('/api/mobile-sync/action')),
+        headers: _headers(isJson: true),
+        body: json.encode({
+          'action': 'list-marketplace-item',
+          'memberId': memberId,
+          'name': name,
+          'description': description,
+          'priceInPoints': priceInPoints,
+          'stock': stock,
+          'imageUrl': imageUrl ?? '',
+        }),
+      );
+      final body = json.decode(res.body);
+      if (res.statusCode == 200 && body['success'] == true) {
+        await fetchData();
+        return 'Barang berhasil didaftarkan ke marketplace!';
+      }
+      return body['error'] ?? 'Gagal mendaftarkan barang.';
+    } catch (e) {
+      print('List marketplace item error: $e');
+      return 'Gagal menghubungi server.';
+    }
+  }
+
+  Future<String> buyMarketplaceItem(int itemId) async {
+    try {
+      final res = await http.post(
+        Uri.parse(_apiUrl('/api/mobile-sync/action')),
+        headers: _headers(isJson: true),
+        body: json.encode({
+          'action': 'buy-marketplace-item',
+          'memberId': memberId,
+          'itemId': itemId,
+        }),
+      );
+      final body = json.decode(res.body);
+      if (res.statusCode == 200 && body['success'] == true) {
+        final newBalance = (body['updatedPoints'] as num?)?.toInt();
+        if (newBalance != null) points = newBalance;
+        await fetchData();
+        return 'Berhasil membeli barang!';
+      }
+      return body['error'] ?? 'Gagal membeli barang.';
+    } catch (e) {
+      print('Buy marketplace item error: $e');
+      return 'Gagal menghubungi server.';
+    }
+  }
+
+  // ============ PHASE 2: EVENTS ============
+
+  Future<String> joinEvent(int eventId) async {
+    try {
+      final res = await http.post(
+        Uri.parse(_apiUrl('/api/mobile-sync/action')),
+        headers: _headers(isJson: true),
+        body: json.encode({
+          'action': 'join-event',
+          'memberId': memberId,
+          'eventId': eventId,
+        }),
+      );
+      final body = json.decode(res.body);
+      if (res.statusCode == 200 && body['success'] == true) {
+        joinedEventIds.add(eventId);
+        notifyListeners();
+        await fetchData();
+        return 'Berhasil mendaftar ke event!';
+      }
+      return body['error'] ?? 'Gagal mendaftar ke event.';
+    } catch (e) {
+      print('Join event error: $e');
+      return 'Gagal menghubungi server.';
+    }
+  }
+
+  Future<String> createEvent({
+    required String name,
+    String description = '',
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    try {
+      final res = await http.post(
+        Uri.parse(_apiUrl('/api/mobile-sync/action')),
+        headers: _headers(isJson: true),
+        body: json.encode({
+          'action': 'create-event',
+          'memberId': memberId,
+          'name': name,
+          'description': description,
+          'startDate': startDate.toIso8601String(),
+          'endDate': endDate.toIso8601String(),
+        }),
+      );
+      final body = json.decode(res.body);
+      if (res.statusCode == 200 && body['success'] == true) {
+        await fetchData();
+        return 'Event berhasil dibuat!';
+      }
+      return body['error'] ?? 'Gagal membuat event.';
+    } catch (e) {
+      print('Create event error: $e');
+      return 'Gagal menghubungi server.';
+    }
+  }
+
+  // ============ PHASE 4d: MATCHMAKE BATTLE ============
+
+  Future<String> matchmakeBattle() async {
+    try {
+      final res = await http.post(
+        Uri.parse(_apiUrl('/api/mobile-sync/action')),
+        headers: _headers(isJson: true),
+        body: json.encode({
+          'action': 'matchmake-battle',
+          'memberId': memberId,
+        }),
+      );
+      final body = json.decode(res.body);
+      if (res.statusCode == 200 && body['success'] == true) {
+        await fetchData();
+        return 'Lawan ditemukan! Selamat bertanding!';
+      }
+      return body['error'] ?? 'Gagal mencari lawan.';
+    } catch (e) {
+      print('Matchmake error: $e');
+      return 'Gagal menghubungi server.';
+    }
+  }
+
+  // ============ PHASE 4b: PRANK EFFECT (lightweight check) ============
+
+  Future<String?> checkActiveEffect() async {
+    try {
+      final response = await http.get(
+        Uri.parse(_apiUrl('/api/mobile-sync')),
+        headers: _headers(),
+      );
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success']) {
+          final newEffect = jsonResponse['data']?['activeEffect'] as String?;
+          if (newEffect != null && newEffect != activeEffect) {
+            activeEffect = newEffect;
+            notifyListeners();
+            return newEffect;
+          }
+        }
+      }
+    } catch (_) {}
+    return null;
   }
 }
