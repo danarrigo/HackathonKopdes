@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { castVote, submitProposal } from "@/actions/governance";
 import { claimQuestReward } from "@/actions/quests";
-import { buyShopItem } from "@/actions/shop";
+import { buyShopItem, listMarketplaceItem, buyMarketplaceItem } from "@/actions/shop";
 import { useItem as applyItem } from "@/actions/gamification";
 import { createTopUpInvoice, verifyInvoicePayment } from "@/actions/wallet";
 import { payDuesFromWallet, depositSavingsFromWallet } from "@/actions/financials";
+import { joinEvent, createEvent } from "@/actions/events";
+import { matchmakeWeeklyBattle } from "@/actions/arena";
 import { createSupabaseClient } from '@/utils/supabase/client-api';
 import { db } from '@/db';
 import { members } from '@/db/schema';
@@ -63,6 +65,27 @@ export async function POST(request: Request) {
     } else if (action === 'deposit-savings-wallet') {
       const { amount, description } = body;
       result = await depositSavingsFromWallet(memberId, amount, description);
+    } else if (action === 'list-marketplace-item') {
+      const { name, description, priceInPoints, stock, imageUrl } = body;
+      result = await listMarketplaceItem({
+        sellerId: memberId,
+        name: name || '',
+        description: description || '',
+        priceInPoints: Number(priceInPoints) || 0,
+        stock: Number(stock) || 1,
+        imageUrl: imageUrl || undefined,
+      });
+    } else if (action === 'buy-marketplace-item') {
+      const { itemId } = body;
+      result = await buyMarketplaceItem(memberId, Number(itemId));
+    } else if (action === 'join-event') {
+      const { eventId } = body;
+      result = await joinEvent(memberId, Number(eventId));
+    } else if (action === 'create-event') {
+      const { name, description, startDate, endDate } = body;
+      result = await createEvent(memberId, name || '', description || '', new Date(startDate), new Date(endDate));
+    } else if (action === 'matchmake-battle') {
+      result = await matchmakeWeeklyBattle(memberId);
     }
 
     return NextResponse.json(result, {

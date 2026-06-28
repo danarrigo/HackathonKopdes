@@ -4,7 +4,11 @@ import { getFinancialsData } from "@/actions/financials";
 import { getActiveQuests } from "@/actions/quests";
 import { getGovernanceData, getKoperasiStats } from "@/actions/governance";
 import { getArenaData, getBattleHistory } from "@/actions/arena";
-import { getMemberBadges, getWinRate, getStoreItems, getLeaderboard, getMemberInventory } from "@/actions/gamification";
+import { getMemberBadges, getWinRate, getStoreItems, getLeaderboard, getLeaderboardProvincial, getLeaderboardNational, getMemberInventory } from "@/actions/gamification";
+import { getMarketplaceItems } from "@/actions/shop";
+import { getEventsByCooperative, getMemberEventParticipations } from "@/actions/events";
+import { getActiveMembers } from "@/actions/members";
+import { getActiveLoan } from "@/actions/financials";
 import { createSupabaseClient } from '@/utils/supabase/client-api';
 import { db } from '@/db';
 import { members } from '@/db/schema';
@@ -15,6 +19,7 @@ export async function GET() {
   try {
     let memberId = 1; // Fallback default
     let cooperativeId = 1; // Fallback default
+    let currentProvinsi: string | null = null;
 
     const headerList = await headers();
     const authHeader = headerList.get('authorization');
@@ -27,12 +32,13 @@ export async function GET() {
         if (member) {
           memberId = member.id;
           if (member.cooperativeId) cooperativeId = member.cooperativeId;
+          currentProvinsi = member.provinsi || null;
         }
       }
     }
     
     // Fetch all data concurrently
-    const [dashboardData, financialsData, questsData, governanceData, arenaData, koperasiStats, battleHistoryData, badgesData, winRateData, storeItemsData, leaderboardData, inventoryData] = await Promise.all([
+    const [dashboardData, financialsData, questsData, governanceData, arenaData, koperasiStats, battleHistoryData, badgesData, winRateData, storeItemsData, leaderboardData, inventoryData, marketplaceData, eventsData, eventParticipationsData, leaderboardByProvinsi, leaderboardByNasional, activeMembersData, activeLoanData] = await Promise.all([
       getDashboardData(memberId),
       getFinancialsData(memberId),
       getActiveQuests(memberId),
@@ -45,6 +51,13 @@ export async function GET() {
       getStoreItems(),
       getLeaderboard(cooperativeId),
       getMemberInventory(memberId),
+      getMarketplaceItems(),
+      getEventsByCooperative(cooperativeId),
+      getMemberEventParticipations(memberId),
+      currentProvinsi ? getLeaderboardProvincial(currentProvinsi).catch(() => []) : Promise.resolve([]),
+      getLeaderboardNational().catch(() => []),
+      cooperativeId ? getActiveMembers(cooperativeId).catch(() => []) : Promise.resolve([]),
+      getActiveLoan(memberId).catch(() => null),
     ]);
 
     return NextResponse.json({
@@ -67,6 +80,14 @@ export async function GET() {
         storeItems: storeItemsData,
         leaderboard: leaderboardData,
         inventory: inventoryData,
+        marketplaceItems: marketplaceData,
+        events: (eventsData as any)?.events || [],
+        joinedEventIds: ((eventParticipationsData as any)?.participations || []).map((p: any) => p?.event?.id).filter((id: any) => id != null),
+        leaderboardByProvinsi,
+        leaderboardByNasional: leaderboardByNasional,
+        activeMembers: activeMembersData,
+        activeLoan: activeLoanData,
+        activeEffect: dashboardData?.progress?.activeEffect ?? null,
       }
     }, {
       headers: {
