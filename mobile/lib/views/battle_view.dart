@@ -28,7 +28,8 @@ class BattleView extends StatelessWidget {
           children: [
             Container(
               color: const Color(0xFF121926),
-              padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 30),
+              padding: const EdgeInsets.only(
+                  top: 60, left: 24, right: 24, bottom: 30),
               child: const Row(
                 children: [
                   Icon(Icons.bolt, color: Colors.white, size: 28),
@@ -36,8 +37,13 @@ class BattleView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Arena Bertanding', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                      Text('Bertanding Mingguan – reset setiap senin 00:00', style: TextStyle(color: Colors.white60, fontSize: 10))
+                      Text('Arena Bertanding',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold)),
+                      Text('Bertanding Mingguan – reset setiap senin 00:00',
+                          style: TextStyle(color: Colors.white60, fontSize: 10))
                     ],
                   )
                 ],
@@ -48,52 +54,97 @@ class BattleView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (provider.activeBattle == null) _buildEmptyBattleCard(provider),
+                  if (provider.activeBattle == null)
+                    _buildEmptyBattleCard(provider),
                   if (provider.activeBattle != null)
                     Card(
                       color: const Color(0xFF6D7D91),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32)),
                       elevation: 4,
                       child: Padding(
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            const Text('Battle Minggu Ini', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                            const Text('Battle Minggu Ini',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
                             const SizedBox(height: 16),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 _buildPlayerCol(
-                                  provider.fullName != null && provider.fullName!.isNotEmpty
-                                      ? provider.fullName!.substring(0, 1).toUpperCase()
+                                  provider.fullName != null &&
+                                          provider.fullName!.isNotEmpty
+                                      ? provider.fullName!
+                                          .substring(0, 1)
+                                          .toUpperCase()
                                       : 'A',
-                                  provider.fullName != null && provider.fullName!.isNotEmpty
+                                  provider.fullName != null &&
+                                          provider.fullName!.isNotEmpty
                                       ? provider.fullName!.split(' ')[0]
                                       : 'Anda',
                                   '$p1 XP',
                                 ),
-                                const Text('VS', style: TextStyle(color: Colors.amber, fontSize: 32, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+                                const Text('VS',
+                                    style: TextStyle(
+                                        color: Colors.amber,
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic)),
                                 _buildPlayerCol(
-                                  provider.activeBattle!['challengerId'] == provider.memberId
-                                      ? (provider.activeBattle!['opponent']?['namaLengkap']?.toString().substring(0, 1).toUpperCase() ?? 'L')
-                                      : (provider.activeBattle!['challenger']?['namaLengkap']?.toString().substring(0, 1).toUpperCase() ?? 'L'),
-                                  provider.activeBattle!['challengerId'] == provider.memberId
-                                      ? (provider.activeBattle!['opponent']?['namaLengkap']?.toString().split(' ')[0] ?? 'Lawan')
-                                      : (provider.activeBattle!['challenger']?['namaLengkap']?.toString().split(' ')[0] ?? 'Lawan'),
+                                  provider.activeBattle!['challengerId'] ==
+                                          provider.memberId
+                                      ? (provider.activeBattle!['opponent']
+                                                  ?['namaLengkap']
+                                              ?.toString()
+                                              .substring(0, 1)
+                                              .toUpperCase() ??
+                                          'L')
+                                      : (provider.activeBattle!['challenger']
+                                                  ?['namaLengkap']
+                                              ?.toString()
+                                              .substring(0, 1)
+                                              .toUpperCase() ??
+                                          'L'),
+                                  provider.activeBattle!['challengerId'] ==
+                                          provider.memberId
+                                      ? (provider.activeBattle!['opponent']
+                                                  ?['namaLengkap']
+                                              ?.toString()
+                                              .split(' ')[0] ??
+                                          'Lawan')
+                                      : (provider.activeBattle!['challenger']
+                                                  ?['namaLengkap']
+                                              ?.toString()
+                                              .split(' ')[0] ??
+                                          'Lawan'),
                                   '$p2 XP',
                                 ),
                               ],
                             ),
                             const SizedBox(height: 20),
                             Container(
-                              decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(16)),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              decoration: BoxDecoration(
+                                  color: Colors.white10,
+                                  borderRadius: BorderRadius.circular(16)),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
                               child: Column(
                                 children: [
-                                  _buildComparisonRow('XP Mingguan', '$p1', '$p2'),
-                                  const Divider(color: Colors.white30, height: 16),
-                                  _buildComparisonRow('Streak Belajar', '${provider.streak} Hari', provider.activeBattle != null ? '${provider.activeBattle!['opponentStreak'] ?? 0} Hari' : '0 Hari'),
+                                  _buildComparisonRow(
+                                      'XP Mingguan', '$p1', '$p2'),
+                                  const Divider(
+                                      color: Colors.white30, height: 16),
+                                  _buildComparisonRow(
+                                      'Streak Belajar',
+                                      '${provider.streak} Hari',
+                                      provider.activeBattle != null
+                                          ? '${provider.activeBattle!['opponentStreak'] ?? 0} Hari'
+                                          : '0 Hari'),
                                 ],
                               ),
                             ),
@@ -103,70 +154,112 @@ class BattleView extends StatelessWidget {
                                   ? 'Berakhir pada: ${DateTime.tryParse(provider.activeBattleEndDate!)?.toLocal().toString().split(' ')[0] ?? provider.activeBattleEndDate}'
                                   : 'Berakhir: Minggu 23:59',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.white60, fontSize: 9, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
                       ),
                     ),
                   if (provider.activeBattle != null) const SizedBox(height: 24),
-                  const Text('Riwayat Bertanding', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                  const Text('Riwayat Bertanding',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF475569))),
                   const SizedBox(height: 12),
                   provider.historyList.isEmpty
                       ? Container(
-                          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 24, horizontal: 16),
                           decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
+                            border: Border.all(
+                                color: const Color(0xFFCBD5E1), width: 2),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: const Text(
                             'Belum ada riwayat pertandingan.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
                           ),
                         )
                       : Container(
-                          decoration: BoxDecoration(border: Border.all(color: const Color(0xFFCBD5E1), width: 2), borderRadius: BorderRadius.circular(24)),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: const Color(0xFFCBD5E1), width: 2),
+                              borderRadius: BorderRadius.circular(24)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           child: ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: provider.historyList.length,
-                            separatorBuilder: (c, i) => const Divider(color: Colors.grey, height: 16),
+                            separatorBuilder: (c, i) =>
+                                const Divider(color: Colors.grey, height: 16),
                             itemBuilder: (context, index) {
                               final item = provider.historyList[index];
                               final bool isWin = item.result == 'Menang';
                               return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
                                       Container(
                                         width: 64,
                                         decoration: BoxDecoration(
-                                          color: isWin ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2),
-                                          borderRadius: BorderRadius.circular(6),
-                                          border: Border.all(color: isWin ? const Color(0xFF86EFAC) : const Color(0xFFFECACA)),
+                                          color: isWin
+                                              ? const Color(0xFFDCFCE7)
+                                              : const Color(0xFFFEE2E2),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          border: Border.all(
+                                              color: isWin
+                                                  ? const Color(0xFF86EFAC)
+                                                  : const Color(0xFFFECACA)),
                                         ),
-                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
                                         alignment: Alignment.center,
                                         child: Text(
                                           item.result,
-                                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: isWin ? const Color(0xFF16A34A) : const Color(0xFFEF4444)),
+                                          style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.bold,
+                                              color: isWin
+                                                  ? const Color(0xFF16A34A)
+                                                  : const Color(0xFFEF4444)),
                                         ),
                                       ),
                                       const SizedBox(width: 12),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text('vs ${item.opponent}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                                          Text('vs ${item.opponent}',
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF64748B))),
                                           if (item.date != null)
-                                            Text(item.date!, style: const TextStyle(fontSize: 9, color: Colors.grey)),
+                                            Text(item.date!,
+                                                style: const TextStyle(
+                                                    fontSize: 9,
+                                                    color: Colors.grey)),
                                         ],
                                       ),
                                     ],
                                   ),
-                                  Text('${item.points} poin', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.orange)),
+                                  Text('${item.points} poin',
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.orange)),
                                 ],
                               );
                             },
@@ -191,12 +284,24 @@ class BattleView extends StatelessWidget {
           child: CircleAvatar(
             radius: 36,
             backgroundColor: Colors.grey.shade300,
-            child: Text(initials, style: TextStyle(color: Colors.grey.shade700, fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Text(initials,
+                style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold)),
           ),
         ),
         const SizedBox(height: 8),
-        Text(name, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-        Text(subText, style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.w500)),
+        Text(name,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold)),
+        Text(subText,
+            style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 10,
+                fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -205,9 +310,24 @@ class BattleView extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(flex: 2, child: Text(metric, style: const TextStyle(color: Colors.white, fontSize: 11))),
-        Expanded(child: Text(userVal, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFFF83A4C), fontSize: 11, fontWeight: FontWeight.bold))),
-        Expanded(child: Text(oppVal, textAlign: TextAlign.right, style: const TextStyle(color: Color(0xFF39C2F6), fontSize: 11, fontWeight: FontWeight.bold))),
+        Expanded(
+            flex: 2,
+            child: Text(metric,
+                style: const TextStyle(color: Colors.white, fontSize: 11))),
+        Expanded(
+            child: Text(userVal,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Color(0xFFF83A4C),
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold))),
+        Expanded(
+            child: Text(oppVal,
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                    color: Color(0xFF39C2F6),
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold))),
       ],
     );
   }
@@ -252,7 +372,10 @@ class _EmptyBattleCardState extends State<_EmptyBattleCard> {
           children: [
             const Text(
               'Belum Ada Pertandingan',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
@@ -279,19 +402,24 @@ class _EmptyBattleCardState extends State<_EmptyBattleCard> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFACC15),
                 foregroundColor: const Color(0xFF0F172A),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               icon: _busy
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(color: Color(0xFF0F172A), strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                          color: Color(0xFF0F172A), strokeWidth: 2),
                     )
                   : const Icon(Icons.flash_on, size: 18),
               label: const Text(
                 'CARI LAWAN SEKARANG',
-                style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1, fontSize: 12),
+                style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                    fontSize: 12),
               ),
             ),
           ],

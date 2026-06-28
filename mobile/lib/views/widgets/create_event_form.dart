@@ -36,7 +36,8 @@ class _CreateEventFormState extends State<CreateEventForm> {
 
   Future<void> _pickDate({required bool isStart}) async {
     final now = DateTime.now();
-    final initial = isStart ? (_startDate ?? now) : (_endDate ?? (_startDate ?? now));
+    final initial =
+        isStart ? (_startDate ?? now) : (_endDate ?? (_startDate ?? now));
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
@@ -50,7 +51,8 @@ class _CreateEventFormState extends State<CreateEventForm> {
       initialTime: TimeOfDay(hour: initial.hour, minute: initial.minute),
     );
     if (time == null) return;
-    final result = DateTime(picked.year, picked.month, picked.day, time.hour, time.minute);
+    final result =
+        DateTime(picked.year, picked.month, picked.day, time.hour, time.minute);
     setState(() {
       if (isStart) {
         _startDate = result;
@@ -101,8 +103,18 @@ class _CreateEventFormState extends State<CreateEventForm> {
   String _formatDateTime(DateTime? d) {
     if (d == null) return 'Pilih tanggal & jam';
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
     ];
     return '${d.day} ${months[d.month - 1]} ${d.year} • ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
   }
@@ -140,7 +152,10 @@ class _CreateEventFormState extends State<CreateEventForm> {
                   SizedBox(width: 8),
                   Text(
                     'Buat Event Koperasi',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A)),
                   ),
                 ],
               ),
@@ -157,7 +172,8 @@ class _CreateEventFormState extends State<CreateEventForm> {
                   labelStyle: const TextStyle(fontSize: 12),
                   filled: true,
                   fillColor: const Color(0xFFF8FAFC),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   prefixIcon: const Icon(Icons.celebration, size: 18),
                 ),
                 style: const TextStyle(fontSize: 12),
@@ -171,7 +187,8 @@ class _CreateEventFormState extends State<CreateEventForm> {
                   labelStyle: const TextStyle(fontSize: 12),
                   filled: true,
                   fillColor: const Color(0xFFF8FAFC),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
                 style: const TextStyle(fontSize: 12),
               ),
@@ -195,24 +212,29 @@ class _CreateEventFormState extends State<CreateEventForm> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFACC15),
                   foregroundColor: const Color(0xFF0F172A),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: _busy
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(color: Color(0xFF0F172A), strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                            color: Color(0xFF0F172A), strokeWidth: 2),
                       )
                     : const Text(
                         'BUAT EVENT',
-                        style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, letterSpacing: 1),
                       ),
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: _busy ? null : () => Navigator.pop(context),
-                child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                child: const Text('Batal',
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold)),
               ),
             ],
           ),
@@ -251,14 +273,20 @@ class _DatePickerTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: isEmpty ? const Color(0xFFDC2626) : const Color(0xFF16A34A), size: 18),
+            Icon(icon,
+                color:
+                    isEmpty ? const Color(0xFFDC2626) : const Color(0xFF16A34A),
+                size: 18),
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -266,7 +294,9 @@ class _DatePickerTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: isEmpty ? const Color(0xFFDC2626) : const Color(0xFF166534),
+                    color: isEmpty
+                        ? const Color(0xFFDC2626)
+                        : const Color(0xFF166534),
                   ),
                 ),
               ],

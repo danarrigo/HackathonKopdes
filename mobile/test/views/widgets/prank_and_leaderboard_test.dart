@@ -10,7 +10,11 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   final List<dynamic> _lbKoperasi;
   final List<dynamic> _lbProv;
   final List<dynamic> _lbNas;
-  _StubProvider({String? activeEffect, List<dynamic>? lbKoperasi, List<dynamic>? lbProv, List<dynamic>? lbNas})
+  _StubProvider(
+      {String? activeEffect,
+      List<dynamic>? lbKoperasi,
+      List<dynamic>? lbProv,
+      List<dynamic>? lbNas})
       : _activeEffect = activeEffect,
         _lbKoperasi = lbKoperasi ?? const [],
         _lbProv = lbProv ?? const [],
@@ -43,7 +47,17 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String?> login(String a, String b) async => null;
   @override
-  Future<bool> signup({required String email, required String password, required String nik, required String fullName, String provinsi = '', String kabupaten = '', String kecamatan = '', String desa = '', required String koperasi}) async => true;
+  Future<bool> signup(
+          {required String email,
+          required String password,
+          required String nik,
+          required String fullName,
+          String provinsi = '',
+          String kabupaten = '',
+          String kecamatan = '',
+          String desa = '',
+          required String koperasi}) async =>
+      true;
   @override
   Future<void> logout() async {}
   @override
@@ -51,7 +65,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> buyShopItem(item) async => '';
   @override
-  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async => '';
+  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async =>
+      '';
   @override
   Future<String> submitVote(String choice) async => '';
   @override
@@ -63,15 +78,28 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> payDuesFromWallet(String type) async => '';
   @override
-  Future<String> depositSavingsFromWallet(int amount, String description) async => '';
+  Future<String> depositSavingsFromWallet(
+          int amount, String description) async =>
+      '';
   @override
-  Future<String> listMarketplaceItem({required String name, String description = '', required int priceInPoints, required int stock, String? imageUrl}) async => '';
+  Future<String> listMarketplaceItem(
+          {required String name,
+          String description = '',
+          required int priceInPoints,
+          required int stock,
+          String? imageUrl}) async =>
+      '';
   @override
   Future<String> buyMarketplaceItem(int itemId) async => '';
   @override
   Future<String> joinEvent(int eventId) async => '';
   @override
-  Future<String> createEvent({required String name, String description = '', required DateTime startDate, required DateTime endDate}) async => '';
+  Future<String> createEvent(
+          {required String name,
+          String description = '',
+          required DateTime startDate,
+          required DateTime endDate}) async =>
+      '';
   @override
   Future<String> matchmakeBattle() async => '';
   @override
@@ -81,7 +109,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-Widget _wrap(Widget child, KoperasiProvider p) => ChangeNotifierProvider<KoperasiProvider>.value(
+Widget _wrap(Widget child, KoperasiProvider p) =>
+    ChangeNotifierProvider<KoperasiProvider>.value(
       value: p,
       child: MaterialApp(home: child),
     );
@@ -95,7 +124,9 @@ void main() {
       expect(find.text('💥 KENA PRANK! 💥'), findsNothing);
     });
 
-    testWidgets('renders shake banner with effect name when active effect is set', (tester) async {
+    testWidgets(
+        'renders shake banner with effect name when active effect is set',
+        (tester) async {
       final p = _StubProvider(activeEffect: 'Sakit Jantung');
       // PrankOverlay uses Positioned.fill, so it must be inside a Stack
       await tester.pumpWidget(_wrap(
@@ -127,11 +158,24 @@ void main() {
       expect(find.textContaining('Belum ada data'), findsOneWidget);
     });
 
-    testWidgets('renders top rows with ANDA badge for current member', (tester) async {
+    testWidgets('renders top rows with ANDA badge for current member',
+        (tester) async {
       final p = _StubProvider(
         lbKoperasi: [
-          {'id': 1, 'namaLengkap': 'Saya', 'level': 5, 'xp': 500, 'pointsBalance': 100},
-          {'id': 2, 'namaLengkap': 'Andi', 'level': 3, 'xp': 300, 'pointsBalance': 50},
+          {
+            'id': 1,
+            'namaLengkap': 'Saya',
+            'level': 5,
+            'xp': 500,
+            'pointsBalance': 100
+          },
+          {
+            'id': 2,
+            'namaLengkap': 'Andi',
+            'level': 3,
+            'xp': 300,
+            'pointsBalance': 50
+          },
         ],
       );
       await tester.pumpWidget(_wrap(
@@ -146,10 +190,30 @@ void main() {
 
     testWidgets('switches to Provinsi scope on tab tap', (tester) async {
       final p = _StubProvider(
-        lbKoperasi: [{'id': 1, 'namaLengkap': 'X', 'level': 1, 'xp': 10, 'pointsBalance': 5}],
+        lbKoperasi: [
+          {
+            'id': 1,
+            'namaLengkap': 'X',
+            'level': 1,
+            'xp': 10,
+            'pointsBalance': 5
+          }
+        ],
         lbProv: [
-          {'id': 2, 'namaLengkap': 'Y-Prov', 'level': 4, 'xp': 40, 'pointsBalance': 20},
-          {'id': 3, 'namaLengkap': 'Z-Prov', 'level': 3, 'xp': 30, 'pointsBalance': 15},
+          {
+            'id': 2,
+            'namaLengkap': 'Y-Prov',
+            'level': 4,
+            'xp': 40,
+            'pointsBalance': 20
+          },
+          {
+            'id': 3,
+            'namaLengkap': 'Z-Prov',
+            'level': 3,
+            'xp': 30,
+            'pointsBalance': 15
+          },
         ],
       );
       await tester.pumpWidget(_wrap(

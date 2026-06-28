@@ -32,11 +32,15 @@ class MembersDirectoryView extends StatelessWidget {
                   Center(
                     child: Column(
                       children: [
-                        Icon(Icons.group_outlined, color: Colors.grey, size: 48),
+                        Icon(Icons.group_outlined,
+                            color: Colors.grey, size: 48),
                         SizedBox(height: 12),
                         Text(
                           'Belum ada anggota aktif.',
-                          style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -64,7 +68,9 @@ class MembersDirectoryView extends StatelessWidget {
                         color: isMe ? const Color(0xFFFEF9C3) : Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: isMe ? const Color(0xFFFACC15) : const Color(0xFFE2E8F0),
+                          color: isMe
+                              ? const Color(0xFFFACC15)
+                              : const Color(0xFFE2E8F0),
                           width: isMe ? 1.5 : 1,
                         ),
                       ),
@@ -75,14 +81,18 @@ class MembersDirectoryView extends StatelessWidget {
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: isMe ? const Color(0xFFFACC15) : const Color(0xFF0F172A),
+                              color: isMe
+                                  ? const Color(0xFFFACC15)
+                                  : const Color(0xFF0F172A),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: Text(
                                 _initials(m['namaLengkap']?.toString() ?? 'A'),
                                 style: TextStyle(
-                                  color: isMe ? const Color(0xFF0F172A) : Colors.white,
+                                  color: isMe
+                                      ? const Color(0xFF0F172A)
+                                      : Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w900,
                                 ),
@@ -98,7 +108,8 @@ class MembersDirectoryView extends StatelessWidget {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        m['namaLengkap']?.toString() ?? 'Anggota',
+                                        m['namaLengkap']?.toString() ??
+                                            'Anggota',
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
@@ -110,14 +121,19 @@ class MembersDirectoryView extends StatelessWidget {
                                     if (isMe) ...[
                                       const SizedBox(width: 4),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 1),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFF0F172A),
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
                                         ),
                                         child: const Text(
                                           'ANDA',
-                                          style: TextStyle(fontSize: 7, fontWeight: FontWeight.w900, color: Colors.white),
+                                          style: TextStyle(
+                                              fontSize: 7,
+                                              fontWeight: FontWeight.w900,
+                                              color: Colors.white),
                                         ),
                                       ),
                                     ],
@@ -126,18 +142,23 @@ class MembersDirectoryView extends StatelessWidget {
                                 const SizedBox(height: 2),
                                 Text(
                                   'No. ${m['nomorAnggota']?.toString() ?? '-'}',
-                                  style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 if (m['desa'] != null) ...[
                                   const SizedBox(height: 2),
                                   Row(
                                     children: [
-                                      const Icon(Icons.location_on, size: 10, color: Colors.grey),
+                                      const Icon(Icons.location_on,
+                                          size: 10, color: Colors.grey),
                                       const SizedBox(width: 2),
                                       Flexible(
                                         child: Text(
                                           '${m['desa']}, ${m['kecamatan'] ?? ''}',
-                                          style: const TextStyle(fontSize: 10, color: Colors.grey),
+                                          style: const TextStyle(
+                                              fontSize: 10, color: Colors.grey),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -147,7 +168,8 @@ class MembersDirectoryView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+                          const Icon(Icons.chevron_right,
+                              color: Colors.grey, size: 20),
                         ],
                       ),
                     ),

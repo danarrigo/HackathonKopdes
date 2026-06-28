@@ -18,15 +18,19 @@ class HomeView extends StatelessWidget {
     final provider = context.watch<KoperasiProvider>();
     final int totalSimpanan = provider.totalSimpanan > 0
         ? provider.totalSimpanan
-        : provider.simpananPokok + provider.simpananWajib + provider.simpananSukarela;
-    final double progress = (provider.points / provider.nextLevelPoints).clamp(0.0, 1.0);
+        : provider.simpananPokok +
+            provider.simpananWajib +
+            provider.simpananSukarela;
+    final double progress =
+        (provider.points / provider.nextLevelPoints).clamp(0.0, 1.0);
     final missions = provider.missions.where((m) => m.isDaily).toList();
 
     void showSnackBar(String message) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+          content: Text(message,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
         ),
@@ -43,9 +47,11 @@ class HomeView extends StatelessWidget {
             Container(
               decoration: const BoxDecoration(
                 color: Color(0xFF0F172A),
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(32)),
               ),
-              padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
+              padding: const EdgeInsets.only(
+                  top: 60, left: 24, right: 24, bottom: 40),
               child: Column(
                 children: [
                   Row(
@@ -56,13 +62,20 @@ class HomeView extends StatelessWidget {
                         children: [
                           Text(
                             'Halo, ${provider.fullName != null && provider.fullName!.isNotEmpty ? provider.fullName!.split(' ')[0] : 'Anggota'}!',
-                            style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500),
+                            style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            provider.isMemberActive ? 'Anggota Aktif' : 'Anggota Nonaktif',
+                            provider.isMemberActive
+                                ? 'Anggota Aktif'
+                                : 'Anggota Nonaktif',
                             style: TextStyle(
-                              color: provider.isMemberActive ? Colors.white : const Color(0xFFEF4444),
+                              color: provider.isMemberActive
+                                  ? Colors.white
+                                  : const Color(0xFFEF4444),
                               fontSize: 28,
                               fontWeight: FontWeight.w900,
                               letterSpacing: -0.5,
@@ -71,18 +84,25 @@ class HomeView extends StatelessWidget {
                           const SizedBox(height: 4),
                           const Text(
                             'Koperasi Merah Putih Desa Sukamaju',
-                            style: TextStyle(color: Colors.white60, fontSize: 11),
+                            style:
+                                TextStyle(color: Colors.white60, fontSize: 11),
                           ),
                         ],
                       ),
                       Container(
-                        decoration: const BoxDecoration(color: Color(0x1AFFFFFF), shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                            color: Color(0x1AFFFFFF), shape: BoxShape.circle),
                         padding: const EdgeInsets.all(12),
                         child: const Stack(
                           clipBehavior: Clip.none,
                           children: [
-                            Icon(Icons.notifications, color: Colors.white, size: 24),
-                            Positioned(top: 0, right: 0, child: CircleAvatar(radius: 4, backgroundColor: Colors.red))
+                            Icon(Icons.notifications,
+                                color: Colors.white, size: 24),
+                            Positioned(
+                                top: 0,
+                                right: 0,
+                                child: CircleAvatar(
+                                    radius: 4, backgroundColor: Colors.red))
                           ],
                         ),
                       ),
@@ -97,14 +117,18 @@ class HomeView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: Colors.white12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text('🔥 ', style: TextStyle(fontSize: 12)),
                           Text(
                             '${provider.streak} hari Streak',
-                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -128,7 +152,8 @@ class HomeView extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626), size: 28),
+                          const Icon(Icons.warning_amber_rounded,
+                              color: Color(0xFFDC2626), size: 28),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -136,14 +161,18 @@ class HomeView extends StatelessWidget {
                               children: [
                                 const Text(
                                   'Keanggotaan Nonaktif',
-                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF991B1B)),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF991B1B)),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   !provider.isPokokPaid
                                       ? 'Harap bayar Simpanan Pokok (Rp 100.000) agar status aktif.'
                                       : 'Harap bayar Simpanan Wajib Bulan Ini (Rp 50.000) agar status aktif.',
-                                  style: const TextStyle(fontSize: 10, color: Color(0xFF7F1D1D)),
+                                  style: const TextStyle(
+                                      fontSize: 10, color: Color(0xFF7F1D1D)),
                                 ),
                               ],
                             ),
@@ -153,7 +182,8 @@ class HomeView extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const SimpananView()),
+                                MaterialPageRoute(
+                                    builder: (context) => const SimpananView()),
                               );
                             },
                             style: TextButton.styleFrom(
@@ -162,7 +192,9 @@ class HomeView extends StatelessWidget {
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            child: const Text('BAYAR', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            child: const Text('BAYAR',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12)),
                           ),
                         ],
                       ),
@@ -173,7 +205,8 @@ class HomeView extends StatelessWidget {
                     child: Card(
                       color: Colors.white,
                       surfaceTintColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24)),
                       elevation: 4,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -181,12 +214,18 @@ class HomeView extends StatelessWidget {
                           Container(
                             decoration: const BoxDecoration(
                               color: Color(0xFF718096),
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(24)),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 20),
                             child: const Text(
                               'TOTAL SIMPANAN',
-                              style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5),
                             ),
                           ),
                           Padding(
@@ -196,15 +235,22 @@ class HomeView extends StatelessWidget {
                               children: [
                                 Text(
                                   'Rp ${totalSimpanan.toString().replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (Match m) => "${m[1]}.")},00',
-                                  style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                                  style: const TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF0F172A)),
                                 ),
                                 const SizedBox(height: 16),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    _buildSavingsDetail('Pokok', provider.simpananPokok),
-                                    _buildSavingsDetail('Wajib', provider.simpananWajib),
-                                    _buildSavingsDetail('Sukarela', provider.simpananSukarela),
+                                    _buildSavingsDetail(
+                                        'Pokok', provider.simpananPokok),
+                                    _buildSavingsDetail(
+                                        'Wajib', provider.simpananWajib),
+                                    _buildSavingsDetail(
+                                        'Sukarela', provider.simpananSukarela),
                                   ],
                                 ),
                                 const SizedBox(height: 20),
@@ -212,20 +258,30 @@ class HomeView extends StatelessWidget {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => const SimpananView()),
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SimpananView()),
                                     );
                                   },
                                   style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: Colors.black26),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                    side:
+                                        const BorderSide(color: Colors.black26),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
                                   ),
                                   child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text('Mutasi Saldo', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+                                      Text('Mutasi Saldo',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold)),
                                       SizedBox(width: 6),
-                                      Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
+                                      Icon(Icons.arrow_forward,
+                                          size: 14, color: Colors.grey),
                                     ],
                                   ),
                                 ),
@@ -252,18 +308,29 @@ class HomeView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text(
                                     'SALDO POIN',
-                                    style: TextStyle(color: Color(0xFF854D0E), fontSize: 14, fontWeight: FontWeight.w900),
+                                    style: TextStyle(
+                                        color: Color(0xFF854D0E),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w900),
                                   ),
                                   Container(
-                                    decoration: BoxDecoration(color: const Color(0xFFFCD34D), borderRadius: BorderRadius.circular(20)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFFFCD34D),
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 4),
                                     child: Text(
                                       provider.rankName,
-                                      style: const TextStyle(color: Color(0xFF854D0E), fontSize: 10, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          color: Color(0xFF854D0E),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ],
@@ -271,29 +338,41 @@ class HomeView extends StatelessWidget {
                               const SizedBox(height: 16),
                               Row(
                                 children: [
-                                  const Icon(Icons.stars, color: Color(0xFFFACC15), size: 48),
+                                  const Icon(Icons.stars,
+                                      color: Color(0xFFFACC15), size: 48),
                                   const SizedBox(width: 12),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
                                         textBaseline: TextBaseline.alphabetic,
                                         children: [
                                           Text(
                                             provider.points.toString(),
-                                            style: const TextStyle(color: Color(0xFFFACC15), fontSize: 32, fontWeight: FontWeight.w900),
+                                            style: const TextStyle(
+                                                color: Color(0xFFFACC15),
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.w900),
                                           ),
                                           const SizedBox(width: 4),
                                           const Text(
                                             'Poin',
-                                            style: TextStyle(color: Color(0xFFFACC15), fontSize: 18, fontWeight: FontWeight.bold),
+                                            style: TextStyle(
+                                                color: Color(0xFFFACC15),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
                                       Text(
                                         'Anggota ${provider.rankName}',
-                                        style: const TextStyle(color: Color(0xFF854D0E), fontSize: 10, fontWeight: FontWeight.w800),
+                                        style: const TextStyle(
+                                            color: Color(0xFF854D0E),
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w800),
                                       ),
                                     ],
                                   ),
@@ -304,15 +383,22 @@ class HomeView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         '${provider.nextLevelPoints - provider.points > 0 ? "${provider.nextLevelPoints - provider.points} poin lagi menuju ${provider.nextRankName}" : "${provider.nextRankName} Tercapai!"}',
-                                        style: const TextStyle(fontSize: 8, color: Colors.grey, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                            fontSize: 8,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         '${provider.points} / ${provider.nextLevelPoints}',
-                                        style: const TextStyle(fontSize: 8, color: Colors.black87, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                            fontSize: 8,
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -322,8 +408,11 @@ class HomeView extends StatelessWidget {
                                     child: LinearProgressIndicator(
                                       value: progress,
                                       minHeight: 6,
-                                      backgroundColor: Colors.white.withOpacity(0.5),
-                                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFACC15)),
+                                      backgroundColor:
+                                          Colors.white.withOpacity(0.5),
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                              Color(0xFFFACC15)),
                                     ),
                                   ),
                                 ],
@@ -334,7 +423,8 @@ class HomeView extends StatelessWidget {
                         Card(
                           color: Colors.white,
                           surfaceTintColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24)),
                           elevation: 1,
                           child: Padding(
                             padding: const EdgeInsets.all(20),
@@ -342,15 +432,22 @@ class HomeView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 const Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Misi Hari Ini',
-                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF64748B)),
                                     ),
                                     Text(
                                       'Klaim hadiah',
-                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFFBBF24)),
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFFFBBF24)),
                                     ),
                                   ],
                                 ),
@@ -358,30 +455,43 @@ class HomeView extends StatelessWidget {
                                 ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: missions.length > 4 ? 4 : missions.length,
-                                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                                  itemCount:
+                                      missions.length > 4 ? 4 : missions.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 12),
                                   itemBuilder: (context, index) {
                                     final m = missions[index];
                                     return Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 m.title,
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
-                                                  color: m.isCompleted ? Colors.grey : const Color(0xFF64748B),
-                                                  decoration: m.isCompleted ? TextDecoration.lineThrough : null,
+                                                  color: m.isCompleted
+                                                      ? Colors.grey
+                                                      : const Color(0xFF64748B),
+                                                  decoration: m.isCompleted
+                                                      ? TextDecoration
+                                                          .lineThrough
+                                                      : null,
                                                 ),
                                               ),
                                               const SizedBox(height: 2),
                                               Text(
                                                 'Progres: ${m.progress} / ${m.targetCount}  •  +${m.points} XP',
-                                                style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                                                style: const TextStyle(
+                                                    fontSize: 10,
+                                                    color: Colors.grey,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ],
                                           ),
@@ -403,9 +513,14 @@ class HomeView extends StatelessWidget {
                                   child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Text('Kelola Misi Selengkapnya', style: TextStyle(color: Color(0xFFFBBF24), fontSize: 11, fontWeight: FontWeight.bold)),
+                                      Text('Kelola Misi Selengkapnya',
+                                          style: TextStyle(
+                                              color: Color(0xFFFBBF24),
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold)),
                                       SizedBox(width: 4),
-                                      Icon(Icons.arrow_forward, size: 12, color: Color(0xFFFBBF24)),
+                                      Icon(Icons.arrow_forward,
+                                          size: 12, color: Color(0xFFFBBF24)),
                                     ],
                                   ),
                                 )
@@ -425,7 +540,10 @@ class HomeView extends StatelessWidget {
                             children: [
                               const Text(
                                 'Koperasi Hari ini',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
                               ),
                               const SizedBox(height: 16),
                               GridView.count(
@@ -436,10 +554,20 @@ class HomeView extends StatelessWidget {
                                 mainAxisSpacing: 12,
                                 childAspectRatio: 1.5,
                                 children: [
-                                  _buildCoopStat(Icons.swap_horiz, '${provider.kopTransaksi}', 'Transaksi'),
-                                  _buildCoopStat(Icons.attach_money, provider.kopOmzet > 0 ? 'Rp ${provider.kopOmzet}Jt' : '-', 'Omzet Harian'),
-                                  _buildCoopStat(Icons.groups, '${provider.kopAnggotaBaru}', 'Anggota Baru'),
-                                  _buildCoopStat(Icons.storefront, '${provider.kopUmkm}', 'UMKM Aktif'),
+                                  _buildCoopStat(Icons.swap_horiz,
+                                      '${provider.kopTransaksi}', 'Transaksi'),
+                                  _buildCoopStat(
+                                      Icons.attach_money,
+                                      provider.kopOmzet > 0
+                                          ? 'Rp ${provider.kopOmzet}Jt'
+                                          : '-',
+                                      'Omzet Harian'),
+                                  _buildCoopStat(
+                                      Icons.groups,
+                                      '${provider.kopAnggotaBaru}',
+                                      'Anggota Baru'),
+                                  _buildCoopStat(Icons.storefront,
+                                      '${provider.kopUmkm}', 'UMKM Aktif'),
                                 ],
                               ),
                             ],
@@ -470,8 +598,12 @@ class HomeView extends StatelessWidget {
     if (m.isCompleted) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(20)),
-        child: const Text('SELESAI', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
+        decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(20)),
+        child: const Text('SELESAI',
+            style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
       );
     }
     if (m.isClaimable) {
@@ -482,21 +614,37 @@ class HomeView extends StatelessWidget {
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(color: const Color(0xFFFACC15), borderRadius: BorderRadius.circular(20)),
-          child: const Text('KLAIM', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+          decoration: BoxDecoration(
+              color: const Color(0xFFFACC15),
+              borderRadius: BorderRadius.circular(20)),
+          child: const Text('KLAIM',
+              style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0F172A))),
         ),
       );
     }
-    return Text('+${m.points} XP', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFFBBF24)));
+    return Text('+${m.points} XP',
+        style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFFBBF24)));
   }
 
   Widget _buildSavingsDetail(String label, int val) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
         const SizedBox(height: 2),
-        Text('Rp ${(val / 1000).toStringAsFixed(0)}rb', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF334155)))
+        Text('Rp ${(val / 1000).toStringAsFixed(0)}rb',
+            style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF334155)))
       ],
     );
   }
@@ -514,8 +662,16 @@ class HomeView extends StatelessWidget {
         children: [
           Icon(icon, color: Colors.grey, size: 20),
           const SizedBox(height: 4),
-          Text(val, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFF1E293B))),
-          Text(title, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
+          Text(val,
+              style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF1E293B))),
+          Text(title,
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey)),
         ],
       ),
     );

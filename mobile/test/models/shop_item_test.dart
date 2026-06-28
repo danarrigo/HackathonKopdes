@@ -33,7 +33,8 @@ void main() {
 
   group('ShopItem effectType icon mapping', () {
     test('freeze_streak returns ac_unit icon', () {
-      final s = ShopItem(id: 1, title: 'X', cost: 1, effectType: 'freeze_streak');
+      final s =
+          ShopItem(id: 1, title: 'X', cost: 1, effectType: 'freeze_streak');
       expect(s.icon, Icons.ac_unit);
     });
 

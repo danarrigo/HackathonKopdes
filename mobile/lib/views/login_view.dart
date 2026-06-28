@@ -85,12 +85,17 @@ class _LoginViewState extends State<LoginView> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(Icons.account_balance, size: 72, color: Color(0xFFFACC15)),
+              const Icon(Icons.account_balance,
+                  size: 72, color: Color(0xFFFACC15)),
               const SizedBox(height: 16),
               const Text(
                 'Koperasi Sukamaju',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w900, letterSpacing: -0.5),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5),
               ),
               const SizedBox(height: 6),
               const Text(
@@ -110,7 +115,8 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.lock_clock, color: Colors.amber, size: 18),
+                      const Icon(Icons.lock_clock,
+                          color: Colors.amber, size: 18),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -129,8 +135,16 @@ class _LoginViewState extends State<LoginView> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(color: Colors.redAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.redAccent.withOpacity(0.3))),
-                  child: Text(_errorMessage!, style: const TextStyle(color: Colors.redAccent, fontSize: 11, fontWeight: FontWeight.bold)),
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                      border:
+                          Border.all(color: Colors.redAccent.withOpacity(0.3))),
+                  child: Text(_errorMessage!,
+                      style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold)),
                 ),
               TextField(
                 controller: _emailController,
@@ -140,7 +154,9 @@ class _LoginViewState extends State<LoginView> {
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: const Color(0xFF1E293B),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none),
                   prefixIcon: const Icon(Icons.email, color: Colors.white70),
                 ),
               ),
@@ -154,7 +170,9 @@ class _LoginViewState extends State<LoginView> {
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: const Color(0xFF1E293B),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none),
                   prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                 ),
               ),
@@ -163,22 +181,38 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: _isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFACC15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: _isLoading
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2))
-                    : const Text('Masuk', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                            color: Colors.black, strokeWidth: 2))
+                    : const Text('Masuk',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14)),
               ),
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupView()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupView()));
                 },
                 child: const Text(
                   'Belum memiliki akun? Daftar Sekarang',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Color(0xFFFACC15), fontSize: 11, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                  style: TextStyle(
+                      color: Color(0xFFFACC15),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline),
                 ),
               ),
             ],

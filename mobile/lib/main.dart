@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: Consumer<KoperasiProvider>(
-          builder: (context, provider, _) => provider.isLoggedIn ? const MainNavigationWrapper() : const LoginView(),
+          builder: (context, provider, _) => provider.isLoggedIn
+              ? const MainNavigationWrapper()
+              : const LoginView(),
         ),
       ),
     );
@@ -105,7 +107,8 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
           color: Color(0xFF0B1120),
           border: Border(top: BorderSide(color: Colors.white10, width: 0.5)),
           boxShadow: [
-            BoxShadow(color: Colors.black45, blurRadius: 20, offset: Offset(0, -4))
+            BoxShadow(
+                color: Colors.black45, blurRadius: 20, offset: Offset(0, -4))
           ],
         ),
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
@@ -140,13 +143,17 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutCubic,
-          padding: EdgeInsets.symmetric(vertical: isActive ? 6 : 4, horizontal: 1),
+          padding:
+              EdgeInsets.symmetric(vertical: isActive ? 6 : 4, horizontal: 1),
           decoration: isActive
               ? BoxDecoration(
                   color: const Color(0xFF1E293B),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
-                    BoxShadow(color: const Color(0xFFFACC15).withOpacity(0.18), blurRadius: 8, offset: const Offset(0, 3)),
+                    BoxShadow(
+                        color: const Color(0xFFFACC15).withOpacity(0.18),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3)),
                   ],
                 )
               : const BoxDecoration(color: Colors.transparent),
@@ -157,10 +164,16 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
                 duration: const Duration(milliseconds: 250),
                 child: Icon(
                   icon,
-                  color: isActive ? const Color(0xFFFACC15) : const Color(0xFF64748B),
+                  color: isActive
+                      ? const Color(0xFFFACC15)
+                      : const Color(0xFF64748B),
                   size: isActive ? 22 : 20,
                   shadows: isActive
-                      ? [Shadow(color: const Color(0xFFFACC15).withOpacity(0.5), blurRadius: 8)]
+                      ? [
+                          Shadow(
+                              color: const Color(0xFFFACC15).withOpacity(0.5),
+                              blurRadius: 8)
+                        ]
                       : null,
                 ),
               ),
@@ -168,12 +181,15 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper> {
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 250),
                 style: TextStyle(
-                  color: isActive ? const Color(0xFFFACC15) : const Color(0xFF64748B),
+                  color: isActive
+                      ? const Color(0xFFFACC15)
+                      : const Color(0xFF64748B),
                   fontSize: isActive ? 9 : 8,
                   fontWeight: isActive ? FontWeight.w900 : FontWeight.w600,
                   fontFamily: 'Inter',
                 ),
-                child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+                child:
+                    Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
               ),
             ],
           ),

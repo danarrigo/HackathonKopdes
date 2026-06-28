@@ -10,7 +10,8 @@ class MisiView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<KoperasiProvider>();
-    final double progress = (provider.points / provider.nextLevelPoints).clamp(0.0, 1.0);
+    final double progress =
+        (provider.points / provider.nextLevelPoints).clamp(0.0, 1.0);
 
     return RefreshIndicator(
       onRefresh: () => provider.fetchData(),
@@ -21,7 +22,8 @@ class MisiView extends StatelessWidget {
           children: [
             Container(
               color: const Color(0xFF131926),
-              padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
+              padding: const EdgeInsets.only(
+                  top: 60, left: 24, right: 24, bottom: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -30,17 +32,25 @@ class MisiView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        decoration: const BoxDecoration(color: Color(0xFFFCD34D), borderRadius: BorderRadius.all(Radius.circular(20))),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        decoration: const BoxDecoration(
+                            color: Color(0xFFFCD34D),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
                         margin: const EdgeInsets.only(bottom: 12),
                         child: Text(
                           'Rank: ${provider.rankName}',
-                          style: const TextStyle(color: Color(0xFF78350F), fontSize: 12, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              color: Color(0xFF78350F),
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       Text(
                         '${provider.points} / ${provider.nextLevelPoints} poin menuju ${provider.nextRankName}',
-                        style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
+                        style: const TextStyle(
+                            color: Color(0xFF94A3B8), fontSize: 10),
                       ),
                       const SizedBox(height: 6),
                       ClipRRect(
@@ -69,7 +79,10 @@ class MisiView extends StatelessWidget {
                       ),
                       Text(
                         '${provider.level}',
-                        style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900),
                       ),
                     ],
                   )
@@ -91,15 +104,29 @@ class MisiView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Streak Mingguan', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                          const Text('Streak Mingguan',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold)),
                           const SizedBox(height: 16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: provider.weeklyStreakDays.entries.map((entry) {
+                            children:
+                                provider.weeklyStreakDays.entries.map((entry) {
                               final day = entry.key;
                               final done = entry.value;
-                              final dayLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-                              final todayLabel = dayLabels[(DateTime.now().weekday - 1) % 7];
+                              final dayLabels = [
+                                'Sen',
+                                'Sel',
+                                'Rab',
+                                'Kam',
+                                'Jum',
+                                'Sab',
+                                'Min'
+                              ];
+                              final todayLabel =
+                                  dayLabels[(DateTime.now().weekday - 1) % 7];
                               final bool isToday = day == todayLabel;
 
                               return Column(
@@ -111,23 +138,39 @@ class MisiView extends StatelessWidget {
                                       color: isToday
                                           ? const Color(0xFF84CC16)
                                           : done
-                                              ? const Color(0xFF4D7C0F).withOpacity(0.5)
+                                              ? const Color(0xFF4D7C0F)
+                                                  .withOpacity(0.5)
                                               : Colors.transparent,
                                       border: isToday
-                                          ? Border.all(color: const Color(0xFF84CC16))
+                                          ? Border.all(
+                                              color: const Color(0xFF84CC16))
                                           : done
-                                              ? Border.all(color: const Color(0xFF84CC16))
-                                              : Border.all(color: const Color(0xFF475569), width: 2),
+                                              ? Border.all(
+                                                  color:
+                                                      const Color(0xFF84CC16))
+                                              : Border.all(
+                                                  color:
+                                                      const Color(0xFF475569),
+                                                  width: 2),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: isToday
-                                        ? const Icon(Icons.local_fire_department, color: Colors.white, size: 20)
+                                        ? const Icon(
+                                            Icons.local_fire_department,
+                                            color: Colors.white,
+                                            size: 20)
                                         : done
-                                            ? const Icon(Icons.check_circle, color: Colors.white, size: 18)
+                                            ? const Icon(Icons.check_circle,
+                                                color: Colors.white, size: 18)
                                             : null,
                                   ),
                                   const SizedBox(height: 6),
-                                  Text(day, style: TextStyle(color: done || isToday ? Colors.white : Colors.grey, fontSize: 9)),
+                                  Text(day,
+                                      style: TextStyle(
+                                          color: done || isToday
+                                              ? Colors.white
+                                              : Colors.grey,
+                                          fontSize: 9)),
                                 ],
                               );
                             }).toList(),
@@ -135,7 +178,8 @@ class MisiView extends StatelessWidget {
                           const SizedBox(height: 16),
                           const Text(
                             'Pertahankan Streak! Bonus +50 poin di akhir minggu',
-                            style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
+                            style: TextStyle(
+                                color: Color(0xFF94A3B8), fontSize: 10),
                           )
                         ],
                       ),
@@ -144,7 +188,11 @@ class MisiView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Misi Harian', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+                      const Text('Misi Harian',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF334155))),
                       _buildResetCountdown(),
                     ],
                   ),
@@ -156,15 +204,26 @@ class MisiView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Toko Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                      Text('Saldo: ${provider.points} Poin', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                      const Text('Toko Item',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF475569))),
+                      Text('Saldo: ${provider.points} Poin',
+                          style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFF59E0B))),
                     ],
                   ),
                   const SizedBox(height: 12),
                   provider.shopItems.isEmpty
                       ? const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Text('Belum ada item di toko.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                          child: Text('Belum ada item di toko.',
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12)),
                         )
                       : GridView.count(
                           crossAxisCount: 2,
@@ -173,7 +232,9 @@ class MisiView extends StatelessWidget {
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                           childAspectRatio: 0.72,
-                          children: provider.shopItems.map((item) => _buildShopItemCard(context, item)).toList(),
+                          children: provider.shopItems
+                              .map((item) => _buildShopItemCard(context, item))
+                              .toList(),
                         ),
                   const SizedBox(height: 20),
                 ],
@@ -185,7 +246,8 @@ class MisiView extends StatelessWidget {
     );
   }
 
-  Widget _buildMissionSectionCard(BuildContext context, String title, bool isDaily) {
+  Widget _buildMissionSectionCard(
+      BuildContext context, String title, bool isDaily) {
     final provider = context.read<KoperasiProvider>();
     final list = provider.missions.where((m) => m.isDaily == isDaily).toList();
 
@@ -198,19 +260,25 @@ class MisiView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF334155))),
+            Text(title,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF334155))),
             const SizedBox(height: 16),
             if (list.isEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text('Belum ada misi tersedia.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                child: Text('Belum ada misi tersedia.',
+                    style: TextStyle(color: Colors.grey, fontSize: 12)),
               )
             else
               ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: list.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final m = list[index];
                   return _MissionRow(mission: m);
@@ -229,7 +297,8 @@ class MisiView extends StatelessWidget {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+          content: Text(message,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
         ),
@@ -252,19 +321,34 @@ class MisiView extends StatelessWidget {
             Container(
               width: 44,
               height: 44,
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(12)),
               child: Icon(item.icon, color: item.iconColor, size: 24),
             ),
             const SizedBox(height: 8),
-            Text(item.title, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+            Text(item.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
-            Expanded(child: Text(item.description, textAlign: TextAlign.center, maxLines: 3, style: const TextStyle(color: Colors.white70, fontSize: 8.5))),
+            Expanded(
+                child: Text(item.description,
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 8.5))),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('⭐', style: TextStyle(fontSize: 10)),
                 const SizedBox(width: 2),
-                Text('${item.cost} poin', style: const TextStyle(color: Color(0xFFFCD34D), fontSize: 11, fontWeight: FontWeight.bold)),
+                Text('${item.cost} poin',
+                    style: const TextStyle(
+                        color: Color(0xFFFCD34D),
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 8),
@@ -283,7 +367,10 @@ class MisiView extends StatelessWidget {
                 alignment: Alignment.center,
                 child: const Text(
                   'Beli',
-                  style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -295,7 +382,8 @@ class MisiView extends StatelessWidget {
 
   Widget _buildResetCountdown() {
     final now = DateTime.now();
-    final midnight = DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
+    final midnight =
+        DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
     final diff = midnight.difference(now);
     final hours = diff.inHours;
     final minutes = diff.inMinutes % 60;
@@ -312,7 +400,10 @@ class MisiView extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             'Reset ${hours}j ${minutes}m',
-            style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFFB45309)),
+            style: const TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFB45309)),
           ),
         ],
       ),
@@ -332,7 +423,8 @@ class _MissionRow extends StatelessWidget {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
+          content: Text(message,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
         ),
@@ -352,14 +444,20 @@ class _MissionRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: mission.isCompleted ? Colors.grey : const Color(0xFF475569),
-                  decoration: mission.isCompleted ? TextDecoration.lineThrough : null,
+                  color: mission.isCompleted
+                      ? Colors.grey
+                      : const Color(0xFF475569),
+                  decoration:
+                      mission.isCompleted ? TextDecoration.lineThrough : null,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 'Progres: ${mission.progress} / ${mission.targetCount}',
-                style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -368,23 +466,40 @@ class _MissionRow extends StatelessWidget {
         if (mission.isCompleted)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(20)),
-            child: const Text('SELESAI', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(20)),
+            child: const Text('SELESAI',
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey)),
           )
         else if (mission.isClaimable)
           GestureDetector(
             onTap: () async {
-              final msg = await provider.claimMission(mission.id, mission.points);
+              final msg =
+                  await provider.claimMission(mission.id, mission.points);
               showSnackBar(msg);
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(color: const Color(0xFFFACC15), borderRadius: BorderRadius.circular(20)),
-              child: const Text('KLAIM', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFFACC15),
+                  borderRadius: BorderRadius.circular(20)),
+              child: const Text('KLAIM',
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0F172A))),
             ),
           )
         else
-          Text('+${mission.points} XP', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFFACC15))),
+          Text('+${mission.points} XP',
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFACC15))),
       ],
     );
   }

@@ -22,7 +22,9 @@ class MemberDetailView extends StatelessWidget {
 
     // Try to find member's rank in current leaderboard (for the profile card gradient)
     int? memberLevel;
-    final inCoopLb = provider.leaderboardByKoperasi.where((m) => m['id'] == member['id']).toList();
+    final inCoopLb = provider.leaderboardByKoperasi
+        .where((m) => m['id'] == member['id'])
+        .toList();
     if (inCoopLb.isNotEmpty) {
       memberLevel = (inCoopLb.first['level'] as num?)?.toInt();
     }
@@ -45,7 +47,8 @@ class MemberDetailView extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                 ),
-                padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 20),
+                padding: const EdgeInsets.only(
+                    top: 60, left: 20, right: 20, bottom: 20),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -55,12 +58,16 @@ class MemberDetailView extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
-                        border: Border.all(color: const Color(0xFFFACC15), width: 3),
+                        border: Border.all(
+                            color: const Color(0xFFFACC15), width: 3),
                       ),
                       child: Center(
                         child: Text(
                           initials,
-                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF0F172A)),
                         ),
                       ),
                     ),
@@ -82,7 +89,8 @@ class MemberDetailView extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(6),
@@ -101,7 +109,10 @@ class MemberDetailView extends StatelessWidget {
                           const SizedBox(height: 6),
                           Text(
                             'No. ${member['nomorAnggota']?.toString() ?? '-'}',
-                            style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -125,7 +136,8 @@ class MemberDetailView extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.workspace_premium, color: Color(0xFF0F172A)),
+                        const Icon(Icons.workspace_premium,
+                            color: Color(0xFF0F172A)),
                         const SizedBox(width: 8),
                         Text(
                           'Level $memberLevel',
@@ -154,10 +166,13 @@ class MemberDetailView extends StatelessWidget {
                     _InfoRow(
                       icon: Icons.check_circle,
                       label: 'Status',
-                      value: (member['statusAnggota']?.toString() ?? 'active').toUpperCase(),
-                      valueColor: (member['statusAnggota']?.toString() ?? 'active') == 'active'
-                          ? const Color(0xFF16A34A)
-                          : const Color(0xFFDC2626),
+                      value: (member['statusAnggota']?.toString() ?? 'active')
+                          .toUpperCase(),
+                      valueColor:
+                          (member['statusAnggota']?.toString() ?? 'active') ==
+                                  'active'
+                              ? const Color(0xFF16A34A)
+                              : const Color(0xFFDC2626),
                     ),
                   ],
                 ),
@@ -266,7 +281,10 @@ class _InfoRow extends StatelessWidget {
             width: 110,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 11,
+                  color: Color(0xFF64748B),
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(

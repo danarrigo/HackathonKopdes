@@ -5,7 +5,8 @@ import 'package:mobile/providers/koperasi_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  testWidgets('App boots and shows LoginView when not logged in', (tester) async {
+  testWidgets('App boots and shows LoginView when not logged in',
+      (tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pump();
     expect(find.text('Koperasi Sukamaju'), findsOneWidget);
@@ -14,7 +15,8 @@ void main() {
     expect(find.textContaining('Daftar Sekarang'), findsOneWidget);
   });
 
-  testWidgets('MainNavigationWrapper renders 7 bottom nav items when logged in', (tester) async {
+  testWidgets('MainNavigationWrapper renders 7 bottom nav items when logged in',
+      (tester) async {
     final fake = ChangeNotifierProvider<KoperasiProvider>(
       create: (_) {
         // Bypass real loadSavedSession to keep test deterministic

@@ -76,7 +76,9 @@ class _SignupViewState extends State<SignupView> {
       if (res.statusCode == 200) {
         final List data = json.decode(res.body);
         setState(() {
-          _provinces = data.map<_LocationItem>((j) => _LocationItem.fromJson(j)).toList();
+          _provinces = data
+              .map<_LocationItem>((j) => _LocationItem.fromJson(j))
+              .toList();
         });
       }
     } catch (e) {
@@ -98,12 +100,15 @@ class _SignupViewState extends State<SignupView> {
     if (provId.isEmpty) return;
     try {
       final res = await http.get(
-        Uri.parse('https://ibnux.github.io/data-indonesia/kabupaten/$provId.json'),
+        Uri.parse(
+            'https://ibnux.github.io/data-indonesia/kabupaten/$provId.json'),
       );
       if (res.statusCode == 200) {
         final List data = json.decode(res.body);
         setState(() {
-          _regencies = data.map<_LocationItem>((j) => _LocationItem.fromJson(j)).toList();
+          _regencies = data
+              .map<_LocationItem>((j) => _LocationItem.fromJson(j))
+              .toList();
         });
       }
     } catch (e) {
@@ -122,12 +127,15 @@ class _SignupViewState extends State<SignupView> {
     if (regId.isEmpty) return;
     try {
       final res = await http.get(
-        Uri.parse('https://ibnux.github.io/data-indonesia/kecamatan/$regId.json'),
+        Uri.parse(
+            'https://ibnux.github.io/data-indonesia/kecamatan/$regId.json'),
       );
       if (res.statusCode == 200) {
         final List data = json.decode(res.body);
         setState(() {
-          _districts = data.map<_LocationItem>((j) => _LocationItem.fromJson(j)).toList();
+          _districts = data
+              .map<_LocationItem>((j) => _LocationItem.fromJson(j))
+              .toList();
         });
       }
     } catch (e) {
@@ -143,12 +151,15 @@ class _SignupViewState extends State<SignupView> {
     if (distId.isEmpty) return;
     try {
       final res = await http.get(
-        Uri.parse('https://ibnux.github.io/data-indonesia/kelurahan/$distId.json'),
+        Uri.parse(
+            'https://ibnux.github.io/data-indonesia/kelurahan/$distId.json'),
       );
       if (res.statusCode == 200) {
         final List data = json.decode(res.body);
         setState(() {
-          _villages = data.map<_LocationItem>((j) => _LocationItem.fromJson(j)).toList();
+          _villages = data
+              .map<_LocationItem>((j) => _LocationItem.fromJson(j))
+              .toList();
         });
       }
     } catch (e) {
@@ -206,12 +217,14 @@ class _SignupViewState extends State<SignupView> {
 
   @override
   Widget build(BuildContext context) {
-    final koperasiName = _selectedDesaName.isNotEmpty ? 'Koperasi $_selectedDesaName' : '';
+    final koperasiName =
+        _selectedDesaName.isNotEmpty ? 'Koperasi $_selectedDesaName' : '';
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
       appBar: AppBar(
-        title: const Text('Daftar Akun', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text('Daftar Akun',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF0F172A),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
@@ -239,14 +252,19 @@ class _SignupViewState extends State<SignupView> {
                   decoration: BoxDecoration(
                     color: Colors.redAccent.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+                    border:
+                        Border.all(color: Colors.redAccent.withOpacity(0.3)),
                   ),
                   child: Text(
                     _errorMessage!,
-                    style: const TextStyle(color: Colors.redAccent, fontSize: 11, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-              _buildTextField(_namaCtrl, 'Nama Lengkap', Icons.person, 'John Doe'),
+              _buildTextField(
+                  _namaCtrl, 'Nama Lengkap', Icons.person, 'John Doe'),
               const SizedBox(height: 12),
               _buildTextField(
                 _nikCtrl,
@@ -256,7 +274,8 @@ class _SignupViewState extends State<SignupView> {
                 validator: (v) {
                   final s = v ?? '';
                   if (s.isEmpty) return 'Bagian ini harus diisi.';
-                  if (!RegExp(r'^\d{16}$').hasMatch(s)) return 'NIK harus tepat 16 digit angka.';
+                  if (!RegExp(r'^\d{16}$').hasMatch(s))
+                    return 'NIK harus tepat 16 digit angka.';
                   return null;
                 },
                 keyboardType: TextInputType.number,
@@ -271,7 +290,8 @@ class _SignupViewState extends State<SignupView> {
                 validator: (v) {
                   final s = v ?? '';
                   if (s.isEmpty) return 'Bagian ini harus diisi.';
-                  if (!RegExp(r'^[\w.+-]+@[\w-]+\.[\w.-]+$').hasMatch(s)) return 'Email tidak valid.';
+                  if (!RegExp(r'^[\w.+-]+@[\w-]+\.[\w.-]+$').hasMatch(s))
+                    return 'Email tidak valid.';
                   return null;
                 },
                 keyboardType: TextInputType.emailAddress,
@@ -297,14 +317,20 @@ class _SignupViewState extends State<SignupView> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Informasi Domisili & Koperasi',
-                    style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
               _buildDropdown(
                 label: 'Provinsi',
                 value: _selectedProvName.isEmpty ? null : _selectedProvName,
-                items: _provinces.map((p) => DropdownMenuItem(value: p.nama, child: Text(p.nama))).toList(),
+                items: _provinces
+                    .map((p) =>
+                        DropdownMenuItem(value: p.nama, child: Text(p.nama)))
+                    .toList(),
                 hint: 'Pilih Provinsi',
                 onChanged: (val) {
                   if (val == null) return;
@@ -320,7 +346,10 @@ class _SignupViewState extends State<SignupView> {
               _buildDropdown(
                 label: 'Kabupaten/Kota',
                 value: _selectedRegName.isEmpty ? null : _selectedRegName,
-                items: _regencies.map((r) => DropdownMenuItem(value: r.nama, child: Text(r.nama))).toList(),
+                items: _regencies
+                    .map((r) =>
+                        DropdownMenuItem(value: r.nama, child: Text(r.nama)))
+                    .toList(),
                 hint: 'Pilih Kabupaten/Kota',
                 disabled: _selectedProvId.isEmpty || _regencies.isEmpty,
                 onChanged: (val) {
@@ -337,7 +366,10 @@ class _SignupViewState extends State<SignupView> {
               _buildDropdown(
                 label: 'Kecamatan',
                 value: _selectedDistName.isEmpty ? null : _selectedDistName,
-                items: _districts.map((d) => DropdownMenuItem(value: d.nama, child: Text(d.nama))).toList(),
+                items: _districts
+                    .map((d) =>
+                        DropdownMenuItem(value: d.nama, child: Text(d.nama)))
+                    .toList(),
                 hint: 'Pilih Kecamatan',
                 disabled: _selectedRegId.isEmpty || _districts.isEmpty,
                 onChanged: (val) {
@@ -354,7 +386,10 @@ class _SignupViewState extends State<SignupView> {
               _buildDropdown(
                 label: 'Desa/Kelurahan',
                 value: _selectedDesaName.isEmpty ? null : _selectedDesaName,
-                items: _villages.map((v) => DropdownMenuItem(value: v.nama, child: Text(v.nama))).toList(),
+                items: _villages
+                    .map((v) =>
+                        DropdownMenuItem(value: v.nama, child: Text(v.nama)))
+                    .toList(),
                 hint: 'Pilih Desa',
                 disabled: _selectedDistId.isEmpty || _villages.isEmpty,
                 onChanged: (val) {
@@ -370,7 +405,10 @@ class _SignupViewState extends State<SignupView> {
                 value: koperasiName.isEmpty ? null : koperasiName,
                 items: koperasiName.isEmpty
                     ? []
-                    : [DropdownMenuItem(value: koperasiName, child: Text(koperasiName))],
+                    : [
+                        DropdownMenuItem(
+                            value: koperasiName, child: Text(koperasiName))
+                      ],
                 hint: 'Pilih Koperasi yang tersedia di Desa Anda',
                 disabled: _selectedDesaName.isEmpty,
                 onChanged: null,
@@ -388,18 +426,23 @@ class _SignupViewState extends State<SignupView> {
                 onPressed: _isLoading ? null : _handleSignup,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFACC15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: _isLoading
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(color: Colors.black, strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                            color: Colors.black, strokeWidth: 2),
                       )
                     : const Text(
                         'Buat Akun',
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14),
                       ),
               ),
             ],
@@ -433,7 +476,9 @@ class _SignupViewState extends State<SignupView> {
         hintStyle: const TextStyle(color: Colors.white38, fontSize: 12),
         filled: true,
         fillColor: const Color(0xFF1E293B),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none),
         prefixIcon: Icon(icon, color: Colors.white70),
         counterText: '',
       ),
@@ -451,7 +496,11 @@ class _SignupViewState extends State<SignupView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold)),
+        Text(label,
+            style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 13,
+                fontWeight: FontWeight.bold)),
         const SizedBox(height: 6),
         Opacity(
           opacity: disabled ? 0.5 : 1.0,
@@ -470,10 +519,17 @@ class _SignupViewState extends State<SignupView> {
                     ? null
                     : [
                         if (value == null)
-                          DropdownMenuItem(value: '', enabled: false, child: Text(hint, style: const TextStyle(color: Colors.white38))),
+                          DropdownMenuItem(
+                              value: '',
+                              enabled: false,
+                              child: Text(hint,
+                                  style:
+                                      const TextStyle(color: Colors.white38))),
                         ...items,
                       ],
-                hint: Text(hint, style: const TextStyle(color: Colors.white38, fontSize: 13)),
+                hint: Text(hint,
+                    style:
+                        const TextStyle(color: Colors.white38, fontSize: 13)),
                 onChanged: onChanged,
                 isExpanded: true,
                 iconEnabledColor: Colors.white70,

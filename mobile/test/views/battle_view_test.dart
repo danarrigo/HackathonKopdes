@@ -10,7 +10,10 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   final List<HistoryItem> _history;
   bool matchmakeCalled = false;
   String matchmakeReturnMessage;
-  _StubProvider({Map<String, dynamic>? activeBattle, List<HistoryItem>? history, this.matchmakeReturnMessage = 'Lawan ditemukan!'})
+  _StubProvider(
+      {Map<String, dynamic>? activeBattle,
+      List<HistoryItem>? history,
+      this.matchmakeReturnMessage = 'Lawan ditemukan!'})
       : _activeBattle = activeBattle,
         _history = history ?? const [];
 
@@ -35,7 +38,17 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String?> login(String a, String b) async => null;
   @override
-  Future<bool> signup({required String email, required String password, required String nik, required String fullName, String provinsi = '', String kabupaten = '', String kecamatan = '', String desa = '', required String koperasi}) async => true;
+  Future<bool> signup(
+          {required String email,
+          required String password,
+          required String nik,
+          required String fullName,
+          String provinsi = '',
+          String kabupaten = '',
+          String kecamatan = '',
+          String desa = '',
+          required String koperasi}) async =>
+      true;
   @override
   Future<void> logout() async {}
   @override
@@ -43,7 +56,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> buyShopItem(item) async => '';
   @override
-  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async => '';
+  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async =>
+      '';
   @override
   Future<String> submitVote(String choice) async => '';
   @override
@@ -55,20 +69,34 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> payDuesFromWallet(String type) async => '';
   @override
-  Future<String> depositSavingsFromWallet(int amount, String description) async => '';
+  Future<String> depositSavingsFromWallet(
+          int amount, String description) async =>
+      '';
   @override
-  Future<String> listMarketplaceItem({required String name, String description = '', required int priceInPoints, required int stock, String? imageUrl}) async => '';
+  Future<String> listMarketplaceItem(
+          {required String name,
+          String description = '',
+          required int priceInPoints,
+          required int stock,
+          String? imageUrl}) async =>
+      '';
   @override
   Future<String> buyMarketplaceItem(int itemId) async => '';
   @override
   Future<String> joinEvent(int eventId) async => '';
   @override
-  Future<String> createEvent({required String name, String description = '', required DateTime startDate, required DateTime endDate}) async => '';
+  Future<String> createEvent(
+          {required String name,
+          String description = '',
+          required DateTime startDate,
+          required DateTime endDate}) async =>
+      '';
   @override
   Future<String> matchmakeBattle() async {
     matchmakeCalled = true;
     return matchmakeReturnMessage;
   }
+
   @override
   Future<String?> checkActiveEffect() async => null;
 
@@ -76,13 +104,16 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-Widget _wrap(Widget child, KoperasiProvider p) => ChangeNotifierProvider<KoperasiProvider>.value(
+Widget _wrap(Widget child, KoperasiProvider p) =>
+    ChangeNotifierProvider<KoperasiProvider>.value(
       value: p,
       child: MaterialApp(home: Scaffold(body: child)),
     );
 
 void main() {
-  testWidgets('BattleView shows empty state with Cari Lawan button when no active battle', (tester) async {
+  testWidgets(
+      'BattleView shows empty state with Cari Lawan button when no active battle',
+      (tester) async {
     final p = _StubProvider();
     await tester.pumpWidget(_wrap(const BattleView(), p));
     await tester.pump();
@@ -102,7 +133,9 @@ void main() {
     expect(p.matchmakeCalled, isTrue);
   });
 
-  testWidgets('BattleView shows "Riwayat Bertanding" history list when history exists', (tester) async {
+  testWidgets(
+      'BattleView shows "Riwayat Bertanding" history list when history exists',
+      (tester) async {
     final p = _StubProvider(
       activeBattle: {
         'id': 1,
@@ -115,7 +148,11 @@ void main() {
         'challenger': {'namaLengkap': 'Budi Test'},
       },
       history: [
-        HistoryItem(opponent: 'Andi', result: 'Menang', points: 100, date: '2026-06-22'),
+        HistoryItem(
+            opponent: 'Andi',
+            result: 'Menang',
+            points: 100,
+            date: '2026-06-22'),
       ],
     );
     await tester.pumpWidget(_wrap(const BattleView(), p));

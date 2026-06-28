@@ -67,7 +67,13 @@ void main() {
             'success': true,
             'data': {
               'dashboard': {
-                'progress': {'pointsBalance': 0, 'xp': 0, 'currentStreak': 0, 'level': 25, 'lastActivityDate': null},
+                'progress': {
+                  'pointsBalance': 0,
+                  'xp': 0,
+                  'currentStreak': 0,
+                  'level': 25,
+                  'lastActivityDate': null
+                },
                 'transactions': [],
                 'level': 25,
               },
@@ -90,7 +96,13 @@ void main() {
             'success': true,
             'data': {
               'dashboard': {
-                'progress': {'pointsBalance': 0, 'xp': 0, 'currentStreak': 0, 'level': 45, 'lastActivityDate': null},
+                'progress': {
+                  'pointsBalance': 0,
+                  'xp': 0,
+                  'currentStreak': 0,
+                  'level': 45,
+                  'lastActivityDate': null
+                },
                 'transactions': [],
                 'level': 45,
               },
@@ -108,7 +120,9 @@ void main() {
   });
 
   group('fetchData parses new data sources', () {
-    test('populates marketplaceItems, events, joinedEventIds, activeMembers, activeLoan, activeEffect, leaderboard scopes', () async {
+    test(
+        'populates marketplaceItems, events, joinedEventIds, activeMembers, activeLoan, activeEffect, leaderboard scopes',
+        () async {
       final mock = MockClient((req) async {
         return http.Response(
           json.encode({
@@ -127,14 +141,22 @@ void main() {
               },
               'marketplaceItems': [
                 {
-                  'id': 1, 'name': 'Buku', 'description': 'Buku tulis', 'priceInPoints': 50, 'stock': 2, 'sellerId': 5,
+                  'id': 1,
+                  'name': 'Buku',
+                  'description': 'Buku tulis',
+                  'priceInPoints': 50,
+                  'stock': 2,
+                  'sellerId': 5,
                   'seller': {'namaLengkap': 'Andi'}
                 }
               ],
               'events': [
                 {
-                  'id': 1, 'name': 'Senam', 'description': 'Senam pagi',
-                  'startDate': '2026-07-01T07:00:00.000Z', 'endDate': '2026-07-01T08:00:00.000Z',
+                  'id': 1,
+                  'name': 'Senam',
+                  'description': 'Senam pagi',
+                  'startDate': '2026-07-01T07:00:00.000Z',
+                  'endDate': '2026-07-01T08:00:00.000Z',
                   'cooperativeId': 1
                 }
               ],
@@ -142,16 +164,39 @@ void main() {
               'activeMembers': [
                 {'id': 5, 'namaLengkap': 'Andi', 'nomorAnggota': 'A001'}
               ],
-              'activeLoan': {'id': 1, 'amount': 500000, 'interestRate': 2, 'status': 'pending'},
+              'activeLoan': {
+                'id': 1,
+                'amount': 500000,
+                'interestRate': 2,
+                'status': 'pending'
+              },
               'activeEffect': 'Sakit Jantung',
               'leaderboard': [
-                {'id': 5, 'namaLengkap': 'Andi', 'level': 12, 'xp': 2500, 'pointsBalance': 1500}
+                {
+                  'id': 5,
+                  'namaLengkap': 'Andi',
+                  'level': 12,
+                  'xp': 2500,
+                  'pointsBalance': 1500
+                }
               ],
               'leaderboardByProvinsi': [
-                {'id': 6, 'namaLengkap': 'Budi', 'level': 9, 'xp': 1800, 'pointsBalance': 900}
+                {
+                  'id': 6,
+                  'namaLengkap': 'Budi',
+                  'level': 9,
+                  'xp': 1800,
+                  'pointsBalance': 900
+                }
               ],
               'leaderboardByNasional': [
-                {'id': 7, 'namaLengkap': 'Citra', 'level': 40, 'xp': 50000, 'pointsBalance': 30000}
+                {
+                  'id': 7,
+                  'namaLengkap': 'Citra',
+                  'level': 40,
+                  'xp': 50000,
+                  'pointsBalance': 30000
+                }
               ],
             }
           }),
@@ -195,14 +240,17 @@ void main() {
         return http.Response(
           json.encode({
             'success': true,
-            'data': {'dashboard': {'progress': {}, 'transactions': []}}
+            'data': {
+              'dashboard': {'progress': {}, 'transactions': []}
+            }
           }),
           200,
           headers: {'content-type': 'application/json'},
         );
       });
       final p = _newProviderWith(mock);
-      final msg = await p.listMarketplaceItem(name: 'Tas', priceInPoints: 100, stock: 1);
+      final msg = await p.listMarketplaceItem(
+          name: 'Tas', priceInPoints: 100, stock: 1);
       expect(msg, contains('berhasil'));
     });
 
@@ -237,7 +285,9 @@ void main() {
         return http.Response(
           json.encode({
             'success': true,
-            'data': {'dashboard': {'progress': {}, 'transactions': []}}
+            'data': {
+              'dashboard': {'progress': {}, 'transactions': []}
+            }
           }),
           200,
           headers: {'content-type': 'application/json'},
@@ -340,7 +390,8 @@ void main() {
     test('fetchData on 401 clears session and sets sessionExpired', () async {
       final mock = MockClient((req) async {
         return http.Response(
-          json.encode({'success': false, 'error': 'Invalid or expired session token'}),
+          json.encode(
+              {'success': false, 'error': 'Invalid or expired session token'}),
           401,
           headers: {'content-type': 'application/json'},
         );
@@ -362,10 +413,14 @@ void main() {
       expect(p.activeEffect, isNull);
     });
 
-    test('fetchData on 403 (no member profile) sets account-not-linked error', () async {
+    test('fetchData on 403 (no member profile) sets account-not-linked error',
+        () async {
       final mock = MockClient((req) async {
         return http.Response(
-          json.encode({'success': false, 'error': 'No member profile linked to this account'}),
+          json.encode({
+            'success': false,
+            'error': 'No member profile linked to this account'
+          }),
           403,
           headers: {'content-type': 'application/json'},
         );
@@ -407,7 +462,8 @@ void main() {
       final mock = MockClient((req) async {
         if (req.url.path.endsWith('/api/auth/login')) {
           return http.Response(
-            json.encode({'success': false, 'error': 'Invalid login credentials'}),
+            json.encode(
+                {'success': false, 'error': 'Invalid login credentials'}),
             400,
             headers: {'content-type': 'application/json'},
           );
@@ -420,7 +476,8 @@ void main() {
       expect(p.isLoggedIn, isFalse);
     });
 
-    test('login with 500 returns user-friendly error, does not throw', () async {
+    test('login with 500 returns user-friendly error, does not throw',
+        () async {
       final mock = MockClient((req) async {
         return http.Response('boom', 500,
             headers: {'content-type': 'text/plain'});
@@ -458,7 +515,9 @@ void main() {
         return http.Response(
           json.encode({
             'success': true,
-            'data': {'dashboard': {'progress': {}, 'transactions': []}}
+            'data': {
+              'dashboard': {'progress': {}, 'transactions': []}
+            }
           }),
           200,
           headers: {'content-type': 'application/json'},
@@ -475,11 +534,16 @@ void main() {
       expect(p.sessionExpired, isFalse);
     });
 
-    test('action POST on 401 also triggers session expiry + returns sessionExpired flag', () async {
+    test(
+        'action POST on 401 also triggers session expiry + returns sessionExpired flag',
+        () async {
       final mock = MockClient((req) async {
         if (req.url.path.endsWith('/action')) {
           return http.Response(
-            json.encode({'success': false, 'error': 'Invalid or expired session token'}),
+            json.encode({
+              'success': false,
+              'error': 'Invalid or expired session token'
+            }),
             401,
             headers: {'content-type': 'application/json'},
           );

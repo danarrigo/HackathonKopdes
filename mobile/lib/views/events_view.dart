@@ -30,10 +30,28 @@ class _EventsViewState extends State<EventsView> {
 
   String _formatFullDate(DateTime d) {
     const months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember'
     ];
-    const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+    const days = [
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu'
+    ];
     return '${days[d.weekday - 1]}, ${d.day} ${months[d.month - 1]} ${d.year}';
   }
 
@@ -41,9 +59,8 @@ class _EventsViewState extends State<EventsView> {
   Widget build(BuildContext context) {
     final provider = context.watch<KoperasiProvider>();
     final weekDays = _getWeekDays();
-    final selectedDayEvents = provider.events
-        .where((e) => e.occursOn(_selectedDate))
-        .toList();
+    final selectedDayEvents =
+        provider.events.where((e) => e.occursOn(_selectedDate)).toList();
     final canCreate = provider.level >= 20;
 
     return RefreshIndicator(
@@ -57,13 +74,17 @@ class _EventsViewState extends State<EventsView> {
               children: [
                 Container(
                   color: const Color(0xFF0F172A),
-                  padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 24),
+                  padding: const EdgeInsets.only(
+                      top: 60, left: 24, right: 24, bottom: 24),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Event Koperasi',
-                        style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 4),
                       Text(
@@ -94,21 +115,29 @@ class _EventsViewState extends State<EventsView> {
                               children: [
                                 const Text(
                                   'Kalender Mingguan',
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF1E293B)),
                                 ),
                                 GestureDetector(
                                   onTap: () => setState(() {
                                     _selectedDate = DateTime.now();
                                   }),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFACC15).withOpacity(0.15),
+                                      color: const Color(0xFFFACC15)
+                                          .withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: const Text(
                                       'Hari Ini',
-                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFB45309)),
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFFB45309)),
                                     ),
                                   ),
                                 ),
@@ -118,24 +147,32 @@ class _EventsViewState extends State<EventsView> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: weekDays.map((day) {
-                                final isSelected = _isSameDay(day, _selectedDate);
+                                final isSelected =
+                                    _isSameDay(day, _selectedDate);
                                 final isToday = _isSameDay(day, DateTime.now());
-                                final hasEvents = provider.events.any((e) => e.occursOn(day));
+                                final hasEvents =
+                                    provider.events.any((e) => e.occursOn(day));
                                 return Expanded(
                                   child: GestureDetector(
-                                    onTap: () => setState(() => _selectedDate = day),
+                                    onTap: () =>
+                                        setState(() => _selectedDate = day),
                                     child: Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
                                       decoration: BoxDecoration(
                                         color: isSelected
                                             ? const Color(0xFFFACC15)
                                             : isToday
-                                                ? const Color(0xFFFACC15).withOpacity(0.1)
+                                                ? const Color(0xFFFACC15)
+                                                    .withOpacity(0.1)
                                                 : Colors.transparent,
                                         borderRadius: BorderRadius.circular(12),
                                         border: isToday && !isSelected
-                                            ? Border.all(color: const Color(0xFFFACC15), width: 1)
+                                            ? Border.all(
+                                                color: const Color(0xFFFACC15),
+                                                width: 1)
                                             : null,
                                       ),
                                       child: Column(
@@ -145,7 +182,9 @@ class _EventsViewState extends State<EventsView> {
                                             style: TextStyle(
                                               fontSize: 9,
                                               fontWeight: FontWeight.bold,
-                                              color: isSelected ? const Color(0xFF0F172A) : Colors.grey,
+                                              color: isSelected
+                                                  ? const Color(0xFF0F172A)
+                                                  : Colors.grey,
                                             ),
                                           ),
                                           const SizedBox(height: 2),
@@ -168,7 +207,9 @@ class _EventsViewState extends State<EventsView> {
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               color: hasEvents
-                                                  ? (isSelected ? const Color(0xFF0F172A) : const Color(0xFFFACC15))
+                                                  ? (isSelected
+                                                      ? const Color(0xFF0F172A)
+                                                      : const Color(0xFFFACC15))
                                                   : Colors.transparent,
                                             ),
                                           ),
@@ -187,25 +228,34 @@ class _EventsViewState extends State<EventsView> {
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Text(
                           'Jadwal: ${_formatFullDate(_selectedDate)}',
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E293B)),
                         ),
                       ),
                       const SizedBox(height: 8),
                       if (selectedDayEvents.isEmpty)
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 32, horizontal: 16),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
+                            border: Border.all(
+                                color: const Color(0xFFCBD5E1), width: 2),
                           ),
                           child: const Column(
                             children: [
-                              Icon(Icons.event_busy, color: Colors.grey, size: 36),
+                              Icon(Icons.event_busy,
+                                  color: Colors.grey, size: 36),
                               SizedBox(height: 8),
                               Text(
                                 'Tidak ada event di hari ini.',
-                                style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -223,12 +273,16 @@ class _EventsViewState extends State<EventsView> {
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.emoji_events, color: Color(0xFFB45309), size: 18),
+                              Icon(Icons.emoji_events,
+                                  color: Color(0xFFB45309), size: 18),
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Anda dapat membuat event baru (Level 20+).',
-                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFB45309)),
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFFB45309)),
                                 ),
                               ),
                             ],
@@ -244,12 +298,16 @@ class _EventsViewState extends State<EventsView> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.lock, color: Colors.grey, size: 18),
+                              const Icon(Icons.lock,
+                                  color: Colors.grey, size: 18),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Pembuatan event hanya untuk Level 20+ (Emas). Level Anda: ${provider.level} (${provider.rankName}).',
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF475569)),
+                                  style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF475569)),
                                 ),
                               ),
                             ],
@@ -279,7 +337,8 @@ class _EventsViewState extends State<EventsView> {
                 backgroundColor: const Color(0xFFFACC15),
                 foregroundColor: const Color(0xFF0F172A),
                 icon: const Icon(Icons.add),
-                label: const Text('Buat Event', style: TextStyle(fontWeight: FontWeight.bold)),
+                label: const Text('Buat Event',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
         ],
@@ -301,7 +360,8 @@ class _EventCard extends StatelessWidget {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(msg, style: const TextStyle(fontWeight: FontWeight.bold)),
+          content:
+              Text(msg, style: const TextStyle(fontWeight: FontWeight.bold)),
           backgroundColor: isError ? Colors.red : Colors.green,
           behavior: SnackBarBehavior.floating,
         ),
@@ -326,7 +386,8 @@ class _EventCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFACC15).withOpacity(0.15),
                         borderRadius: BorderRadius.circular(6),
@@ -334,44 +395,59 @@ class _EventCard extends StatelessWidget {
                       ),
                       child: const Text(
                         'EVENT KOPERASI',
-                        style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFFB45309)),
+                        style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFB45309)),
                       ),
                     ),
                     const Spacer(),
                     if (event.isOngoing)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFFDCFCE7),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Text(
                           'BERLANGSUNG',
-                          style: TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: Color(0xFF16A34A)),
+                          style: TextStyle(
+                              fontSize: 7,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF16A34A)),
                         ),
                       )
                     else if (event.isUpcoming)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFFDBEAFE),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Text(
                           'AKAN DATANG',
-                          style: TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8)),
+                          style: TextStyle(
+                              fontSize: 7,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1D4ED8)),
                         ),
                       )
                     else
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Text(
                           'SELESAI',
-                          style: TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                          style: TextStyle(
+                              fontSize: 7,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF64748B)),
                         ),
                       ),
                   ],
@@ -379,13 +455,17 @@ class _EventCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   event.name,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E293B)),
                 ),
                 if (event.description.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
                     event.description,
-                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                    style:
+                        const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -393,7 +473,8 @@ class _EventCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 _InfoRow(
                   icon: Icons.calendar_today,
-                  text: '${_formatDate(event.startDate)} • ${_formatTime(event.startDate)} - ${_formatTime(event.endDate)}',
+                  text:
+                      '${_formatDate(event.startDate)} • ${_formatTime(event.startDate)} - ${_formatTime(event.endDate)}',
                 ),
               ],
             ),
@@ -407,18 +488,26 @@ class _EventCard extends StatelessWidget {
                     ? null
                     : () async {
                         final msg = await provider.joinEvent(event.id);
-                        showSnack(msg, isError: !msg.toLowerCase().contains('berhasil'));
+                        showSnack(msg,
+                            isError: !msg.toLowerCase().contains('berhasil'));
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isJoined ? const Color(0xFFE2E8F0) : const Color(0xFF0F172A),
+                  backgroundColor: isJoined
+                      ? const Color(0xFFE2E8F0)
+                      : const Color(0xFF0F172A),
                   foregroundColor: isJoined ? Colors.grey : Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
-                icon: Icon(isJoined ? Icons.check_circle : Icons.person_add, size: 14),
+                icon: Icon(isJoined ? Icons.check_circle : Icons.person_add,
+                    size: 14),
                 label: Text(
                   isJoined ? 'Terdaftar' : 'Ikut Event',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1),
+                  style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1),
                 ),
               ),
             ),
@@ -430,8 +519,18 @@ class _EventCard extends StatelessWidget {
 
   String _formatDate(DateTime d) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
     ];
     return '${d.day} ${months[d.month - 1]} ${d.year}';
   }
@@ -455,7 +554,10 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 10,
+                color: Color(0xFF64748B),
+                fontWeight: FontWeight.bold),
           ),
         ),
       ],

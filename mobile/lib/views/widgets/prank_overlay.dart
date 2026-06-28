@@ -132,7 +132,8 @@ class _ShakeWidget extends StatefulWidget {
   State<_ShakeWidget> createState() => _ShakeWidgetState();
 }
 
-class _ShakeWidgetState extends State<_ShakeWidget> with SingleTickerProviderStateMixin {
+class _ShakeWidgetState extends State<_ShakeWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -157,21 +158,23 @@ class _ShakeWidgetState extends State<_ShakeWidget> with SingleTickerProviderSta
       builder: (context, child) {
         final t = _controller.value;
         // Generate shake offset
-        final dx = (t == 0) ? 0.0 : (t < 0.1
-            ? -5
-            : t < 0.2
-                ? 5
-                : t < 0.3
-                    ? -10
-                    : t < 0.4
-                        ? 10
-                        : t < 0.5
-                            ? -5
-                            : t < 0.6
-                                ? 5
-                                : t < 0.7
-                                    ? -2
-                                    : 0);
+        final dx = (t == 0)
+            ? 0.0
+            : (t < 0.1
+                ? -5
+                : t < 0.2
+                    ? 5
+                    : t < 0.3
+                        ? -10
+                        : t < 0.4
+                            ? 10
+                            : t < 0.5
+                                ? -5
+                                : t < 0.6
+                                    ? 5
+                                    : t < 0.7
+                                        ? -2
+                                        : 0);
         return Transform.translate(
           offset: Offset(dx.toDouble(), 0),
           child: child,

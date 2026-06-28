@@ -61,7 +61,8 @@ class _MarketplaceListFormState extends State<MarketplaceListForm> {
       description: _descCtrl.text.trim(),
       priceInPoints: price,
       stock: stock,
-      imageUrl: _imageUrlCtrl.text.trim().isEmpty ? null : _imageUrlCtrl.text.trim(),
+      imageUrl:
+          _imageUrlCtrl.text.trim().isEmpty ? null : _imageUrlCtrl.text.trim(),
     );
     setState(() => _busy = false);
     if (msg.contains('berhasil')) {
@@ -105,7 +106,10 @@ class _MarketplaceListFormState extends State<MarketplaceListForm> {
                   SizedBox(width: 8),
                   Text(
                     'Daftarkan Barang',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A)),
                   ),
                 ],
               ),
@@ -117,9 +121,11 @@ class _MarketplaceListFormState extends State<MarketplaceListForm> {
               const SizedBox(height: 16),
               _buildField(_nameCtrl, 'Nama Barang *', Icons.shopping_bag),
               const SizedBox(height: 12),
-              _buildField(_priceCtrl, 'Harga (Poin) *', Icons.stars, isNumber: true),
+              _buildField(_priceCtrl, 'Harga (Poin) *', Icons.stars,
+                  isNumber: true),
               const SizedBox(height: 12),
-              _buildField(_stockCtrl, 'Stok *', Icons.inventory, isNumber: true),
+              _buildField(_stockCtrl, 'Stok *', Icons.inventory,
+                  isNumber: true),
               const SizedBox(height: 12),
               _buildField(_imageUrlCtrl, 'URL Gambar (Opsional)', Icons.image),
               const SizedBox(height: 12),
@@ -131,7 +137,8 @@ class _MarketplaceListFormState extends State<MarketplaceListForm> {
                   labelStyle: const TextStyle(fontSize: 12),
                   filled: true,
                   fillColor: const Color(0xFFF8FAFC),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
                 style: const TextStyle(fontSize: 12),
               ),
@@ -141,24 +148,29 @@ class _MarketplaceListFormState extends State<MarketplaceListForm> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFACC15),
                   foregroundColor: const Color(0xFF0F172A),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: _busy
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(color: Color(0xFF0F172A), strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                            color: Color(0xFF0F172A), strokeWidth: 2),
                       )
                     : const Text(
                         'Posting Barang',
-                        style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, letterSpacing: 1),
                       ),
               ),
               const SizedBox(height: 8),
               TextButton(
                 onPressed: _busy ? null : () => Navigator.pop(context),
-                child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                child: const Text('Batal',
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

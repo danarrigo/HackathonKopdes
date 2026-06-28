@@ -79,8 +79,13 @@ class KoperasiProvider extends ChangeNotifier {
 
   // Weekly streak (computed dynamically from DB lastActivityDate)
   Map<String, bool> weeklyStreakDays = {
-    'Sen': false, 'Sel': false, 'Rab': false, 'Kam': false,
-    'Jum': false, 'Sab': false, 'Min': false,
+    'Sen': false,
+    'Sel': false,
+    'Rab': false,
+    'Kam': false,
+    'Jum': false,
+    'Sab': false,
+    'Min': false,
   };
 
   // Missions
@@ -151,8 +156,10 @@ class KoperasiProvider extends ChangeNotifier {
     if (response.statusCode == 401 || response.statusCode == 403) {
       String msg = 'Sesi Anda telah berakhir. Silakan login ulang.';
       try {
-        final body = response.body.isNotEmpty ? json.decode(response.body) : null;
-        if (body is Map && body['error'] is String) msg = body['error'] as String;
+        final body =
+            response.body.isNotEmpty ? json.decode(response.body) : null;
+        if (body is Map && body['error'] is String)
+          msg = body['error'] as String;
       } catch (_) {}
       await _handleSessionExpired(msg);
       return {'success': false, 'error': msg, 'sessionExpired': true};
@@ -222,13 +229,15 @@ class KoperasiProvider extends ChangeNotifier {
         return _extractError(res, defaultMessage: 'Login gagal.');
       }
       if (response.statusCode == 400) {
-        final res = response.body.isNotEmpty ? json.decode(response.body) : null;
+        final res =
+            response.body.isNotEmpty ? json.decode(response.body) : null;
         return _extractError(res, defaultMessage: 'Email atau password salah.');
       }
       if (response.statusCode >= 500) {
         return 'Server error (HTTP ${response.statusCode}). Coba lagi nanti.';
       }
-      return _extractError(null, defaultMessage: 'Login gagal (HTTP ${response.statusCode}).');
+      return _extractError(null,
+          defaultMessage: 'Login gagal (HTTP ${response.statusCode}).');
     } catch (e) {
       print('Login error: $e');
       return 'Tidak dapat terhubung ke server. Periksa koneksi Anda.';
@@ -357,181 +366,182 @@ class KoperasiProvider extends ChangeNotifier {
         return;
       }
       if (jsonResponse['success'] == true) {
-          final data = jsonResponse['data'];
+        final data = jsonResponse['data'];
 
-          final progress = data['dashboard']?['progress'];
-          if (progress != null) {
-            points = (progress['pointsBalance'] as num?)?.toInt() ?? points;
-            xp = (progress['xp'] as num?)?.toInt() ?? xp;
-            streak = (progress['currentStreak'] as num?)?.toInt() ?? streak;
-            level = (progress['level'] as num?)?.toInt() ?? level;
-            walletBalance = (progress['walletBalance'] as num?)?.toInt() ?? walletBalance;
-            _recomputeRank();
-            _computeWeeklyStreak(progress['lastActivityDate']);
+        final progress = data['dashboard']?['progress'];
+        if (progress != null) {
+          points = (progress['pointsBalance'] as num?)?.toInt() ?? points;
+          xp = (progress['xp'] as num?)?.toInt() ?? xp;
+          streak = (progress['currentStreak'] as num?)?.toInt() ?? streak;
+          level = (progress['level'] as num?)?.toInt() ?? level;
+          walletBalance =
+              (progress['walletBalance'] as num?)?.toInt() ?? walletBalance;
+          _recomputeRank();
+          _computeWeeklyStreak(progress['lastActivityDate']);
+        }
+
+        pointTransactions =
+            data['dashboard']?['transactions'] as List<dynamic>? ?? [];
+
+        // Phase 4b: active prank effect
+        activeEffect = data['activeEffect'] as String?;
+
+        // Phase 4c: active loan
+        activeLoan = data['activeLoan'] as Map<String, dynamic>?;
+
+        final financials = data['financials'];
+        if (financials != null) {
+          simpananPokok = (financials['simpananPokok'] as num?)?.toInt() ?? 0;
+          simpananWajib = (financials['simpananWajib'] as num?)?.toInt() ?? 0;
+          simpananSukarela =
+              (financials['simpananSukarela'] as num?)?.toInt() ?? 0;
+          totalSimpanan = (financials['totalSavings'] as num?)?.toInt() ?? 0;
+          listSavings = financials['savings'] ?? [];
+          listLoans = financials['loans'] ?? [];
+          listDues = financials['dues'] ?? [];
+          listWalletTxs = financials['walletTransactions'] ?? [];
+
+          isMemberActive = financials['isMemberActive'] ?? true;
+          isPokokPaid = financials['isPokokPaid'] ?? true;
+          isWajibPaidThisMonth = financials['isWajibPaidThisMonth'] ?? true;
+          pendingWajibAmount =
+              (financials['pendingWajibAmount'] as num?)?.toInt() ?? 0;
+        }
+
+        final quests = data['quests'];
+        if (quests != null && quests is List) {
+          missions = quests.map<Mission>((q) {
+            final p = q['progress'];
+            return Mission(
+              id: q['id'].toString(),
+              title: q['title'] ?? '',
+              description: q['description'] ?? '',
+              points: (q['rewardPoints'] as num?)?.toInt() ?? 0,
+              targetCount: (q['targetCount'] as num?)?.toInt() ?? 1,
+              progress: (p?['progress'] as num?)?.toInt() ?? 0,
+              isCompleted: p?['isCompleted'] ?? false,
+              isDaily: (q['frequency'] ?? q['category']) == 'daily',
+            );
+          }).toList();
+        }
+
+        final kopStats = data['koperasiStats'];
+        if (kopStats != null) {
+          kopTransaksi = (kopStats['transaksi'] as num?)?.toInt() ?? 0;
+          kopAnggotaBaru = (kopStats['anggotaBaru'] as num?)?.toInt() ?? 0;
+          kopOmzet = (kopStats['omzetHarian'] as num?)?.toInt() ?? 0;
+          kopUmkm = (kopStats['umkmAktif'] as num?)?.toInt() ?? 0;
+        }
+
+        final arena = data['arena'];
+        if (arena != null) {
+          if (arena['activeBattles'] != null &&
+              (arena['activeBattles'] as List).isNotEmpty) {
+            activeBattle = arena['activeBattles'][0];
+            activeBattleEndDate =
+                activeBattle?['endDate']?.toString().split('T')[0];
           }
-
-          pointTransactions =
-              data['dashboard']?['transactions'] as List<dynamic>? ?? [];
-
-          // Phase 4b: active prank effect
-          activeEffect = data['activeEffect'] as String?;
-
-          // Phase 4c: active loan
-          activeLoan = data['activeLoan'] as Map<String, dynamic>?;
-
-          final financials = data['financials'];
-          if (financials != null) {
-            simpananPokok = (financials['simpananPokok'] as num?)?.toInt() ?? 0;
-            simpananWajib = (financials['simpananWajib'] as num?)?.toInt() ?? 0;
-            simpananSukarela = (financials['simpananSukarela'] as num?)?.toInt() ?? 0;
-            totalSimpanan = (financials['totalSavings'] as num?)?.toInt() ?? 0;
-            listSavings = financials['savings'] ?? [];
-            listLoans = financials['loans'] ?? [];
-            listDues = financials['dues'] ?? [];
-            listWalletTxs = financials['walletTransactions'] ?? [];
-
-            isMemberActive = financials['isMemberActive'] ?? true;
-            isPokokPaid = financials['isPokokPaid'] ?? true;
-            isWajibPaidThisMonth = financials['isWajibPaidThisMonth'] ?? true;
-            pendingWajibAmount = (financials['pendingWajibAmount'] as num?)?.toInt() ?? 0;
-          }
-
-          final quests = data['quests'];
-          if (quests != null && quests is List) {
-            missions = quests.map<Mission>((q) {
-              final p = q['progress'];
-              return Mission(
-                id: q['id'].toString(),
-                title: q['title'] ?? '',
-                description: q['description'] ?? '',
-                points: (q['rewardPoints'] as num?)?.toInt() ?? 0,
-                targetCount: (q['targetCount'] as num?)?.toInt() ?? 1,
-                progress: (p?['progress'] as num?)?.toInt() ?? 0,
-                isCompleted: p?['isCompleted'] ?? false,
-                isDaily: (q['frequency'] ?? q['category']) == 'daily',
+          final past = arena['pastBattles'];
+          if (past != null && past is List) {
+            historyList = past.map<HistoryItem>((b) {
+              final isWinner = b['winnerId'] == memberId;
+              final opName = b['opponent']?['namaLengkap'] ?? 'Lawan';
+              final myScore = b['challengerId'] == memberId
+                  ? b['challengerPoints']
+                  : b['opponentPoints'];
+              return HistoryItem(
+                opponent: opName,
+                result: isWinner ? 'Menang' : 'Kalah',
+                points: (myScore as num?)?.toInt() ?? 0,
+                date: b['endDate']?.toString().split('T')[0],
               );
             }).toList();
           }
-
-          final kopStats = data['koperasiStats'];
-          if (kopStats != null) {
-            kopTransaksi = (kopStats['transaksi'] as num?)?.toInt() ?? 0;
-            kopAnggotaBaru = (kopStats['anggotaBaru'] as num?)?.toInt() ?? 0;
-            kopOmzet = (kopStats['omzetHarian'] as num?)?.toInt() ?? 0;
-            kopUmkm = (kopStats['umkmAktif'] as num?)?.toInt() ?? 0;
-          }
-
-          final arena = data['arena'];
-          if (arena != null) {
-            if (arena['activeBattles'] != null &&
-                (arena['activeBattles'] as List).isNotEmpty) {
-              activeBattle = arena['activeBattles'][0];
-              activeBattleEndDate =
-                  activeBattle?['endDate']?.toString().split('T')[0];
-            }
-            final past = arena['pastBattles'];
-            if (past != null && past is List) {
-              historyList = past.map<HistoryItem>((b) {
-                final isWinner = b['winnerId'] == memberId;
-                final opName = b['opponent']?['namaLengkap'] ?? 'Lawan';
-                final myScore = b['challengerId'] == memberId
-                    ? b['challengerPoints']
-                    : b['opponentPoints'];
-                return HistoryItem(
-                  opponent: opName,
-                  result: isWinner ? 'Menang' : 'Kalah',
-                  points: (myScore as num?)?.toInt() ?? 0,
-                  date: b['endDate']?.toString().split('T')[0],
-                );
-              }).toList();
-            }
-          }
-
-          final governance = data['governance'];
-          if (governance != null) {
-            activeProposals = governance['activeProposals'] ?? [];
-            pastProposals = governance['pastProposals'] ?? [];
-            totalMembers = (governance['totalMembers'] as num?)?.toInt() ?? 0;
-            totalAsetDesa =
-                (governance['totalAsetDesa'] as num?)?.toInt() ?? 0;
-            asetKas = (governance['asetKas'] as num?)?.toInt() ?? 0;
-            asetPinjaman = (governance['asetPinjaman'] as num?)?.toInt() ?? 0;
-            asetInvestasi = (governance['asetInvestasi'] as num?)?.toInt() ?? 0;
-            canSubmitProposal = level >= 20;
-          }
-
-          final badgesList = data['badges'];
-          if (badgesList != null && badgesList is List) {
-            earnedBadges = badgesList;
-          }
-
-          final wr = data['winRate'];
-          if (wr != null) {
-            userWinRate = ((wr['winRate'] as num?)?.toDouble() ?? 0).round();
-            totalBattles = (wr['totalBattles'] as num?)?.toInt() ?? 0;
-          }
-
-          final storeItemsData = data['storeItems'];
-          if (storeItemsData != null && storeItemsData is List) {
-            shopItems = storeItemsData
-                .map<ShopItem>((s) => ShopItem.fromJson(s))
-                .toList();
-          }
-
-          final leaderboardData = data['leaderboard'];
-          if (leaderboardData != null && leaderboardData is List) {
-            leaderboard = leaderboardData;
-            leaderboardByKoperasi = leaderboardData;
-          }
-
-          // Phase 3: multi-scope leaderboards
-          final lbProv = data['leaderboardByProvinsi'];
-          if (lbProv != null && lbProv is List) {
-            leaderboardByProvinsi = lbProv;
-          }
-          final lbNas = data['leaderboardByNasional'];
-          if (lbNas != null && lbNas is List) {
-            leaderboardByNasional = lbNas;
-          }
-
-          final inventoryData = data['inventory'];
-          if (inventoryData != null && inventoryData is List) {
-            inventory = inventoryData
-                .map<InventoryItem>((i) => InventoryItem.fromJson(i))
-                .toList();
-          }
-
-          // Phase 1: marketplace P2P items
-          final mpData = data['marketplaceItems'];
-          if (mpData != null && mpData is List) {
-            marketplaceItems = mpData
-                .map<MarketplaceItem>((m) => MarketplaceItem.fromJson(m))
-                .toList();
-          }
-
-          // Phase 2: events
-          final evData = data['events'];
-          if (evData != null && evData is List) {
-            events = evData
-                .map<EventModel>((e) => EventModel.fromJson(e))
-                .toList();
-          }
-          final joinedData = data['joinedEventIds'];
-          if (joinedData != null && joinedData is List) {
-            joinedEventIds = joinedData
-                .map<int>((id) => (id as num).toInt())
-                .toSet();
-          }
-
-          // Phase 4a: active members directory
-          final amData = data['activeMembers'];
-          if (amData != null && amData is List) {
-            activeMembers = amData;
-          }
-        } else {
-          // success:false response from server
-          lastFetchError = jsonResponse['error']?.toString() ?? 'Gagal memuat data.';
         }
+
+        final governance = data['governance'];
+        if (governance != null) {
+          activeProposals = governance['activeProposals'] ?? [];
+          pastProposals = governance['pastProposals'] ?? [];
+          totalMembers = (governance['totalMembers'] as num?)?.toInt() ?? 0;
+          totalAsetDesa = (governance['totalAsetDesa'] as num?)?.toInt() ?? 0;
+          asetKas = (governance['asetKas'] as num?)?.toInt() ?? 0;
+          asetPinjaman = (governance['asetPinjaman'] as num?)?.toInt() ?? 0;
+          asetInvestasi = (governance['asetInvestasi'] as num?)?.toInt() ?? 0;
+          canSubmitProposal = level >= 20;
+        }
+
+        final badgesList = data['badges'];
+        if (badgesList != null && badgesList is List) {
+          earnedBadges = badgesList;
+        }
+
+        final wr = data['winRate'];
+        if (wr != null) {
+          userWinRate = ((wr['winRate'] as num?)?.toDouble() ?? 0).round();
+          totalBattles = (wr['totalBattles'] as num?)?.toInt() ?? 0;
+        }
+
+        final storeItemsData = data['storeItems'];
+        if (storeItemsData != null && storeItemsData is List) {
+          shopItems = storeItemsData
+              .map<ShopItem>((s) => ShopItem.fromJson(s))
+              .toList();
+        }
+
+        final leaderboardData = data['leaderboard'];
+        if (leaderboardData != null && leaderboardData is List) {
+          leaderboard = leaderboardData;
+          leaderboardByKoperasi = leaderboardData;
+        }
+
+        // Phase 3: multi-scope leaderboards
+        final lbProv = data['leaderboardByProvinsi'];
+        if (lbProv != null && lbProv is List) {
+          leaderboardByProvinsi = lbProv;
+        }
+        final lbNas = data['leaderboardByNasional'];
+        if (lbNas != null && lbNas is List) {
+          leaderboardByNasional = lbNas;
+        }
+
+        final inventoryData = data['inventory'];
+        if (inventoryData != null && inventoryData is List) {
+          inventory = inventoryData
+              .map<InventoryItem>((i) => InventoryItem.fromJson(i))
+              .toList();
+        }
+
+        // Phase 1: marketplace P2P items
+        final mpData = data['marketplaceItems'];
+        if (mpData != null && mpData is List) {
+          marketplaceItems = mpData
+              .map<MarketplaceItem>((m) => MarketplaceItem.fromJson(m))
+              .toList();
+        }
+
+        // Phase 2: events
+        final evData = data['events'];
+        if (evData != null && evData is List) {
+          events =
+              evData.map<EventModel>((e) => EventModel.fromJson(e)).toList();
+        }
+        final joinedData = data['joinedEventIds'];
+        if (joinedData != null && joinedData is List) {
+          joinedEventIds =
+              joinedData.map<int>((id) => (id as num).toInt()).toSet();
+        }
+
+        // Phase 4a: active members directory
+        final amData = data['activeMembers'];
+        if (amData != null && amData is List) {
+          activeMembers = amData;
+        }
+      } else {
+        // success:false response from server
+        lastFetchError =
+            jsonResponse['error']?.toString() ?? 'Gagal memuat data.';
+      }
     } catch (e) {
       print('Fetch err: $e');
       lastFetchError = 'Tidak dapat terhubung ke server. Periksa koneksi Anda.';
@@ -566,9 +576,7 @@ class KoperasiProvider extends ChangeNotifier {
     try {
       final lastActivity = DateTime.parse(lastActivityStr);
       final dayLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-      final newStreak = <String, bool>{
-        for (final k in dayLabels) k: false
-      };
+      final newStreak = <String, bool>{for (final k in dayLabels) k: false};
       final streakCount = streak.clamp(0, 7);
       for (int i = 0; i < streakCount; i++) {
         final day = lastActivity.subtract(Duration(days: i));
@@ -582,16 +590,17 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> claimMission(String id, int? questRewardPoints) async {
     try {
       final body = await _postAction({
-          'action': 'toggle-quest',
-          'memberId': memberId,
-          'questId': int.parse(id),
-        });
+        'action': 'toggle-quest',
+        'memberId': memberId,
+        'questId': int.parse(id),
+      });
       if (body['success'] == true) {
         await fetchData();
         final reward = questRewardPoints ?? 0;
         return 'Misi selesai! +$reward Poin';
       }
-      return body['error']?.toString() ?? 'Gagal klaim misi (mungkin belum selesai).';
+      return body['error']?.toString() ??
+          'Gagal klaim misi (mungkin belum selesai).';
     } catch (e) {
       print('Claim mission error: $e');
       return 'Gagal menyimpan ke server.';
@@ -604,11 +613,11 @@ class KoperasiProvider extends ChangeNotifier {
     }
     try {
       final body = await _postAction({
-          'action': 'buy-item',
-          'memberId': memberId,
-          'itemId': item.id,
-          'cost': item.cost,
-        });
+        'action': 'buy-item',
+        'memberId': memberId,
+        'itemId': item.id,
+        'cost': item.cost,
+      });
       if (body['success'] == true) {
         points = (body['updatedPoints'] as num?)?.toInt() ?? points;
         await fetchData();
@@ -624,11 +633,11 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async {
     try {
       final body = await _postAction({
-          'action': 'use-item',
-          'memberId': memberId,
-          'itemId': itemId,
-          if (targetMemberId != null) 'targetMemberId': targetMemberId,
-        });
+        'action': 'use-item',
+        'memberId': memberId,
+        'itemId': itemId,
+        if (targetMemberId != null) 'targetMemberId': targetMemberId,
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'Item digunakan!';
@@ -641,16 +650,15 @@ class KoperasiProvider extends ChangeNotifier {
   }
 
   Future<String> submitVote(String choice) async {
-    final proposal =
-        activeProposals.isNotEmpty ? activeProposals[0] : null;
+    final proposal = activeProposals.isNotEmpty ? activeProposals[0] : null;
     final proposalId = proposal?['id'] ?? 1;
     try {
       final body = await _postAction({
-          'action': 'vote',
-          'memberId': memberId,
-          'proposalId': proposalId,
-          'voteType': choice,
-        });
+        'action': 'vote',
+        'memberId': memberId,
+        'proposalId': proposalId,
+        'voteType': choice,
+      });
       if (body['success'] == true) {
         voteSelection = choice;
         notifyListeners();
@@ -666,11 +674,11 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> submitProposal(String title, String description) async {
     try {
       final body = await _postAction({
-          'action': 'submit-proposal',
-          'memberId': memberId,
-          'title': title,
-          'description': description,
-        });
+        'action': 'submit-proposal',
+        'memberId': memberId,
+        'title': title,
+        'description': description,
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'Proposal berhasil diajukan!';
@@ -685,10 +693,10 @@ class KoperasiProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> createTopUp(int amount) async {
     try {
       final body = await _postAction({
-          'action': 'create-topup',
-          'memberId': memberId,
-          'amount': amount,
-        });
+        'action': 'create-topup',
+        'memberId': memberId,
+        'amount': amount,
+      });
       if (body['success'] == true) {
         return {
           'success': true,
@@ -696,7 +704,10 @@ class KoperasiProvider extends ChangeNotifier {
           'invoiceUrl': body['invoiceUrl'],
         };
       }
-      return {'success': false, 'error': body['error'] ?? 'Gagal membuat invoice.'};
+      return {
+        'success': false,
+        'error': body['error'] ?? 'Gagal membuat invoice.'
+      };
     } catch (e) {
       print('Create topup error: $e');
       return {'success': false, 'error': 'Gagal menghubungi server.'};
@@ -706,10 +717,10 @@ class KoperasiProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> verifyTopUp(String invoiceId) async {
     try {
       final body = await _postAction({
-          'action': 'verify-topup',
-          'memberId': memberId,
-          'invoiceId': invoiceId,
-        });
+        'action': 'verify-topup',
+        'memberId': memberId,
+        'invoiceId': invoiceId,
+      });
       if (body['success'] == true) {
         if (body['status'] == 'paid') {
           await fetchData();
@@ -727,10 +738,10 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> payDuesFromWallet(String type) async {
     try {
       final body = await _postAction({
-          'action': 'pay-dues-wallet',
-          'memberId': memberId,
-          'type': type,
-        });
+        'action': 'pay-dues-wallet',
+        'memberId': memberId,
+        'type': type,
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'success';
@@ -742,14 +753,15 @@ class KoperasiProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> depositSavingsFromWallet(int amount, String description) async {
+  Future<String> depositSavingsFromWallet(
+      int amount, String description) async {
     try {
       final body = await _postAction({
-          'action': 'deposit-savings-wallet',
-          'memberId': memberId,
-          'amount': amount,
-          'description': description,
-        });
+        'action': 'deposit-savings-wallet',
+        'memberId': memberId,
+        'amount': amount,
+        'description': description,
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'success';
@@ -775,14 +787,14 @@ class KoperasiProvider extends ChangeNotifier {
         return 'Poin tidak valid.';
       }
       final body = await _postAction({
-          'action': 'list-marketplace-item',
-          'memberId': memberId,
-          'name': name,
-          'description': description,
-          'priceInPoints': priceInPoints,
-          'stock': stock,
-          'imageUrl': imageUrl ?? '',
-        });
+        'action': 'list-marketplace-item',
+        'memberId': memberId,
+        'name': name,
+        'description': description,
+        'priceInPoints': priceInPoints,
+        'stock': stock,
+        'imageUrl': imageUrl ?? '',
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'Barang berhasil didaftarkan ke marketplace!';
@@ -797,10 +809,10 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> buyMarketplaceItem(int itemId) async {
     try {
       final body = await _postAction({
-          'action': 'buy-marketplace-item',
-          'memberId': memberId,
-          'itemId': itemId,
-        });
+        'action': 'buy-marketplace-item',
+        'memberId': memberId,
+        'itemId': itemId,
+      });
       if (body['success'] == true) {
         final newBalance = (body['updatedPoints'] as num?)?.toInt();
         if (newBalance != null) points = newBalance;
@@ -819,10 +831,10 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> joinEvent(int eventId) async {
     try {
       final body = await _postAction({
-          'action': 'join-event',
-          'memberId': memberId,
-          'eventId': eventId,
-        });
+        'action': 'join-event',
+        'memberId': memberId,
+        'eventId': eventId,
+      });
       if (body['success'] == true) {
         joinedEventIds.add(eventId);
         notifyListeners();
@@ -844,13 +856,13 @@ class KoperasiProvider extends ChangeNotifier {
   }) async {
     try {
       final body = await _postAction({
-          'action': 'create-event',
-          'memberId': memberId,
-          'name': name,
-          'description': description,
-          'startDate': startDate.toIso8601String(),
-          'endDate': endDate.toIso8601String(),
-        });
+        'action': 'create-event',
+        'memberId': memberId,
+        'name': name,
+        'description': description,
+        'startDate': startDate.toIso8601String(),
+        'endDate': endDate.toIso8601String(),
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'Event berhasil dibuat!';
@@ -867,9 +879,9 @@ class KoperasiProvider extends ChangeNotifier {
   Future<String> matchmakeBattle() async {
     try {
       final body = await _postAction({
-          'action': 'matchmake-battle',
-          'memberId': memberId,
-        });
+        'action': 'matchmake-battle',
+        'memberId': memberId,
+      });
       if (body['success'] == true) {
         await fetchData();
         return 'Lawan ditemukan! Selamat bertanding!';

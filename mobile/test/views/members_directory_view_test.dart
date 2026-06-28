@@ -28,7 +28,17 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String?> login(String a, String b) async => null;
   @override
-  Future<bool> signup({required String email, required String password, required String nik, required String fullName, String provinsi = '', String kabupaten = '', String kecamatan = '', String desa = '', required String koperasi}) async => true;
+  Future<bool> signup(
+          {required String email,
+          required String password,
+          required String nik,
+          required String fullName,
+          String provinsi = '',
+          String kabupaten = '',
+          String kecamatan = '',
+          String desa = '',
+          required String koperasi}) async =>
+      true;
   @override
   Future<void> logout() async {}
   @override
@@ -36,7 +46,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> buyShopItem(item) async => '';
   @override
-  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async => '';
+  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async =>
+      '';
   @override
   Future<String> submitVote(String choice) async => '';
   @override
@@ -48,15 +59,28 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> payDuesFromWallet(String type) async => '';
   @override
-  Future<String> depositSavingsFromWallet(int amount, String description) async => '';
+  Future<String> depositSavingsFromWallet(
+          int amount, String description) async =>
+      '';
   @override
-  Future<String> listMarketplaceItem({required String name, String description = '', required int priceInPoints, required int stock, String? imageUrl}) async => '';
+  Future<String> listMarketplaceItem(
+          {required String name,
+          String description = '',
+          required int priceInPoints,
+          required int stock,
+          String? imageUrl}) async =>
+      '';
   @override
   Future<String> buyMarketplaceItem(int itemId) async => '';
   @override
   Future<String> joinEvent(int eventId) async => '';
   @override
-  Future<String> createEvent({required String name, String description = '', required DateTime startDate, required DateTime endDate}) async => '';
+  Future<String> createEvent(
+          {required String name,
+          String description = '',
+          required DateTime startDate,
+          required DateTime endDate}) async =>
+      '';
   @override
   Future<String> matchmakeBattle() async => '';
   @override
@@ -66,7 +90,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-Widget _wrap(Widget child, KoperasiProvider p) => ChangeNotifierProvider<KoperasiProvider>.value(
+Widget _wrap(Widget child, KoperasiProvider p) =>
+    ChangeNotifierProvider<KoperasiProvider>.value(
       value: p,
       child: MaterialApp(home: child),
     );
@@ -80,11 +105,24 @@ void main() {
     expect(find.text('Belum ada anggota aktif.'), findsOneWidget);
   });
 
-  testWidgets('MembersDirectoryView renders list with ANDA highlight', (tester) async {
+  testWidgets('MembersDirectoryView renders list with ANDA highlight',
+      (tester) async {
     final p = _StubProvider(
       members: [
-        {'id': 99, 'namaLengkap': 'Budi Santoso', 'nomorAnggota': 'A001', 'desa': 'Sukamaju', 'kecamatan': 'Tegalsari'},
-        {'id': 88, 'namaLengkap': 'Andi Wijaya', 'nomorAnggota': 'A002', 'desa': 'Sukamaju', 'kecamatan': 'Tegalsari'},
+        {
+          'id': 99,
+          'namaLengkap': 'Budi Santoso',
+          'nomorAnggota': 'A001',
+          'desa': 'Sukamaju',
+          'kecamatan': 'Tegalsari'
+        },
+        {
+          'id': 88,
+          'namaLengkap': 'Andi Wijaya',
+          'nomorAnggota': 'A002',
+          'desa': 'Sukamaju',
+          'kecamatan': 'Tegalsari'
+        },
       ],
       memberId: 99,
     );

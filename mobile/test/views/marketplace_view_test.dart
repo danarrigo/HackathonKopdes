@@ -10,7 +10,10 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   int _points;
   final List<MarketplaceItem> _items;
   final int? _memberId;
-  _StubProvider({int points = 1000, int? memberId = 99, List<MarketplaceItem> items = const []})
+  _StubProvider(
+      {int points = 1000,
+      int? memberId = 99,
+      List<MarketplaceItem> items = const []})
       : _points = points,
         _items = items,
         _memberId = memberId;
@@ -32,7 +35,17 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String?> login(String a, String b) async => null;
   @override
-  Future<bool> signup({required String email, required String password, required String nik, required String fullName, String provinsi = '', String kabupaten = '', String kecamatan = '', String desa = '', required String koperasi}) async => true;
+  Future<bool> signup(
+          {required String email,
+          required String password,
+          required String nik,
+          required String fullName,
+          String provinsi = '',
+          String kabupaten = '',
+          String kecamatan = '',
+          String desa = '',
+          required String koperasi}) async =>
+      true;
   @override
   Future<void> logout() async {}
   @override
@@ -40,7 +53,8 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> buyShopItem(item) async => '';
   @override
-  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async => '';
+  Future<String> useInventoryItem(int itemId, {int? targetMemberId}) async =>
+      '';
   @override
   Future<String> submitVote(String choice) async => '';
   @override
@@ -52,15 +66,28 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   @override
   Future<String> payDuesFromWallet(String type) async => '';
   @override
-  Future<String> depositSavingsFromWallet(int amount, String description) async => '';
+  Future<String> depositSavingsFromWallet(
+          int amount, String description) async =>
+      '';
   @override
-  Future<String> listMarketplaceItem({required String name, String description = '', required int priceInPoints, required int stock, String? imageUrl}) async => '';
+  Future<String> listMarketplaceItem(
+          {required String name,
+          String description = '',
+          required int priceInPoints,
+          required int stock,
+          String? imageUrl}) async =>
+      '';
   @override
   Future<String> buyMarketplaceItem(int itemId) async => '';
   @override
   Future<String> joinEvent(int eventId) async => '';
   @override
-  Future<String> createEvent({required String name, String description = '', required DateTime startDate, required DateTime endDate}) async => '';
+  Future<String> createEvent(
+          {required String name,
+          String description = '',
+          required DateTime startDate,
+          required DateTime endDate}) async =>
+      '';
   @override
   Future<String> matchmakeBattle() async => '';
   @override
@@ -71,13 +98,15 @@ class _StubProvider extends ChangeNotifier implements KoperasiProvider {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-Widget _wrap(Widget child, KoperasiProvider p) => ChangeNotifierProvider<KoperasiProvider>.value(
+Widget _wrap(Widget child, KoperasiProvider p) =>
+    ChangeNotifierProvider<KoperasiProvider>.value(
       value: p,
       child: MaterialApp(home: child),
     );
 
 void main() {
-  testWidgets('MarketplaceView shows empty state when no items', (tester) async {
+  testWidgets('MarketplaceView shows empty state when no items',
+      (tester) async {
     final p = _StubProvider(items: [], memberId: 99);
     await tester.pumpWidget(_wrap(const MarketplaceView(), p));
     await tester.pump();
@@ -86,7 +115,8 @@ void main() {
     expect(find.text('Jual Barang'), findsOneWidget);
   });
 
-  testWidgets('MarketplaceView renders items with seller + price + stock', (tester) async {
+  testWidgets('MarketplaceView renders items with seller + price + stock',
+      (tester) async {
     final items = [
       MarketplaceItem(
         id: 1,
@@ -121,7 +151,8 @@ void main() {
     expect(find.text('Habis'), findsOneWidget);
   });
 
-  testWidgets('MarketplaceView shows "Barang Anda" badge for own items', (tester) async {
+  testWidgets('MarketplaceView shows "Barang Anda" badge for own items',
+      (tester) async {
     final items = [
       MarketplaceItem(
         id: 5,
