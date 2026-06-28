@@ -4,7 +4,8 @@ import { memberProgress, items, pointTransactions, memberItems } from "@/db/sche
 import { memberBadges, badges } from "@/db/schema/achievements";
 import { battles } from "@/db/schema/activities";
 import { members } from "@/db/schema/members";
-import { or, eq, and, desc } from "drizzle-orm";
+import { cooperatives } from "@/db/schema/cooperatives";
+import { or, eq, and, desc, sql } from "drizzle-orm";
 
 export async function getMemberProgress(memberId: number) {
   try {
