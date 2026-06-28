@@ -182,9 +182,10 @@ class KoperasiProvider extends ChangeNotifier {
     }
   }
 
-  void toggleMission(String id, Function(String) showSnackBar) {
+  Future<void> toggleMission(String id, Function(String) showSnackBar) async {
     for (var m in missions) {
       if (m.id == id) {
+        // Optimistic UI update
         m.completed = !m.completed;
         if (m.completed) {
           points += m.points;
@@ -194,17 +195,77 @@ class KoperasiProvider extends ChangeNotifier {
           showSnackBar('Batal menyelesaikan "${m.title}". Poin -${m.points}');
         }
         notifyListeners();
+
+        // Server update
+        try {
+          String apiHost = 'localhost:3000';
+          if (Uri.base.host.isNotEmpty) {
+            apiHost = '${Uri.base.host}:3000';
+          }
+          final res = await http.post(
+            Uri.parse('http://$apiHost/api/mobile-sync/action'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode({
+              'action': 'toggle-quest',
+              'memberId': 1,
+              'questId': int.parse(id),
+            }),
+          );
+          if (res.statusCode != 200 || !json.decode(res.body)['success']) {
+            throw Exception('Server error');
+          }
+        } catch (e) {
+          print('Toggle quest sync error: $e');
+          // Rollback on failure
+          m.completed = !m.completed;
+          if (m.completed) {
+            points += m.points;
+          } else {
+            points -= m.points;
+          }
+          showSnackBar('Gagal menyimpan status misi ke server.');
+          notifyListeners();
+        }
         break;
       }
     }
   }
 
-  void buyShopItem(ShopItem item, Function(String) showSnackBar) {
+  Future<void> buyShopItem(ShopItem item, Function(String) showSnackBar) async {
     if (points >= item.cost) {
+      // Optimistic UI update
       points -= item.cost;
       item.ownedCount += 1;
       showSnackBar('Berhasil membeli ${item.title}! -${item.cost} Poin');
       notifyListeners();
+
+      // Server update
+      try {
+        String apiHost = 'localhost:3000';
+        if (Uri.base.host.isNotEmpty) {
+          apiHost = '${Uri.base.host}:3000';
+        }
+        final res = await http.post(
+          Uri.parse('http://$apiHost/api/mobile-sync/action'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'action': 'buy-item',
+            'memberId': 1,
+            'itemId': item.id,
+            'cost': item.cost,
+          }),
+        );
+        if (res.statusCode != 200 || !json.decode(res.body)['success']) {
+          throw Exception('Server error');
+        }
+      } catch (e) {
+        print('Buy item sync error: $e');
+        // Rollback on failure
+        points += item.cost;
+        item.ownedCount -= 1;
+        showSnackBar('Gagal memproses pembelian di server.');
+        notifyListeners();
+      }
     } else {
       showSnackBar('Poin tidak mencukupi untuk membeli ${item.title}');
     }
@@ -236,9 +297,38 @@ class KoperasiProvider extends ChangeNotifier {
     }
   }
 
-  void submitVote(String choice, Function(String) showSnackBar) {
+  Future<void> submitVote(String choice, Function(String) showSnackBar) async {
+    // Optimistic UI update
+    final oldSelection = voteSelection;
     voteSelection = choice;
     showSnackBar('Terima kasih! Pilihan Anda ($choice) disimpan.');
     notifyListeners();
+
+    // Server update
+    try {
+      String apiHost = 'localhost:3000';
+      if (Uri.base.host.isNotEmpty) {
+        apiHost = '${Uri.base.host}:3000';
+      }
+      final res = await http.post(
+        Uri.parse('http://$apiHost/api/mobile-sync/action'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'action': 'vote',
+          'memberId': 1,
+          'proposalId': 1,
+          'voteType': choice,
+        }),
+      );
+      if (res.statusCode != 200 || !json.decode(res.body)['success']) {
+        throw Exception('Server error');
+      }
+    } catch (e) {
+      print('Vote sync error: $e');
+      // Rollback on failure
+      voteSelection = oldSelection;
+      showSnackBar('Gagal mengirim voting ke server.');
+      notifyListeners();
+    }
   }
 }

@@ -1,8 +1,8 @@
 "use server";
 import { db } from "@/db";
-import { proposals } from "@/db/schema/governance";
+import { proposals, votes } from "@/db/schema/governance";
 import { members } from "@/db/schema/members";
-import { eq, count } from "drizzle-orm";
+import { eq, count, and } from "drizzle-orm";
 
 export async function getGovernanceData() {
   try {
@@ -38,5 +38,33 @@ export async function getKoperasiStats() {
   } catch (error) {
     console.error("Koperasi Stats Error:", error);
     return { transaksi: 0, anggotaBaru: 0, omzetHarian: 0, umkmAktif: 0 };
+  }
+}
+
+export async function castVote(memberId: number, proposalId: number, voteType: string) {
+  try {
+    // Check if the user has already voted on this proposal
+    const existingVote = await db.select().from(votes).where(
+      and(
+        eq(votes.memberId, memberId),
+        eq(votes.proposalId, proposalId)
+      )
+    );
+
+    if (existingVote.length > 0) {
+      // Update existing vote
+      await db.update(votes).set({ voteType }).where(eq(votes.id, existingVote[0].id));
+    } else {
+      // Insert new vote
+      await db.insert(votes).values({
+        memberId,
+        proposalId,
+        voteType
+      });
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Cast Vote DB Error:", error);
+    return { success: false, error: "Failed to record vote" };
   }
 }
