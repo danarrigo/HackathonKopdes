@@ -12,91 +12,82 @@ class MisiView extends StatelessWidget {
     final provider = context.watch<KoperasiProvider>();
     final double progress = (provider.points / provider.nextLevelPoints).clamp(0.0, 1.0);
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: const Color(0xFF131926),
-            padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(color: Color(0xFFFCD34D), borderRadius: BorderRadius.all(Radius.circular(20))),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: Text(
-                        'Rank: ${provider.rankName}',
-                        style: const TextStyle(color: Color(0xFF78350F), fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Text(
-                      '${provider.points} / ${provider.nextLevelPoints} poin menuju ${provider.nextRankName}',
-                      style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
-                    ),
-                    const SizedBox(height: 6),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: Container(
-                        width: 180,
-                        height: 6,
-                        color: const Color(0xFF334155),
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          width: 180 * progress,
-                          height: 6,
-                          color: const Color(0xFFFCD34D),
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              color: const Color(0xFF131926),
+              padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(color: Color(0xFFFCD34D), borderRadius: BorderRadius.all(Radius.circular(20))),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Text(
+                          'Rank: ${provider.rankName}',
+                          style: const TextStyle(color: Color(0xFF78350F), fontSize: 12, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    )
-                  ],
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('STREAK', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 8, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                    const SizedBox(height: 4),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1C2533),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFF475569)),
+                      Text(
+                        '${provider.points} / ${provider.nextLevelPoints} poin menuju ${provider.nextRankName}',
+                        style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.bolt, color: Colors.orange, size: 18),
-                          const SizedBox(width: 4),
-                          Text(
-                            provider.streak.toString(),
-                            style: const TextStyle(color: Color(0xFFFCD34D), fontSize: 16, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Container(
+                          width: 180,
+                          height: 6,
+                          color: const Color(0xFF334155),
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            width: 180 * progress,
+                            height: 6,
+                            color: const Color(0xFFFCD34D),
                           ),
-                        ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'LEVEL',
+                        style: TextStyle(color: Colors.white60, fontSize: 8),
                       ),
-                    )
-                  ],
-                )
-              ],
+                      Text(
+                        '${provider.level}',
+                        style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Transform.translate(
-                  offset: const Offset(0, -26),
-                  child: Card(
-                    color: const Color(0xFF1C2533),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                children: [
+                  Transform.translate(
+                    offset: const Offset(0, -30),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF1E293B),
+                        borderRadius: BorderRadius.all(Radius.circular(24)),
+                      ),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -150,38 +141,38 @@ class MisiView extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                _buildMissionSectionCard(context, 'Misi Harian', true),
-                const SizedBox(height: 16),
-                _buildMissionSectionCard(context, 'Misi Mingguan', false),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Toko Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                    Text('Saldo: ${provider.points} Poin', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                provider.shopItems.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text('Belum ada item di toko.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      )
-                    : GridView.count(
-                        crossAxisCount: 2,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.72,
-                        children: provider.shopItems.map((item) => _buildShopItemCard(context, item)).toList(),
-                      ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          )
-        ],
+                  _buildMissionSectionCard(context, 'Misi Harian', true),
+                  const SizedBox(height: 16),
+                  _buildMissionSectionCard(context, 'Misi Mingguan', false),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Toko Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                      Text('Saldo: ${provider.points} Poin', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  provider.shopItems.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Text('Belum ada item di toko.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        )
+                      : GridView.count(
+                          crossAxisCount: 2,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.72,
+                          children: provider.shopItems.map((item) => _buildShopItemCard(context, item)).toList(),
+                        ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

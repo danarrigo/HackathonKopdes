@@ -43,8 +43,11 @@ class ProfileView extends StatelessWidget {
         : provider.simpananPokok + provider.simpananWajib + provider.simpananSukarela;
     final estimasiSHU = totalSimpananDisplay > 0 ? (totalSimpananDisplay * 0.12).floor() : 0;
 
-    return SingleChildScrollView(
-      child: Column(
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Rank gradient digital member card
@@ -476,6 +479,53 @@ class ProfileView extends StatelessWidget {
                                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                                               child: Text(status.toUpperCase(), style: TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: statusColor)),
                                             ),
+                                            if (status == 'pending') ...[
+                                              const SizedBox(width: 8),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  final invoiceId = w['invoiceId'];
+                                                  if (invoiceId != null) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(content: Text('Memeriksa status pembayaran...'), duration: Duration(seconds: 1)),
+                                                    );
+                                                    final verifyRes = await provider.verifyTopUp(invoiceId);
+                                                    if (verifyRes['success'] == true) {
+                                                      final newStatus = verifyRes['status'];
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(newStatus == 'paid'
+                                                              ? 'Pembayaran Berhasil Terverifikasi! Saldo bertambah.'
+                                                              : 'Pembayaran masih pending.'),
+                                                          backgroundColor: newStatus == 'paid' ? Colors.green : Colors.amber,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(verifyRes['error'] ?? 'Gagal memeriksa status.'),
+                                                          backgroundColor: Colors.red,
+                                                        ),
+                                                      );
+                                                    }
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF3B82F6).withOpacity(0.1),
+                                                    borderRadius: BorderRadius.circular(4),
+                                                  ),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                  child: const Text(
+                                                    'CEK',
+                                                    style: TextStyle(
+                                                      color: Color(0xFF3B82F6),
+                                                      fontSize: 8,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ],
                                         ),
                                       ],
@@ -641,7 +691,7 @@ class ProfileView extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildTopBadge(IconData icon, String text, Color textCol, Color bgCol, {Color? iconColor}) {
